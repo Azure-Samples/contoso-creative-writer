@@ -1,0 +1,58 @@
+{
+  "web": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Satya_Nadella",
+      "name": "Satya Nadella - Wikipedia",
+      "description": "Nadella attended the Hyderabad Public School, Begumpet [18] before receiving a bachelor's degree in electrical engineering from the Manipal Institute of Technology in Karnataka in 1988."
+    },
+    {
+      "url": "https://www.britannica.com/biography/Satya-Nadella",
+      "name": "Satya Nadella | Biography & Facts | Britannica",
+      "description": "Feb. 17, 2024, 2:44 AM ET (MSN) Satya Nadella (born August 19, 1967, Hyderabad, India) Indian-born business executive who was CEO of the computer software company Microsoft (2014\u2013 ). Nadella grew up in the southern Indian city of Hyderabad and studied electrical engineering at Mangalore University (B.Sc., 1988)."
+    },
+    {
+      "url": "https://leverageedu.com/blog/microsoft-ceo-satya-nadella-education/",
+      "name": "Satya Nadella\u2019s Education Journey From Manipal to Microsoft\u2019s CEO",
+      "description": "Learn how Satya Nadella, the CEO of Microsoft, completed his education at Manipal Institute of Technology, University of Wisconsin-Milwaukee, and University of Chicago. Find out his achievements, challenges, and insights in the tech industry."
+    },
+    {
+      "url": "https://www.linkedin.com/in/satyanadella",
+      "name": "Satya Nadella - Microsoft | LinkedIn",
+      "description": "Greater Seattle Area - - - - Education - 1994 - 1996"
+    },
+    {
+      "url": "https://www.educba.com/satya-nadella-biography/",
+      "name": "Satya Nadella Biography: The Man Behind Microsoft's Success - EDUCBA",
+      "description": "Early Life and Education. Satya Narayana Nadella was born into a middle-class family in Hyderabad, India, on August 19, 1967. Growing up in Hyderabad, Nadella attended Hyderabad Public School, Begumpet, where he displayed a keen intellect and a passion for learning from a young age."
+    }
+  ],
+  "entities": [
+    {
+      "url": "None Available",
+      "name": "Satya Nadella",
+      "description": "Satya Narayana Nadella is an Indian-American business executive. He is the executive chairman and CEO of Microsoft, succeeding Steve Ballmer in 2014 as CEO and John W. Thompson in 2021 as chairman. Before becoming CEO, he was the executive vice president of Microsoft's cloud and enterprise group, responsible for building and running the company's computing platforms."
+    }
+  ],
+  "news": [
+    {
+      "url": "https://www.msn.com/en-us/news/other/microsoft-ceo-satya-nadellas-no-1-tip-for-career-success%E2%80%94if-you-dont-do-this-you-cant-grow/ar-AA1922r1",
+      "name": "Microsoft CEO Satya Nadella\u2019s No. 1 tip for career success\u2014if you don\u2019t do this, \u2018you can\u2019t grow\u2019",
+      "description": "Microsoft CEO Satya ... more,\" Nadella, 55, told LinkedIn CEO Ryan Roslansky in an interview published last week. Becoming CEO was \"not even a thought\" in his long-term career plan, Nadella ..."
+    },
+    {
+      "url": "https://www.thetechedvocate.org/how-microsofts-satya-nadella-kept-the-best-bromance-in-tech-alive/",
+      "name": "How Microsoft\u2019s Satya Nadella Kept the \u2018Best Bromance in Tech\u2019 Alive",
+      "description": "Spread the loveIn the competitive landscape of the tech industry, partnerships between influential leaders can often lead to groundbreaking innovations and impressive market growth. Perhaps one of the most admired examples is the dynamic between Microsoft CEO Satya Nadella and another tech visionary,"
+    },
+    {
+      "url": "https://www.neowin.net/news/microsofts-satya-nadella-confirms-the-elimination-of-10000-jobs/",
+      "name": "Microsoft's Satya Nadella confirms the elimination of 10,000 jobs0 0",
+      "description": "Microsoft CEO Satya Nadella has confirmed in a blog post that ... continued vesting of stock awards for six months, career transition services, and 60 days of notice prior to termination to ..."
+    },
+    {
+      "url": "https://www.marketwatch.com/story/microsofts-nadella-woos-indian-developers-to-the-companys-ai-tools-55e7c8ad",
+      "name": "Microsoft\u2019s Nadella woos Indian developers to the company\u2019s AI tools",
+      "description": "Microsoft CEO Satya Nadella ... Valley,\u201d Nadella noted that more than 13.2 million Indian developers are currently on GitHub, an internet hosting service for software development, second only ..."
+    }
+  ]
+}

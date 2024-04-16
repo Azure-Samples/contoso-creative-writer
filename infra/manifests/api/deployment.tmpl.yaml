@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: {{.Env.SERVICE_API_IMAGE_NAME}}
+          ports:
+            - containerPort: 5000
+          env:
+            - name: AZURE_CLIENT_ID
+              value: {{.Env.AZURE_AKS_IDENTITY_CLIENT_ID}}
+            - name: AZURE_OPENAI_API_KEY
+              value: {{.Env.AZURE_OPENAI_API_KEY}}
+            - name: AZURE_OPENAI_API_VERSION
+              value: {{.Env.AZURE_OPENAI_API_VERSION}}
+            - name: AZURE_OPENAI_DEPLOYMENT_NAME
+              value: {{.Env.AZURE_OPENAI_DEPLOYMENT_NAME}}
+            - name: AZURE_OPENAI_ENDPOINT
+              value: {{.Env.AZURE_OPENAI_ENDPOINT}}
+            - name: AZURE_OPENAI_API_KEY
+              value: {{.Env.AZURE_OPENAI_API_KEY}}
+            - name: BING_SEARCH_ENDPOINT
+              value: {{.Env.BING_SEARCH_ENDPOINT}}
+            - name: BING_SEARCH_KEY
+              value: {{.Env.BING_SEARCH_KEY}}
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "1000m" 
+            limits:
+              memory: "512Mi"
+              cpu: "2000m" 

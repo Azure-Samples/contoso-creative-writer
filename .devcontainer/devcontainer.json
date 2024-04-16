@@ -1,0 +1,38 @@
+{
+	"build": {
+		"dockerfile": "Dockerfile",
+		"args": {
+			"IMAGE": "python",
+			"TAG": "3.11"
+		}
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/terraform:1": {},
+		"ghcr.io/devcontainers/features/azure-cli:1": {},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+		"ghcr.io/devcontainers/features/node:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"esbenp.prettier-vscode",
+				"GitHub.vscode-github-actions",
+				"ms-azuretools.azure-dev",
+				"ms-azuretools.vscode-docker",
+				"ms-kubernetes-tools.vscode-aks-tools",
+				"ms-kubernetes-tools.vscode-kubernetes-tools",
+				"hashicorp.terraform",
+				"ms-python.black-formatter"
+			]
+		}
+	},
+	"forwardPorts": [
+		3000,
+		5000
+
+	],
+	"containerEnv": {
+		"AZD_SKIP_UPDATE_CHECK": "true"
+	}
+}

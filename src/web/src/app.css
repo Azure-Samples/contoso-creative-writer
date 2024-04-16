@@ -1,0 +1,31 @@
+#root{
+  height: 100vh;
+  width: 100vw;
+}
+
+.left {
+  width: 400px;
+  padding: 10px;
+}
+
+.right {
+  width: calc(100% - 400px);
+  padding: 10px;
+}
+
+.section {
+  border: solid 1px;
+  border-color: var(--borderColor-default, var(--color-border-default, #d0d7de));
+  border-radius: 15px;
+  padding: 5px;
+}
+
+.content {
+  border-left: solid 1px var(--borderColor-default, var(--color-border-default, #d0d7de));
+  border-right: solid 1px var(--borderColor-default, var(--color-border-default, #d0d7de));
+  border-bottom: solid 1px var(--borderColor-default, var(--color-border-default, #d0d7de));
+  height: calc(100vh - 150px);
+  border-radius: 0 0 15px 15px;
+  padding: 10px;
+  overflow-y: auto;
+}
