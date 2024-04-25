@@ -76,6 +76,6 @@ output "BING_SEARCH_ENDPOINT" {
 }
 
 output "BING_SEARCH_KEY" {
-  value     = jsondecode(data.azapi_resource_action.bing.output).key1
+  value     = data.azapi_resource_action.bing.output.key1
   sensitive = true
 }
