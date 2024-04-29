@@ -2,7 +2,6 @@
   "default": {
     "type": "azure",
     "api_version": "2023-12-01-preview",
-    "azure_endpoint": "${AZURE_OPENAI_ENDPOINT}",
-    "api_key": "${AZURE_OPENAI_API_KEY}"
+    "azure_endpoint": "${AZURE_OPENAI_ENDPOINT}"
   }
 }

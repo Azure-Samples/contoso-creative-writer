@@ -2,10 +2,6 @@ output "AZURE_OPENAI_ENDPOINT" {
   value = azurerm_cognitive_account.cog.endpoint
 }
 
-output "AZURE_OPENAI_API_KEY" {
-  value     = azurerm_cognitive_account.cog.primary_access_key
-  sensitive = true
-}
 
 output "AZURE_OPENAI_API_VERSION" {
   value = var.openai_api_version
