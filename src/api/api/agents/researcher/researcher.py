@@ -1,6 +1,6 @@
 import json
 import os
-import prompty
+from promptflow.core import Prompty
 import requests
 import sys
 import urllib.parse
@@ -26,7 +26,6 @@ def _make_request(path, params=None):
     return items
 
 
-@prompty.trace
 def find_information(query, market="en-US"):
     """Find information using the Bing Search API"""
     params = {"q": query, "mkt": market, "count": 5}
@@ -39,7 +38,6 @@ def find_information(query, market="en-US"):
     return {"pages": pages, "related": related}
 
 
-@prompty.trace
 def find_entities(query, market="en-US"):
     """Find entities using the Bing Entity Search API"""
     params = "?mkt=" + market + "&q=" + urllib.parse.quote(query)
@@ -53,7 +51,6 @@ def find_entities(query, market="en-US"):
     return entities
 
 
-@prompty.trace
 def find_news(query, market="en-US"):
     """Find images using the Bing News Search API"""
     params = {"q": query, "mkt": market, "count": 5}
@@ -71,7 +68,6 @@ def find_news(query, market="en-US"):
     return articles
 
 
-@prompty.trace
 def research(context: str, instructions: str, feedback: str = "", tools=[]):
     """Assign a research task to a researcher"""
     functions = {
@@ -79,15 +75,18 @@ def research(context: str, instructions: str, feedback: str = "", tools=[]):
         "find_entities": find_entities,
         "find_news": find_news,
     }
-    fns = prompty.execute(
-        "researcher.prompty",
-        inputs={
-            "context": context,
-            "instructions": instructions,
-            "feedback": feedback,
-            "tools": tools,
-        },
+
+    prompty = Prompty.load(source="src/api/api/agents/researcher/researcher.prompty")
+
+    # execute the flow as function
+    fns = prompty(
+        context = context, 
+        instructions = instructions, 
+        feedback = feedback,
+        tools= tools
+
     )
+
     research = []
     for f in fns:
         fn = functions[f.name]
@@ -99,8 +98,6 @@ def research(context: str, instructions: str, feedback: str = "", tools=[]):
 
     return research
 
-
-@prompty.trace
 def process(research):
     """Process the research results"""
     # process web searches

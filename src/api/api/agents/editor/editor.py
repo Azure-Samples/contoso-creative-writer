@@ -1,10 +1,15 @@
-import prompty
+from promptflow.core import Prompty
 import json
 
 
 def edit(article, feedback):
-    result = prompty.execute(
-        "editor.prompty", inputs={"article": article, "feedback": feedback}
+    # get current working director
+
+    f = Prompty.load(source="editor.prompty")
+
+    # execute the flow as function
+    result = f(
+        article= article, feedback= feedback
     )
     result = json.loads(result)
     return result

@@ -3,10 +3,13 @@ name: Researcher Agent
 description: This agent is designed to help a writer by formulating expert queries and providing the writer with the information they need.
 authors:
   - Seth Juarez
-api: chat
 model:
-  azure_deployment: gpt-35-turbo
-inputs:
+  api: chat
+  configuration:
+    type: azure_openai
+    azure_deployment: gpt-35-turbo
+    api_version: 2023-07-01-preview
+sample:
   context: I want to write an aritcle about Satya Nadella and his career begginings.
   feedback: Can you dig deeper into his education too?
   tools: tools.json
