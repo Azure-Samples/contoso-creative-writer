@@ -1,6 +1,6 @@
 flask
 requests
+promptflow-core
 python-dotenv==1.0.1
 gunicorn==21.2.0
 flask-cors==4.0.0
-whl/prompty-0.1.20240317.171740-py3-none-any.whl

@@ -2,7 +2,7 @@ import random
 from flask import Blueprint, Flask, jsonify, request, stream_with_context, Response
 import json
 import logging
-from .agents.orchestrator import (
+from agents.orchestrator import (
     get_research,
     get_writer,
     get_editor,

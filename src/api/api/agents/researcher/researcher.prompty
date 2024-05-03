@@ -5,14 +5,31 @@ authors:
   - Seth Juarez
 api: chat
 model:
-  azure_deployment: gpt-35-turbo
+    api: chat
+    configuration:
+        type: azure_openai
+        azure_deployment: ${env:AZURE_DEPLOYMENT_NAME}
+        api_key: ${env:AZURE_OPENAI_API_KEY"}
+        api_version: ${env:AZURE_OPENAI_API_VERSION}
+        azure_endpoint: ${env:AZURE_OPENAI_ENDPOINT}
+    parameters:
+        max_tokens: 1200
+        temperature: 0.2
+        response_format:
+            type: text
 inputs:
-  context: I want to write an aritcle about Satya Nadella and his career begginings.
-  feedback: Can you dig deeper into his education too?
-  tools: tools.json
-  instructions: Can you get me information about Satya Nadella, his early work and education?
-parameters:
-  tools: functions.json
+    context:
+        type: string
+        default: " "
+    feedback: 
+        type: string
+        default: " "
+    tools:
+        type: string
+        default: "tools.json "
+    instructions:
+        type: string
+        default: " " 
 ---
 system:
 

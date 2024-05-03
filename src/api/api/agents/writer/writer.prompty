@@ -5,14 +5,31 @@ authors:
   - Seth Juarez
 api: chat
 model:
-  azure_deployment: gpt-4
+    api: chat
+    configuration:
+        type: azure_openai
+        azure_deployment: ${env:AZURE_DEPLOYMENT_NAME}
+        api_key: ${env:AZURE_OPENAI_API_KEY"}
+        api_version: ${env:AZURE_OPENAI_API_VERSION}
+        azure_endpoint: ${env:AZURE_OPENAI_ENDPOINT}
+    parameters:
+        max_tokens: 1200
+        temperature: 0.2
+        response_format:
+            type: text
 inputs:
-  context: I want to write an article about Satya Nadella and his career begginings.
-  feedback: No Feedback
-  instructions: Can you write an article about how his education influenced his career?
-  research: research.json
-parameters:
-  max_tokens: 1200
+    context:
+        type: string
+        default: " "
+    feedback: 
+        type: string
+        default: " "
+    instructions:
+        type: string
+        default: "tools.json "
+    research:
+        type: string
+        default: " " 
 ---
 system:
 

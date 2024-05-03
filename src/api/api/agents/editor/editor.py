@@ -1,11 +1,32 @@
-import prompty
+from promptflow.core import Flow
+from promptflow.core import Prompty, AzureOpenAIModelConfiguration
 import json
+import os 
+from dotenv import load_dotenv 
 
+load_dotenv()
 
 def edit(article, feedback):
-    result = prompty.execute(
-        "editor.prompty", inputs={"article": article, "feedback": feedback}
+    # Load prompty with AzureOpenAIModelConfiguration override
+    configuration = AzureOpenAIModelConfiguration(
+        azure_deployment=os.getenv("AZURE_DEPLOYMENT_NAME"),
+        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+        api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
     )
+
+    override_model = {
+        "configuration": configuration,
+        "parameters": {"max_tokens": 512}
+    }
+
+    prompty_obj = Prompty.load(
+        "editor.prompty", model=override_model)
+    
+    result = prompty_obj(article=article,
+        feedback=feedback,)
+    
+
     result = json.loads(result)
     return result
 

@@ -5,12 +5,25 @@ authors:
   - Seth Juarez
 api: chat
 model:
-  azure_deployment: gpt-35-turbo
-inputs: context.json
-parameters:
-  max_tokens: 800
-  response_format:
-    type: json_object
+    api: chat
+    configuration:
+        type: azure_openai
+        azure_deployment: ${env:AZURE_DEPLOYMENT_NAME}
+        api_key: ${env:AZURE_OPENAI_API_KEY"}
+        api_version: ${env:AZURE_OPENAI_API_VERSION}
+        azure_endpoint: ${env:AZURE_OPENAI_ENDPOINT}
+    parameters:
+        max_tokens: 1200
+        temperature: 0.2
+        response_format:
+            type: text
+inputs:
+    article:
+        type: string
+        default: " "
+    feedback:
+        type: string
+        default: " "
 ---
 system:
 You are an editor at a publishing company. You have been asked to review an article and some research feedback. 
