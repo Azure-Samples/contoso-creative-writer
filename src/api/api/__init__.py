@@ -1,10 +1,10 @@
 from flask import Flask
 import logging
+import get_article
 
 
 def create_app():
     app = Flask(__name__)
-    from . import get_article
     app.register_blueprint(get_article.bp)
     init_logging()
     return app

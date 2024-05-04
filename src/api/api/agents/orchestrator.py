@@ -1,12 +1,12 @@
 import json
-import prompty
-from .researcher import researcher
-from .writer import writer
-from .editor import editor
-from .designer import designer
+from promptflow.tracing import trace
+from researcher import researcher
+from writer import writer
+from editor import editor
+from designer import designer
+from dotenv import load_dotenv
 
-
-@prompty.trace
+@trace
 def get_research(context, instructions, feedback):
 
     research_task = researcher.research(
@@ -22,7 +22,7 @@ def get_research(context, instructions, feedback):
     return research_result
 
 
-@prompty.trace
+@trace
 def get_writer(context, feedback, instructions, research=[]):
 
     writer_task = writer.write(
@@ -34,7 +34,7 @@ def get_writer(context, feedback, instructions, research=[]):
     return writer_reponse
 
 
-@prompty.trace
+@trace
 def get_editor(article, feedback):
     editor_task = editor.edit(article, feedback)
 
@@ -42,14 +42,14 @@ def get_editor(article, feedback):
     return editor_task
 
 
-@prompty.trace
+@trace
 def get_designer(context, instructions, feedback):
     designer_task = designer.design(context, instructions, feedback)
     print(json.dumps(designer_task, indent=2))
     return designer_task
 
 
-@prompty.trace
+@trace
 def regenerate_process(editor_response, context, instructions):
     # Get feedback for research from writer
     researchFeedback = (
@@ -74,7 +74,7 @@ def regenerate_process(editor_response, context, instructions):
     return editor_response
 
 
-@prompty.trace
+@trace
 def get_article(context, instructions):
     # This code is dup in api response to ueild steped results. TODO: Fix this so its not dup later
 

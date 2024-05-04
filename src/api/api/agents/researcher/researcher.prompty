@@ -4,11 +4,31 @@ description: This agent is designed to help a writer by formulating expert queri
 authors:
   - Seth Juarez
 model:
-  api: chat
-  configuration:
-    type: azure_openai
-    azure_deployment: gpt-35-turbo
-    api_version: 2023-07-01-preview
+    api: chat
+    configuration:
+        type: azure_openai
+        azure_deployment: ${env:AZURE_DEPLOYMENT_NAME}
+        api_key: ${env:AZURE_OPENAI_API_KEY"}
+        api_version: ${env:AZURE_OPENAI_API_VERSION}
+        azure_endpoint: ${env:AZURE_OPENAI_ENDPOINT}
+    parameters:
+        max_tokens: 1200
+        temperature: 0.2
+        response_format:
+            type: text
+inputs:
+    context:
+        type: string
+        default: " "
+    feedback: 
+        type: string
+        default: " "
+    tools:
+        type: string
+        default: "tools.json "
+    instructions:
+        type: string
+        default: " " 
 sample:
   context: I want to write an aritcle about Satya Nadella and his career begginings.
   feedback: Can you dig deeper into his education too?

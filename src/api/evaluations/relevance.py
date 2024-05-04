@@ -1,10 +1,10 @@
 import json
-import prompty
+from promptflow.tracing import trace
 import sys
 from pathlib import Path
 
 # run a batch relevance evaluation
-@prompty.trace
+@trace
 def batch(file):
     with open(file) as f:
         data = f.readlines()
@@ -19,7 +19,7 @@ def batch(file):
 
 
 # run a single relevance evaluation
-@prompty.trace
+@trace
 def evaluate(question, context, answer):
     return prompty.execute("relevance.prompty", inputs={
         "question": question,

@@ -1,12 +1,16 @@
 import json
 import os
-from promptflow.core import Prompty
+from promptflow.tracing import trace
+from promptflow.core import Prompty, AzureOpenAIModelConfiguration
+from promptflow.core import Flow
 import requests
 import sys
 import urllib.parse
 from dotenv import load_dotenv
 
 load_dotenv()
+
+print(os.getenv("AZURE_OPENAI_API_KEY"))
 
 BING_SEARCH_ENDPOINT = os.getenv("BING_SEARCH_ENDPOINT")
 BING_SEARCH_KEY = os.getenv("BING_SEARCH_KEY")
@@ -76,16 +80,33 @@ def research(context: str, instructions: str, feedback: str = "", tools=[]):
         "find_news": find_news,
     }
 
-    prompty = Prompty.load(source="src/api/api/agents/researcher/researcher.prompty")
-
-    # execute the flow as function
-    fns = prompty(
-        context = context, 
-        instructions = instructions, 
-        feedback = feedback,
-        tools= tools
-
+    # Load prompty with AzureOpenAIModelConfiguration override
+    configuration = AzureOpenAIModelConfiguration(
+        azure_deployment=os.getenv("AZURE_DEPLOYMENT_NAME"),
+        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+        api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
     )
+
+    override_model = {
+        "configuration": configuration,
+    }
+
+    prompty_obj = Prompty.load(
+        "researcher/researcher.prompty", model=override_model)
+    
+    context = "I want to write an aritcle about Satya Nadella and his career begginings."
+    feedback = "Can you dig deeper into his education too?"
+    tools = "tools.json"
+    instructions = "Can you get me information about Satya Nadella, his early work and education?"
+
+    fns = prompty_obj(context=context,
+        feedback= feedback,
+        tools= tools,
+        instructions=instructions)
+    
+    print(fns)
+
 
     research = []
     for f in fns:
