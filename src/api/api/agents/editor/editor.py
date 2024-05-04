@@ -21,7 +21,7 @@ def edit(article, feedback):
     }
 
     prompty_obj = Prompty.load(
-        "src/api/api/agents/editor/editor.prompty", model=override_model)
+        "editor/editor.prompty", model=override_model)
     
     result = prompty_obj(article=article,
         feedback=feedback,)

@@ -16,6 +16,7 @@ model:
         temperature: 0.2
         response_format:
             type: text
+        tools: ${file:functions.json}
 inputs:
     context:
         type: string
@@ -25,7 +26,7 @@ inputs:
         default: " "
     tools:
         type: string
-        default: "tools.json "
+        default: "tools.json"
     instructions:
         type: string
         default: " " 
@@ -34,8 +35,6 @@ sample:
   feedback: Can you dig deeper into his education too?
   tools: tools.json
   instructions: Can you get me information about Satya Nadella, his early work and education?
-parameters:
-  tools: functions.json
 ---
 system:
 
