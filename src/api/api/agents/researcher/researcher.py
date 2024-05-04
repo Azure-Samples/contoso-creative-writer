@@ -93,7 +93,7 @@ def research(context: str, instructions: str, feedback: str = "", tools=[]):
     }
 
     prompty_obj = Prompty.load(
-        "researcher/researcher.prompty", model=override_model)
+        "src/api/api/agents/researcher/researcher.prompty", model=override_model)
     
     context = "I want to write an aritcle about Satya Nadella and his career begginings."
     feedback = "Can you dig deeper into his education too?"

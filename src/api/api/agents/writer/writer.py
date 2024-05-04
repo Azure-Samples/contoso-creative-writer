@@ -30,7 +30,7 @@ def write(context, feedback, instructions, research = []):
     }
 
     prompty_obj = Prompty.load(
-        "writer.prompty", model=override_model)
+        "src/api/api/agents/writer/writer.prompty", model=override_model)
     
     result = prompty_obj(
         context=context,
