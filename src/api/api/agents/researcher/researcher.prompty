@@ -3,7 +3,6 @@ name: Researcher Agent
 description: This agent is designed to help a writer by formulating expert queries and providing the writer with the information they need.
 authors:
   - Seth Juarez
-api: chat
 model:
     api: chat
     configuration:
@@ -30,6 +29,13 @@ inputs:
     instructions:
         type: string
         default: " " 
+sample:
+  context: I want to write an aritcle about Satya Nadella and his career begginings.
+  feedback: Can you dig deeper into his education too?
+  tools: tools.json
+  instructions: Can you get me information about Satya Nadella, his early work and education?
+parameters:
+  tools: functions.json
 ---
 system:
 

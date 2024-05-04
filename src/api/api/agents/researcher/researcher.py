@@ -1,6 +1,5 @@
 import json
 import os
-
 from promptflow.tracing import trace
 from promptflow.core import Prompty, AzureOpenAIModelConfiguration
 from promptflow.core import Flow
@@ -31,7 +30,6 @@ def _make_request(path, params=None):
     return items
 
 
-@trace
 def find_information(query, market="en-US"):
     """Find information using the Bing Search API"""
     params = {"q": query, "mkt": market, "count": 5}
@@ -44,7 +42,6 @@ def find_information(query, market="en-US"):
     return {"pages": pages, "related": related}
 
 
-@trace
 def find_entities(query, market="en-US"):
     """Find entities using the Bing Entity Search API"""
     params = "?mkt=" + market + "&q=" + urllib.parse.quote(query)
@@ -58,7 +55,6 @@ def find_entities(query, market="en-US"):
     return entities
 
 
-@trace
 def find_news(query, market="en-US"):
     """Find images using the Bing News Search API"""
     params = {"q": query, "mkt": market, "count": 5}
@@ -76,7 +72,6 @@ def find_news(query, market="en-US"):
     return articles
 
 
-@trace
 def research(context: str, instructions: str, feedback: str = "", tools=[]):
     """Assign a research task to a researcher"""
     functions = {
@@ -84,7 +79,7 @@ def research(context: str, instructions: str, feedback: str = "", tools=[]):
         "find_entities": find_entities,
         "find_news": find_news,
     }
-    
+
     # Load prompty with AzureOpenAIModelConfiguration override
     configuration = AzureOpenAIModelConfiguration(
         azure_deployment=os.getenv("AZURE_DEPLOYMENT_NAME"),
@@ -112,6 +107,7 @@ def research(context: str, instructions: str, feedback: str = "", tools=[]):
     
     print(fns)
 
+
     research = []
     for f in fns:
         fn = functions[f.name]
@@ -123,8 +119,6 @@ def research(context: str, instructions: str, feedback: str = "", tools=[]):
 
     return research
 
-
-@trace
 def process(research):
     """Process the research results"""
     # process web searches
