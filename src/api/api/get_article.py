@@ -2,7 +2,7 @@ import random
 from flask import Blueprint, Flask, jsonify, request, stream_with_context, Response
 import json
 import logging
-from agents.orchestrator import (
+from api.agents.orchestrator import (
     get_research,
     get_writer,
     get_editor,
@@ -41,12 +41,12 @@ def get_article():
     yield _create_json_response("message", "Starting writer agent task...")
     logging.debug("Getting writer task output...")
     writer_response = get_writer(context, feedback, instructions, research=research_result)
-    yield _create_json_response("writer", writer_response["context"])
+    yield _create_json_response("writer", writer_response)
 
     # Then send it to the editor, to decide if it's good or not
     yield _create_json_response("message", "Starting editor agent task...")
     logging.debug("Getting editor task output...")
-    editor_response = get_editor(writer_response["context"]["article"], writer_response["context"]["feedback"])
+    editor_response = get_editor(writer_response["article"], writer_response["feedback"])
     logging.debug("Editor response: %s", editor_response)
 
     yield _create_json_response("editor", editor_response)
@@ -63,9 +63,9 @@ def get_article():
         yield _create_json_response("researcher", research_result)
 
         writer_response = get_writer(context, editorFeedback, instructions, research=research_result)
-        yield _create_json_response("writer", writer_response["context"])
+        yield _create_json_response("writer", writer_response)
 
-        editor_response = get_editor(writer_response["context"]["article"], writer_response["context"]["feedback"])
+        editor_response = get_editor(writer_response["article"], writer_response["feedback"])
         yield _create_json_response("editor", editor_response)
 
         retry_count += 1

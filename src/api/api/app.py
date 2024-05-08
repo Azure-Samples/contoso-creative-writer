@@ -1,6 +1,5 @@
 import os
-from __init__ import create_app
-import get_article
+from api.__init__ import create_app
 from dotenv import load_dotenv
 
 load_dotenv()

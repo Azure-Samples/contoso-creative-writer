@@ -1,7 +1,6 @@
 from flask import Flask
 import logging
-import get_article
-
+import api.get_article as get_article
 
 def create_app():
     app = Flask(__name__)

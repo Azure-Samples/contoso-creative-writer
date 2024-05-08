@@ -405,4 +405,8 @@ To run the demo, follow these steps:
 
 
 
+____
+commands to run
+flask --debug --app src/api/api/app:app run --port 5000
+http://127.0.0.1:5000/get_article?context=Write an article about camping in alaska&instruction=find specifics about what type of gear they would need and explain in detail
 
