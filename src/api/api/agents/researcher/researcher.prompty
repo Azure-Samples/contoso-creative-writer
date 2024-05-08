@@ -26,9 +26,9 @@ inputs:
         type: string
         default: " " 
 sample:
-  context: I want to write an aritcle about Satya Nadella and his career begginings.
-  feedback: Can you dig deeper into his education too?
-  instructions: Can you get me information about Satya Nadella, his early work and education?
+  context: Can you find the latest camping trends and what folks are doing in the winter?
+  feedback: Can you dig find some information about the latest camping trends and what folks are doing in the winter?
+  instructions: Can you find more information about the tools that are used for camping in the winter?
 ---
 system:
 

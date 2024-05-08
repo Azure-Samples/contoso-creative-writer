@@ -115,6 +115,6 @@ def get_article(context, instructions):
 
 
 if __name__ == "__main__":
-    context = "I am writing a thought piece on early career development with Satya Nadella as an example."
+    context = "Can you find the latest camping trends and what folks are doing in the winter?"
     instructions = "Can you find the relevant information on both him as a person and what he studied and maybe some news articles?"
     get_article(context, instructions)
