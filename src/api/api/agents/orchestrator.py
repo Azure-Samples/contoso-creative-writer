@@ -5,18 +5,17 @@ from writer import writer
 from editor import editor
 from designer import designer
 from dotenv import load_dotenv
+load_dotenv()
 
 @trace
 def get_research(context, instructions, feedback):
 
-    research_task = researcher.research(
+    research_result = researcher.research(
         context=context,
         instructions=instructions,
-        feedback=feedback,
-        tools=[],
+        feedback=feedback
     )
 
-    research_result = researcher.process(research_task)
     print(json.dumps(research_result, indent=2))
 
     return research_result
@@ -25,11 +24,9 @@ def get_research(context, instructions, feedback):
 @trace
 def get_writer(context, feedback, instructions, research=[]):
 
-    writer_task = writer.write(
+    writer_reponse = writer.write(
         context=context, feedback=feedback, instructions=instructions, research=research
     )
-    writer_reponse = writer.process(writer_task)
-
     print(json.dumps(writer_reponse, indent=2))
     return writer_reponse
 
@@ -93,7 +90,7 @@ def get_article(context, instructions):
     # then send it to the editor, to decide if it's good or not
     print("Getting editor task output...")
     editor_response = get_editor(
-        writer_reponse["context"]["article"], writer_reponse["context"]["feedback"]
+        writer_reponse["article"], writer_reponse["feedback"]
     )
     print(editor_response)
 
