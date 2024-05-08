@@ -1,16 +1,12 @@
 import json
 import os
-from promptflow.tracing import trace
-from promptflow.core import Prompty, AzureOpenAIModelConfiguration
-from promptflow.core import Flow
+import prompty
 import requests
 import sys
 import urllib.parse
 from dotenv import load_dotenv
 
 load_dotenv()
-
-print(os.getenv("AZURE_OPENAI_API_KEY"))
 
 BING_SEARCH_ENDPOINT = os.getenv("BING_SEARCH_ENDPOINT")
 BING_SEARCH_KEY = os.getenv("BING_SEARCH_KEY")
@@ -54,7 +50,6 @@ def find_entities(query, market="en-US"):
         ]
     return entities
 
-
 def find_news(query, market="en-US"):
     """Find images using the Bing News Search API"""
     params = {"q": query, "mkt": market, "count": 5}
@@ -72,42 +67,19 @@ def find_news(query, market="en-US"):
     return articles
 
 
-def research(context: str, instructions: str, feedback: str = "", tools=[]):
+def execute(context: str):
     """Assign a research task to a researcher"""
     functions = {
         "find_information": find_information,
         "find_entities": find_entities,
         "find_news": find_news,
     }
-
-    # Load prompty with AzureOpenAIModelConfiguration override
-    configuration = AzureOpenAIModelConfiguration(
-        azure_deployment=os.getenv("AZURE_DEPLOYMENT_NAME"),
-        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-        api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
+    fns = prompty.execute(
+        "researcher.prompty",
+        inputs={
+            "researchContext": context,
+        },
     )
-
-    override_model = {
-        "configuration": configuration,
-    }
-
-    prompty_obj = Prompty.load(
-        "researcher/researcher.prompty", model=override_model)
-    
-    context = "I want to write an aritcle about Satya Nadella and his career begginings."
-    feedback = "Can you dig deeper into his education too?"
-    tools = "tools.json"
-    instructions = "Can you get me information about Satya Nadella, his early work and education?"
-
-    fns = prompty_obj(context=context,
-        feedback= feedback,
-        tools= tools,
-        instructions=instructions)
-    
-    print(fns)
-
-
     research = []
     for f in fns:
         fn = functions[f.name]
@@ -118,6 +90,7 @@ def research(context: str, instructions: str, feedback: str = "", tools=[]):
         )
 
     return research
+
 
 def process(research):
     """Process the research results"""
@@ -151,15 +124,19 @@ def process(research):
     }
 
 
+def research(context, instructions, feedback: str = ""):
+    r = execute(context=context)
+    p = process(r)
+    return p
+
+
 if __name__ == "__main__":
     # Get command line arguments
-    if len(sys.argv) < 3:
-        context = "I want to write an article about Satya Nadella and the beginnings of his career."
-        instructions = "Can you find the relevant information on both him as a person and what he studied and maybe some news articles?"
+    if len(sys.argv) < 2:
+        context = "Can you find the latest camping trends and what folks are doing in the winter?"
     else:
-        context = sys.argv[0]
-        instructions = sys.argv[1]
+        context = sys.argv[1]
 
-    r = research(context=context, instructions=instructions)
+    r = execute(context=context)
     processed = process(r)
     print(json.dumps(processed, indent=2))
