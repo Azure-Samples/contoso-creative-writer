@@ -8,10 +8,6 @@ model:
     api: chat
     configuration:
         type: azure_openai
-        azure_deployment: ${env:AZURE_DEPLOYMENT_NAME}
-        api_key: ${env:AZURE_OPENAI_API_KEY"}
-        api_version: ${env:AZURE_OPENAI_API_VERSION}
-        azure_endpoint: ${env:AZURE_OPENAI_ENDPOINT}
     parameters:
         max_tokens: 1200
         temperature: 0.2
@@ -24,6 +20,7 @@ inputs:
     feedback:
         type: string
         default: " "
+sample: file:context.json
 ---
 system:
 You are an editor at a publishing company. You have been asked to review an article and some research feedback. 

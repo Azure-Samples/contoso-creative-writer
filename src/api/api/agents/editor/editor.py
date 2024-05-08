@@ -4,6 +4,9 @@ from promptflow.core import Prompty, AzureOpenAIModelConfiguration
 import json
 import os 
 from dotenv import load_dotenv 
+from pathlib import Path
+folder = Path(__file__).parent.absolute().as_posix()
+
 
 load_dotenv()
 
@@ -19,12 +22,12 @@ def edit(article, feedback):
         "configuration": configuration,
         "parameters": {"max_tokens": 512}
     }
+    # create path to prompty file
+    path_to_prompty = folder + "/editor.prompty"
 
-    prompty_obj = Prompty.load(
-        "editor/editor.prompty", model=override_model)
+    prompty_obj = Prompty.load(path_to_prompty, model=override_model)
     
-    result = prompty_obj(article=article,
-        feedback=feedback,)
+    result = prompty_obj(article=article, feedback=feedback,)
     
 
     result = json.loads(result)
