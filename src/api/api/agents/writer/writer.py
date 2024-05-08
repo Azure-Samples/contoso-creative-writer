@@ -63,14 +63,14 @@ def write(context, feedback, instructions, research):
 
 if __name__ == "__main__":
     # get args from the user
-    context = "Can you find the latest camping trends and what folks are doing in the winter?"
-    feedback = "Research Feedback:\nAdditional specifics on how each phase of his education directly influenced particular career decisions or leadership styles at Microsoft would enhance the narrative. Information on key projects or initiatives that Nadella led, correlating to his expertise gained from his various degrees, would add depth to the discussion on the interplay between his education and career milestones."
-    instructions = "Can you find the relevant information on both him as a person and what he studied and maybe some news articles?"
-    research = []
-    # context = sys.argv[1]
-    # feedback = sys.argv[2]
-    # instructions = sys.argv[3]
-    # research = json.dumps(sys.argv[4])
+    # context = "Can you find the latest camping trends and what folks are doing in the winter?"
+    # feedback = "Research Feedback:\nAdditional specifics on how each phase of his education directly influenced particular career decisions or leadership styles at Microsoft would enhance the narrative. Information on key projects or initiatives that Nadella led, correlating to his expertise gained from his various degrees, would add depth to the discussion on the interplay between his education and career milestones."
+    # instructions = "Can you find the relevant information on both him as a person and what he studied and maybe some news articles?"
+    # research = []
+    context = sys.argv[1]
+    feedback = sys.argv[2]
+    instructions = sys.argv[3]
+    research = json.dumps(sys.argv[4])
     result = execute(
         context=str(context),
         feedback=str(feedback),

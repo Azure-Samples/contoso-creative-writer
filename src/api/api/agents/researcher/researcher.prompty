@@ -28,7 +28,7 @@ inputs:
 sample:
   context: Can you find the latest camping trends and what folks are doing in the winter?
   feedback: Can you dig find some information about the latest camping trends and what folks are doing in the winter?
-  instructions: Can you find more information about the tools that are used for camping in the winter?
+  instructions: Can you find the latest camping trends and what folks are doing in the winter?
 ---
 system:
 
