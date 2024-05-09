@@ -4,6 +4,7 @@ from researcher import researcher
 from writer import writer
 from editor import editor
 from designer import designer
+from product import product
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -22,10 +23,10 @@ def get_research(context, instructions, feedback):
 
 
 @trace
-def get_writer(context, feedback, instructions, research=[]):
+def get_writer(context, feedback, instructions, research=[], products=[]):
 
     writer_reponse = writer.write(
-        context=context, feedback=feedback, instructions=instructions, research=research
+        context=context, feedback=feedback, instructions=instructions, research=research, products=products
     )
     print(json.dumps(writer_reponse, indent=2))
     return writer_reponse
@@ -76,15 +77,17 @@ def get_article(context, instructions):
     # This code is dup in api response to ueild steped results. TODO: Fix this so its not dup later
 
     feedback = "No Feedback"
+    print("Getting article for context: ", context)
 
     # researcher task look up the info
     print("Getting researcher task output...")
     research_result = get_research(context, instructions, feedback)
+    product_documenation = product.get_products(context)
 
     # then send it to the writer, the writer writes the article
     print("Getting writer task output...")
     writer_reponse = get_writer(
-        context, feedback, instructions, research=research_result
+        context, feedback, instructions, research=research_result, products=product_documenation
     )
 
     # then send it to the editor, to decide if it's good or not

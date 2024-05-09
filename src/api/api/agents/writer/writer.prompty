@@ -24,10 +24,14 @@ inputs:
     research:
         type: object
         default: " " 
+    products:
+        type: object
+        default: " "
 sample:
-  researchContext: Can you find the latest camping trends and what folks are doing in the winter?
+  context: Can you find the latest camping trends and what folks are doing in the winter?
+  instructions: Provide examples and tips for how to camp in the winter.
+  feedback: The article was great, but it could use more information about camping in the winter.
   research: ${file:research.json}
-  productContext: Can you use a selection of tents and backpacks as context?
   products: ${file:products.json}
 ---
 system:
@@ -38,10 +42,10 @@ article. The article should be between 800 and 1000 words. Use the following que
 of your article:
 
 # Research
-{{researchContext}}
+{{context}}
 
 # Product Information
-{{productContext}}
+{{products}}
 
 # Web Research
 Use this research to write the article. The research can include entities, web search results, and 
@@ -128,5 +132,5 @@ a fun and informative article. The article should be between 800 and 1200 words.
 
 user:
 Can you write a fun and engaging article that resolves the following:
-{{researchContext}}
-{{productContext}}
+{{context}}
+{{products}}
