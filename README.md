@@ -114,6 +114,12 @@ Once your project launches in the local Docker desktop container, you should see
 
 1. Install the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) for your device OS
 
+1. Cd into the src/api folder
+
+```
+cd src/api
+```
+
 1. Create a new local Python environment using **either** [anaconda](https://www.anaconda.com/products/individual) **or** [venv](https://docs.python.org/3/library/venv.html) for a managed environment.
 
     1. **Option 1**: Using anaconda
@@ -126,9 +132,17 @@ Once your project launches in the local Docker desktop container, you should see
 
     1. **Option 2:** Using venv
 
+        Mac/Linux
         ```bash
         python3 -m venv .venv
         source .venv/bin/activate
+        pip install -r requirements.txt
+        ```
+
+        Windows
+        ```
+        py -3 -m venv .venv
+        .venv\scripts\activate
         pip install -r requirements.txt
         ```
 
@@ -228,22 +242,37 @@ If the file is not created, simply copy over `.env.sample` to `.env` - then popu
 
 To run just the orchestrator logic:
 ```
-cd src\api\api\agents
-python orchestrator.py
+cd src/api
+python -m api.agents.orchestrator
 ```
 
 To run the flask webserver:
 ```
-flask --debug --app src/api/api/app:app run --port 5000
+flask --debug --app api.app:app run --port 5000
 ```
 
-## 5. Evaluating prompt flow results
+In a new terminal
+```
+cd src/web
+```
+
+First install node packages:
+```
+npm install
+```
+
+Then run the web app with a local dev web server:
+```
+npm run dev
+```
+
+## 4. Evaluating prompt flow results
 
 Now, we need to understand how well our prompt flow performs using defined metrics like **groundedness**, **coherence** etc. To evaluate the prompt flow, we need to be able to compare it to what we see as "good results" in order to understand how well it aligns with our expectations. 
 
 We may be able to evaluate the flow manually (e.g., using Azure AI Studio) but for now, we'll evaluate this by running the prompt flow using **gpt-4** and comparing our performance to the results obtained there. To do this, follow the instructions and steps in the notebook `evaluate-chat-prompt-flow.ipynb` under the `eval` folder.
 
-## 6. Deployment with SDK
+## 5. Deployment with SDK
 
 At this point, we've built, run, and evaluated, the prompt flow **locally** in our Visual Studio Code environment. We are now ready to deploy the prompt flow to a hosted endpoint on Azure, allowing others to use that endpoint to send _user questions_ and receive relevant responses.
 
@@ -256,9 +285,9 @@ This process consists of the following steps:
 Just follow the instructions and steps in the notebook `push_and_deploy_pf.ipynb` under the `deployment` folder. Once this is done, the deployment endpoint and key can be used in any third-party application to _integrate_ with the deployed flow for real user experiences.
 
 
-## 7. Deploy with GitHub Actions
+## 6. Deploy with GitHub Actions
 
-### 7.1. Create Connection to Azure in GitHub
+### 6.1. Create Connection to Azure in GitHub
 - Login to [Azure Shell](https://shell.azure.com/)
 - Follow the instructions to [create a service principal here](hhttps://github.com/microsoft/llmops-promptflow-template/blob/main/docs/github_workflows_how_to_setup.md#create-azure-service-principal)
 - Follow the [instructions in steps 1 - 8  here](https://github.com/microsoft/llmops-promptflow-template/blob/main/docs/github_workflows_how_to_setup.md#steps) to add create and add the user-assigned managed identity to the subscription and workspace.
@@ -276,7 +305,7 @@ Just follow the instructions and steps in the notebook `push_and_deploy_pf.ipynb
 ```
 - Add `SUBSCRIPTION` (this is the subscription) , `GROUP` (this is the resource group name), `WORKSPACE` (this is the project name), and `KEY_VAULT_NAME` to GitHub.
 
-### 7.2. Create a custom environment for endpoint
+### 6.2. Create a custom environment for endpoint
 - Follow the instructions to create a custom env with the packages needed [here](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-manage-environments-in-studio?view=azureml-api-2#create-an-environment)
   - Select the `upload existing docker` option 
   - Upload from the folder `runtime\docker`
