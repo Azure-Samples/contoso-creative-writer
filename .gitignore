@@ -141,3 +141,4 @@ kustomize
 *.data
 .runs/
 **/node_modules/
+src/api/api/agents/writer/.promptflow/

@@ -9,7 +9,7 @@ folder = Path(__file__).parent.absolute().as_posix()
 
 
 @trace
-def execute(context, feedback, instructions, research):
+def execute(context, feedback, instructions, research, products):
   
   # Load prompty with AzureOpenAIModelConfiguration override
   configuration = AzureOpenAIModelConfiguration(
@@ -31,6 +31,7 @@ def execute(context, feedback, instructions, research):
       feedback=feedback,
       instructions=instructions,
       research=research,
+      products=products
   )
   return result
 
@@ -50,12 +51,13 @@ def process(writer):
     }
 
 
-def write(context, feedback, instructions, research):
+def write(context, feedback, instructions, research, products):
     result = execute(
         context=context,
         feedback=feedback,
         instructions=instructions,
         research=research,
+        products=products
     )
     processed = process(result)
     return processed
