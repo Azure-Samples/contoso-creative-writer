@@ -12,7 +12,7 @@ model:
         max_tokens: 1200
         temperature: 0.2
         response_format:
-            type: text
+            type: json_object
 inputs:
     article:
         type: string
@@ -40,7 +40,7 @@ the writer is done, you should reject the feedback, add your "editorFeedback" an
 }
 
 
-or if the article needs work and rhe feedback is warranted, in other words, if the writer
+or if the article needs work and the feedback is warranted, in other words, if the writer
 and researcher need to do more work, you accept the feedback, add your "editorFeedback" and respond with:
 
 

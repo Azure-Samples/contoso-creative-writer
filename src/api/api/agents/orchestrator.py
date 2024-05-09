@@ -1,5 +1,5 @@
 import json
-from promptflow.tracing import trace
+from promptflow.tracing import trace, start_trace
 from researcher import researcher
 from writer import writer
 from editor import editor
@@ -115,6 +115,7 @@ def get_article(context, instructions):
 
 
 if __name__ == "__main__":
+    start_trace()
     context = "Can you find the latest camping trends and what folks are doing in the winter?"
     instructions = "Can you find the relevant information on both him as a person and what he studied and maybe some news articles?"
     get_article(context, instructions)

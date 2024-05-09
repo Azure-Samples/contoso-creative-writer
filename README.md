@@ -223,115 +223,19 @@ The default sample has an `.env.sample` file that shows the relevant environment
 
 If the file is not created, simply copy over `.env.sample` to `.env` - then populate those values manually from the respective Azure resource pages using the Azure Portal (for Azure CosmosDB and Azure AI Search) and the Azure AI Studio (for the Azure OpenAI values)
 
-### 2.5 Verify local connections for Prompt Flow
-
-You will need to have your local Prompt Flow extension configured to have the following _connection_ objects set up:
- - `contoso-cosmos` to Azure Cosmos DB endpoint
- - `contoso-search` to Azure AI Search endpoint
- - `aoai-connection` to Azure OpenAI endpoint
-
-Verify if these were created by using the [pf tool](https://microsoft.github.io/promptflow/reference/pf-command-reference.html#pf-connection) from the VS Code terminal as follows:
+## 3. Run the app locally
 
 
-If the connections are _not_ visible, create them by running the `connections/create-connections.ipynb` notebook. Then run the above command to verify they were created correctly.
+To run just the orchestrator logic:
+```
+cd src\api\api\agents
+python orchestrator.py
+```
 
-### 2.6 Verify cloud connections for Prompt Flow
-
-The auto-provisioning will have setup 2 of the 3 connections for you by default. First, verify this by
- - going to [Azure AI Studio](https://ai.azure.com)
- - signing in with your Azure account, then clicking "Build"
- - selecting the Azure AI project for this repo, from that list
- - clicking "Settings" in the sidebar for the project
- - clicking "View All" in the Connections panel in Settings
-
-You should see `contoso-search` and `aoai-connection` pre-configured, else create them from the Azure AI Studio interface using the **Create Connection** workflow (and using the relevant values from your `.env` file).
-
-You will however need to **create `contoso-cosmos` manually from Azure ML Studio**. This is a temporary measure for _custom connections_ and may be automated in future. For now, do this:
-
-1. Visit https://ai.azure.com and sign in if necessary
-1. Under Recent Projects, click your Azure AI project (e.g., contoso-chat-aiproj)
-1. Select Settings (on sidebar), scroll down to the Connections pane, and click "View All"
-1. Click "+ New connection", modify the Service field, and select Custom from dropdown
-1. Enter "Connection Name": contoso-cosmos, "Access": Project.
-1. Click "+ Add key value pairs" **four** times. Fill in the following details found in the `.env` file:
-      - key=key, value=.env value for COSMOS_KEY, is-secret=checked
-      - key=endpoint, value=.env value for COSMOS_ENDPOINT
-      - key=containerId, value=customers
-      - key=databaseId, value=contoso-outdoor
-1. Click "Save" to finish setup. 
-
-Refresh main Connections list screen to verify that you now have all three required connections listed.
-
-
-## 3. Populate with sample data
-
-In this step we want to populate the required data for our application use case.
-
-1. **Populate Search Index** in Azure AI Search
-    - Run the code in the `data/product_info/create-azure-search.ipynb` notebook.
-    - Visit the Azure AI Search resource in the Azure Portal
-    - Click on "Indexes" and verify that a new index was created
-1. **Populate Customer Data** in Azure Cosmos DB
-    - Run the code in the `data/customer_info/create-cosmos-db.ipynb` notebook. 
-    - Visit the Azure Cosmos DB resource in the Azure Portal
-    - Click on "Data Explorer" and verify tat the container and database were created!
-
-## 4. Building a prompt flow
-
-We are now ready to begin building our prompt flow! The repository comes with a number of pre-written flows that provide the starting points for this project. In the following section, we'll explore what these are and how they work.
-
-### 4.1. Explore the `contoso-chat` Prompt Flow
-
-A prompt flow is a DAG (directed acyclic graph) that is made up of nodes that are connected together to form a flow. Each node in the flow is a python function tool that can be edited and customized to fit your needs. 
-
-- Click on the `contoso-chat/flow.dag.yaml` file in the Visual Studio Code file explorer. 
-- You should get a view _similar to_ what is shown below.
-- Click the `Visual editor` text line shown underlined below.
-    ![Visual editor button](./images/visualeditorbutton.png)
-
-- This will open up the prompt flow in the visual editor as shown:  - 
-    ![Alt text](./images/promptflow.png)
-
-### 4.2 Understand Prompt Flow components
-
-The prompt flow is a directed acyclic graph (DAG) of nodes, with a starting node (input), a terminating node (output), and an intermediate sub-graph of connected nodes as follows:
-
-| Node | Description |
-|:---|:---|
-|*input*s  | This node is used to start the flow and is the entry point for the flow. It has the input parameters `customer_id` and `question`, and `chat_history`. The `customer_id` is used to look up the customer information in the Cosmos DB. The `question` is the question the customer is asking. The `chat_history` is the chat history of the conversation with the customer.|
-| *question_embedding* | This node is used to embed the question text using the `text-embedding-ada-002` model. The embedding is used to find the most relevant documents from the AI Search index.|
-| *retrieve_documents*| This node is used to retrieve the most relevant documents from the AI Search index with the question vector. |
-| *customer_lookup* | This node is used to get the customer information from the Cosmos DB.|
-| *customer_prompt*|This node is used to generate the prompt with the information retrieved and added to the `customer_prompt.jinja2` template. |
-| *llm_response*| This node is used to generate the response to the customer using the `GPT-35-Turbo` model.|
-| *outputs*| This node is used to end the flow and return the response to the customer.|
-| | |
-
-### 4.3 Run the prompt flow
-
-Let's run the flow to see what happens.  **Note that the input node is pre-configured with a question.** By running the flow, we anticipate that the output node should now provide the result obtained from the LLM when presented with the _customer prompt_ that was created from the initial question with enhanced customer data and retrieved product context.
-
-- To run the flow, click the `Run All` (play icon) at the top. When prompted, select "Run it with standard mode".
-- Watch the console output for execution progress updates
-- On completion, the visual graph nodes should light up (green=success, red=failure).
-- Click any node to open the declarative version showing details of execution
-- Click the `Prompt Flow` tab in the Visual Studio Code terminal window for execution times
-
-For more details on running the prompt flow, [follow the instructions here](https://microsoft.github.io/promptflow/how-to-guides/init-and-test-a-flow.html#test-a-flow).
-
-**Congratulations!! You ran the prompt flow and verified it works!**
-
-### 4.4 Try other customer inputs (optional)
-
-If you like, you can try out other possible customer inputs to see what the output of the Prompt Flow might be. (This step is optional, and you can skip it if you like.)
-
-- As before, run the flow by clicking the `Run All` (play icon) at the top. This time when prompted, select "Run it with interactive mode (text only)."
-- Watch the console output, and when the "User: " prompt appears, enter a question of your choice. The "Bot" response (from the output node) will then appear.
-
- Here are some questions you can try:
-  - What have I purchased before?
-  - What is a good sleeping bag for summer use?
-  - How do you clean the CozyNights Sleeping Bag?
+To run the flask webserver:
+```
+flask --debug --app src/api/api/app:app run --port 5000
+```
 
 ## 5. Evaluating prompt flow results
 
