@@ -29,8 +29,6 @@ def edit(article, feedback):
     
     result = prompty_obj(article=article, feedback=feedback,)
     
-
-    result = json.loads(result)
     return result
 
 
