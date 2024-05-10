@@ -48,13 +48,14 @@ def get_designer(context, instructions, feedback):
 
 
 @trace
-def regenerate_process(editor_response, context, instructions):
+def regenerate_process(editor_response, context, instructions, product_documenation):
     # Get feedback for research from writer
     researchFeedback = (
         editor_response["researchFeedback"]
         if "researchFeedback" in editor_response
         else "No Feedback"
     )
+
     # Get feedback from writer from editor
     editorFeedback = (
         editor_response["editorFeedback"]
@@ -64,7 +65,7 @@ def regenerate_process(editor_response, context, instructions):
     # Regenerate with feedback loop
     research_result = get_research(context, instructions, researchFeedback)
     writer_reponse = get_writer(
-        context, editorFeedback, instructions, research=research_result
+        context, editorFeedback, instructions, research=research_result, products=product_documenation
     )
     editor_response = get_editor(
         writer_reponse["context"]["article"], writer_reponse["context"]["feedback"]
@@ -101,12 +102,12 @@ def get_article(context, instructions):
     if editor_response["decision"] == "reject":
         print("Editor rejected writer, sending back to writer (1)...")
         # retry research, writer, and editor with feedback from writer and editor
-        editor_response = regenerate_process(editor_response, context, instructions)
+        editor_response = regenerate_process(editor_response, context, instructions, product_documenation)
 
         if editor_response["decision"] == "reject":
             print("Editor rejected writer again, sending back to writer (2)...")
             # retry research, writer, and editor with feedback from writer and editor
-            editor_response = regenerate_process(editor_response, context, instructions)
+            editor_response = regenerate_process(editor_response, context, product_documenation)
 
     print("Editor accepted writer and research, sending to designer...")
     # SETH TODO: send to designer
