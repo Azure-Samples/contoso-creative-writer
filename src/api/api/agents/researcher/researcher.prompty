@@ -9,7 +9,7 @@ model:
         type: azure_openai
         api_key: ${AZURE_OPENAI_API_KEY}
         azure_endpoint: ${AZURE_OPENAI_ENDPOINT}
-        azure_deployment: gpt-35-turbo
+        azure_deployment: gpt-35-turbo-0613
         api_version: 2023-07-01-preview
     parameters:
         max_tokens: 1200

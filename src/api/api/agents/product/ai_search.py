@@ -17,9 +17,9 @@ def retrieve_documentation(
 ) -> str:
     
     search_client = SearchClient(
-        endpoint=os.environ["CONTOSO_SEARCH_ENDPOINT"],
+        endpoint=os.environ["AISEARCH_ENDPOINT"],
         index_name=index_name,
-        credential=AzureKeyCredential(os.environ["CONTOSO_SEARCH_KEY"]),
+        credential=AzureKeyCredential(os.environ["AISEARCH_KEY"]),
     )
 
     vector_query = VectorizedQuery(

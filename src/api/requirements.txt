@@ -1,7 +1,8 @@
 flask
 requests
-promptflow-core
 promptflow
+promptflow-tools
+azure-search-documents
 python-dotenv==1.0.1
 gunicorn==21.2.0
 flask-cors==4.0.1
