@@ -120,5 +120,5 @@ def get_article(context, instructions):
 if __name__ == "__main__":
     start_trace()
     context = "Can you find the latest camping trends and what folks are doing in the winter?"
-    instructions = "Can you find the relevant information on both him as a person and what he studied and maybe some news articles?"
+    instructions = "Look for recent news articles about camping gear and locations"
     get_article(context, instructions)

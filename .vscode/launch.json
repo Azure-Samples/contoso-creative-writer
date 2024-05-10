@@ -11,7 +11,7 @@
             "program": "orchestrator.py",
             "cwd": "${workspaceFolder}/src/api/api/agents",
             "console": "integratedTerminal",
-            "justMyCode": false
+            "justMyCode": true
 
         }
     ]
