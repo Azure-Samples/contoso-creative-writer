@@ -250,10 +250,13 @@ If the file is not created, simply copy over `.env.sample` to `.env` - then popu
 
 ## 3. Run the app locally
 
+Change to api/agents folder:
+```
+cd src/api
+```
 
 To run just the orchestrator logic:
 ```
-cd src/api
 python -m api.agents.orchestrator
 ```
 
@@ -277,6 +280,11 @@ Then run the web app with a local dev web server:
 npm run dev
 ```
 
+Then run evaluation
+```
+cd evaluate
+python evaluate.py
+```
 ## 4. Evaluating prompt flow results
 
 Now, we need to understand how well our prompt flow performs using defined metrics like **groundedness**, **coherence** etc. To evaluate the prompt flow, we need to be able to compare it to what we see as "good results" in order to understand how well it aligns with our expectations. 

@@ -141,4 +141,6 @@ kustomize
 *.data
 .runs/
 **/node_modules/
+package-lock.json
 src/api/api/agents/writer/.promptflow/
+flow.flex.yaml

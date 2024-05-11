@@ -4,6 +4,8 @@ import prompty
 import requests
 import sys
 import urllib.parse
+
+from promptflow.tracing import trace
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -66,7 +68,7 @@ def find_news(query, market="en-US"):
     ]
     return articles
 
-
+@trace
 def execute(context: str, instructions: str, feedback: str = ""):
     """Assign a research task to a researcher"""
     functions = {

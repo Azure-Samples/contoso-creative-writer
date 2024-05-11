@@ -11,7 +11,16 @@
             "program": "orchestrator.py",
             "cwd": "${workspaceFolder}/src/api/api/agents",
             "console": "integratedTerminal",
-            "justMyCode": false
+            "justMyCode": true
+        },
+        {
+            "name": "Python: evaluate.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "evaluate.py",
+            "cwd": "${workspaceFolder}/src/api/evaluate",
+            "console": "integratedTerminal",
+            "justMyCode": true
 
         }
     ]
