@@ -12,7 +12,7 @@ products:
 - azure-ai-search
 - azure
 page_type: sample
-urlFragment: azure-search-openai-demo
+urlFragment: agent-openai-python-prompty
 ---
 
 # Creative Writing Assistant: Working with Agents using Promptflow (Python Implementation) 
