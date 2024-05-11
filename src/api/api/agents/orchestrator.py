@@ -115,10 +115,23 @@ def get_article(context, instructions):
     result = {"editor_response": editor_response, "writer_response": writer_reponse}
     print(json.dumps(result, indent=2))
     return result
-
-
+ 
 if __name__ == "__main__":
+    import os
+    from opentelemetry import trace
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+
+    # log to app insights if configured
+    if 'APPINSIGHTS_CONNECTION_STRING' in os.environ:
+        connection_string=os.environ['APPINSIGHTS_CONNECTION_STRING']
+        trace.set_tracer_provider(TracerProvider())
+        trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(AzureMonitorTraceExporter(connection_string=connection_string)))
+
+    #  start pf tracing
     start_trace()
+
     context = "Can you find the latest camping trends and what folks are doing in the winter?"
     instructions = "Look for recent news articles about camping gear and locations"
     get_article(context, instructions)

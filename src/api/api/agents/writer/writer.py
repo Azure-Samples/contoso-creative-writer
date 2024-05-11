@@ -15,19 +15,21 @@ def trace_eval_data(data):
 
 def log_eval_data(context, feedback, instructions, research, products, result):
     # log evaluation data
-    query = {
+    query = str({
         'article_request': context, 
         'research_instructions': instructions,
         'editor_feedback': feedback
-    }
-    context = {
+    })
+    context = str({
         'research': research,
         'products': products,
-    }
+    })
     data = {'query': query, 'context': context, 'response': result}
-    trace_eval_data(data)
-    with jsonlines.open('output.jsonl', 'a') as writer:
-        writer.write(data)
+    if os.environ.get('WRITE_EVAL_DATA'):
+        trace_eval_data(data)
+        with jsonlines.open('output.jsonl', 'a') as writer:
+            writer.write(data)
+
 @trace
 def execute(context, feedback, instructions, research, products):
     # Load prompty with AzureOpenAIModelConfiguration override

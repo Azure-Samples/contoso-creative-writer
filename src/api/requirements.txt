@@ -2,6 +2,7 @@ flask
 requests
 promptflow
 promptflow-tools
+jsonlines
 azure-search-documents
 python-dotenv==1.0.1
 gunicorn==21.2.0

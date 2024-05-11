@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def get_context(question, embedding):
-    return retrieve_documentation(question=question, index_name="product-info", embedding=embedding)
+    return retrieve_documentation(question=question, index_name="contoso-products", embedding=embedding)
 
 
 def get_embedding(question: str):
