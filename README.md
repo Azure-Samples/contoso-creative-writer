@@ -239,6 +239,7 @@ If the file is not created, simply copy over `.env.sample` to `.env` - then popu
 
 ## 3. Run the app locally
 
+### Run the backend api
 Change to api/agents folder:
 ```
 cd src/api
@@ -249,10 +250,18 @@ To run just the orchestrator logic:
 python -m api.agents.orchestrator
 ```
 
+
 To run the flask webserver:
 ```
 flask --debug --app api.app:app run --port 5000
 ```
+
+Then run evaluation from the terminal
+```
+python -m api.evaluate.evaluate
+```
+
+### Run the web app:
 
 In a new terminal
 ```
@@ -269,11 +278,13 @@ Then run the web app with a local dev web server:
 npm run dev
 ```
 
-Then run evaluation
+### Configure tracing
+
+To disable trace output to the local prompt flow trace viewer, run:
 ```
-cd evaluate
-python evaluate.py
+pf config set trace.destination="none"
 ```
+
 ## 4. Evaluating prompt flow results
 
 Now, we need to understand how well our prompt flow performs using defined metrics like **groundedness**, **coherence** etc. To evaluate the prompt flow, we need to be able to compare it to what we see as "good results" in order to understand how well it aligns with our expectations. 

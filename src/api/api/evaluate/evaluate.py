@@ -3,8 +3,9 @@ import os
 import json
 from datetime import datetime
 from promptflow.core import AzureOpenAIModelConfiguration
-from promptflow.evals.evaluators import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator
 from promptflow.evals.evaluate import evaluate
+from api.evaluate.writer import WriterEvaluator
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,15 +21,12 @@ def evaluate_aistudio(model_config, data_path):
         data=data_path,
         evaluators={
             #"violence": violence_eval,
-            "relevance": RelevanceEvaluator(model_config),
-            "fluency": FluencyEvaluator(model_config),
-            "coherence": CoherenceEvaluator(model_config),
-            "groundedness": GroundednessEvaluator(model_config),
+            "writer": WriterEvaluator(model_config),
         },
         evaluator_config={
             "defaults": {
-                "question": "${data.question}",
-                "answer": "${data.answer}",
+                "query": "${data.query}",
+                "response": "${data.response}",
                 "context": "${data.context}",
             },
         },
@@ -41,34 +39,14 @@ def evaluate_local(model_config, data_path):
         for line in f:
             data.append(json.loads(line))
 
-    evaluators = [
-        RelevanceEvaluator(model_config),
-        FluencyEvaluator(model_config),
-        CoherenceEvaluator(model_config),
-        GroundednessEvaluator(model_config),
-    ]
-
-    def evaluate_row(row):
-        output = {
-            'query': row['query'], 
-            'response': row['response'], 
-            'context': row['context']
-        }
-        for evaluator in evaluators:
-            result = evaluator(
-                question=row['query'],
-                answer=row['response'],
-                context=row['context']
-            )
-            output.update(result)
-        return output
+    writer_evaluator = WriterEvaluator(model_config)
 
     results = []
     futures = []
     import concurrent.futures
     with concurrent.futures.ThreadPoolExecutor() as executor:
         for row in data:
-            futures.append(executor.submit(evaluate_row, row))
+            futures.append(executor.submit(writer_evaluator, query=row["query"], context=row["context"], response=row["response"]))
         for future in futures:
             results.append(future.result())
 
@@ -89,7 +67,7 @@ if __name__ == "__main__":
     start=time.time()
     print(f"Starting evaluate...")
 
-    eval_result = evaluate_local(model_config, data_path="eval_writer.jsonl")
+    eval_result = evaluate_aistudio(model_config, data_path="api/evaluate/eval_writer.jsonl")
 
     end=time.time()
     print(f"Finished evaluate in {end - start}s")

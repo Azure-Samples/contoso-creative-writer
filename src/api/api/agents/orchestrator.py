@@ -1,10 +1,10 @@
 import json
 from promptflow.tracing import trace, start_trace
-from researcher import researcher
-from writer import writer
-from editor import editor
-from designer import designer
-from product import product
+from api.agents.researcher import researcher
+from api.agents.writer import writer
+from api.agents.editor import editor
+from api.agents.designer import designer
+from api.agents.product import product
 from dotenv import load_dotenv
 load_dotenv()
 

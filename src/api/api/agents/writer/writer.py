@@ -3,15 +3,47 @@ import json
 import jsonlines
 import os
 
-from promptflow.tracing import trace
-from promptflow.core import Prompty, AzureOpenAIModelConfiguration
+from promptflow.tracing import trace as pftrace
+from promptflow.core import AzureOpenAIModelConfiguration
 from promptflow.core import Flow
 from pathlib import Path
+
+from api.evaluate.writer import WriterEvaluator
+from threading import Thread
+
+from opentelemetry import trace
+from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+
 folder = Path(__file__).parent.absolute().as_posix()
 
-@trace
+def run_evaluators(data, trace_context):
+    print("starting offline evals")
+
+    tracer = trace.get_tracer(__name__)
+    with tracer.start_as_current_span("run_evaluators", context=trace_context) as span:
+        span.set_attribute("inputs", str(data))
+        configuration = AzureOpenAIModelConfiguration(
+            azure_deployment=os.getenv("AZURE_DEPLOYMENT_NAME"),
+            api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+            api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+            azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
+        )
+        evaluator = WriterEvaluator(configuration)
+        results = evaluator(query=data['query'], context=data['context'], response=data['response'])
+        span.set_attribute("outputs", str(results))
+
+    print("Done offline evals:")
+    print(trace_context)
+
 def trace_eval_data(data):
-    pass
+    span = trace.get_current_span()
+    # only run evaluators if data is being recorded
+    if (span.is_recording):
+        # propagate trace context to new thread, TODO: not quite working
+        trace_context = {}
+        TraceContextTextMapPropagator().inject(trace_context)
+        thread = Thread(target=run_evaluators, args=(data, trace_context,))
+        thread.start()
 
 def log_eval_data(context, feedback, instructions, research, products, result):
     # log evaluation data
@@ -25,12 +57,13 @@ def log_eval_data(context, feedback, instructions, research, products, result):
         'products': products,
     })
     data = {'query': query, 'context': context, 'response': result}
+    trace_eval_data(data)
+
     if os.environ.get('WRITE_EVAL_DATA'):
-        trace_eval_data(data)
         with jsonlines.open('output.jsonl', 'a') as writer:
             writer.write(data)
 
-@trace
+@pftrace
 def execute(context, feedback, instructions, research, products):
     # Load prompty with AzureOpenAIModelConfiguration override
     configuration = AzureOpenAIModelConfiguration(

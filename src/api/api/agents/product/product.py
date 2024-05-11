@@ -4,17 +4,20 @@ from typing import Dict, List
 import prompty
 from openai import AzureOpenAI
 import pathlib
-from product.ai_search import retrieve_documentation
+from api.agents.product.ai_search import retrieve_documentation
 from promptflow.tools.common import init_azure_openai_client
 from promptflow.connections import AzureOpenAIConnection
 from promptflow.core import (AzureOpenAIModelConfiguration, Prompty, tool)
 from azure.core.credentials import AzureKeyCredential
+from promptflow.tracing import trace
+
 from dotenv import load_dotenv
+
 load_dotenv()
 
+@trace
 def get_context(question, embedding):
     return retrieve_documentation(question=question, index_name="contoso-products", embedding=embedding)
-
 
 def get_embedding(question: str):
     connection = AzureOpenAIConnection(        
@@ -40,6 +43,6 @@ def get_products(context: str) -> Dict[str, any]:
 
 
 if __name__ == "__main__":
-    context = "Can you use a selection of tents and backpacks as context?"
+    context = "what kind of jackets do you have?"
     answer = get_products(context)
     print(json.dumps(answer, indent=2))
