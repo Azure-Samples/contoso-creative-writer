@@ -1,10 +1,31 @@
+---
+name: Creative Writing Assistant
+description: Working with Agents using Promptflow (Python Implementation) 
+languages:
+- python
+- typescript
+- bicep
+- azdeveloper
+products:
+- azure-openai
+- bing-search
+- azure-ai-search
+- azure
+page_type: sample
+urlFragment: azure-search-openai-demo
+---
+
 # Creative Writing Assistant: Working with Agents using Promptflow (Python Implementation) 
 
-This sample demonstrates how to create and work with AI agents. The app takes a topic and instruction input and then calls a research agent, writer agent, 
-and editor agent. The result is a short article. 
+This sample demonstrates how to create and work with AI agents. The app takes a topic and instruction input and then calls a research agent, writer agent, and editor agent. 
 
-For prompt creation and management, the sample uses Prompty, a 'markdown-like' file with a `.prompty` extension for developing prompt templates. 
-It uses Azure OpenAI Service to access a GPT model (GPT4 and GPT35) to generate responses, and Bing Search to research the the topic. 
+# Creative Writing Assistant: Working with Agents using Promptflow (Python Implementation) 
+
+In this sample we will be using the creative writting assistant to find the latest camping trends and activities in winter. The `research agent` will recieve some context we provide and an instruction to find information on what we are looking for. It will use this information to create queries, which it will pass to the [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to search the web for relevant information to return. The `product agent` will also recieve the context we provided and will use [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) to search through camping product information in a vector store and return the products that are semantically similar to the context. 
+
+The research and products returned will be sent to the `writing agent`, along with the context and instructions we provided. The writer then uses all of this information to create an article. This article is passed to an `editor agent` that analyzes the article, provides feedback for writer and decides whether to accept or reject the article. If the article is rejected the feedback is sent to the researcher and writer agents and a new article is created that incoperates the feedback. In this sample the editor can only reject the article twice. The edited article is then returned to the user. 
+
+  This sample uses the **[Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/)** to access the LLM that will drive the agents. For this sample we recommend using either GPT-35-turbo or GPT-4 with versions 1106 or 0125. You can find the regions where these versions are available [here](). It also leverages **[Prompty and Prompt Flow](https://microsoft.github.io/promptflow/how-to-guides/develop-a-prompty/index.html)** to create, manage and evaluate the prompts into the code. Prompty is a 'markdown-like' file with a `.prompty` extension for developing prompt templates. 
 
 By the end of deploying this template you should be able to:
 
@@ -15,69 +36,63 @@ By the end of deploying this template you should be able to:
 ## Features
 
 This project template provides the following features:
-**For Developers**
-* A starter Prompt Flow to help developers get started constructing prompts
-* Built-in evaluations to test your Prompt Flow against a variety of test datasets with telemetry pushed to Azure AI Studio
-* Deployment available via GitHub actions or Azure AI SDK
-* ...
-**For Users**
-* A RAG-powered chat application (front-end integration needed)
 
-## Front-end
-
-(Note if front-end is included. If not link out to recommended template)
-
-- Recommended front-end: [front-end template URL]
+* An `Agents` folder with all the agents mentioned in the project description. Each agent subfolder is made up of a `.prompty` and `.py` file. 
+* An `orchestrator.py` file where the agent workflow is defined. 
+* `requirements.txt` file with all the python packages needed to run this example.
+* An `app.py` file that enables you to run this application as a Flask app. 
+* A `.env.sample` file to let you know which provisioned resources you will need to run this app. 
 
 ## Security
 
-(Document security aspects and best practices per template configuration)
+Each template has either [Managed Identity](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview) or Key Vault built in to eliminate the need for developers to manage these credentials. Applications can use managed identities to obtain Microsoft Entra tokens without having to manage any credentials. 
 
-* ex. keyless auth
+Additionally, we have added a [GitHub Action tool](https://github.com/microsoft/security-devops-action) that scans the infrastructure-as-code files and generates a report containing any detected issues. 
 
+To ensure best practices in your repo we recommend anyone creating solutions based on our templates ensure that the [Github secret scanning](https://docs.github.com/en/code-security/secret-scanning/about-secret-scanning) setting is enabled in your repos.
+
+### Architecture Diagram
+![Architecture Digram]()
+
+
+### Demo Video 
+(Embed demo video here)
 
 ## Getting Started
 
 ### Prerequisites
 
- **Azure Subscription** - [Signup for a free account.](https://azure.microsoft.com/free/)
+- **Azure Subscription** - [Signup for a free account.](https://azure.microsoft.com/free/)
 - **Visual Studio Code** - [Download it for free.](https://code.visualstudio.com/download)
 - **GitHub Account** - [Signup for a free account.](https://github.com/signup)
 - **Access to Azure Open AI Services** - [Learn about getting access.](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access)
 - **Ability to provision Azure AI Search (Paid)** - Required for Semantic Ranker
 
-
-### Installation
-
-(ideally very short)
-
-- npm install [package name]
-- mvn install
-- ...
-
-### Quickstart
-## 1. Development Environment
+## Step 1: Development Environment
 
 The repository is instrumented with a `devcontainer.json` configuration that can provide you with a _pre-built_ environment that can be launched locally, or in the cloud. You can also elect to do a _manual_ environment setup locally, if desired. Here are the three options in increasing order of complexity and effort on your part. **Pick one!**
 
  1. **Pre-built environment, in cloud** with GitHub Codespaces
- 1. **Pre-built environment, on device** with Docker Desktop
- 1. **Manual setup environment, on device** with Anaconda or venv
+ 2. **Pre-built environment, on device** with Docker Desktop
+ 3. **Manual setup environment, on device** with Anaconda or venv
 
 The first approach is _recommended_ for minimal user effort in startup and maintenance. The third approach will require you to manually update or maintain your local environment, to reflect any future updates to the repo.
 
 To setup the development environment you can leverage either GitHub Codespaces, a local Python environment (using Anaconda or venv), or a VS Code Dev Container environment (using Docker).
 
-### 1.1 Pre-Built Environment, in cloud (GitHub Codespaces)
+### Step 1.1: Pre-Built Environment, in cloud (GitHub Codespaces)
 
 **This is the recommended option.**
  - Fork the repo into your personal profile.
  - In your fork, click the green `Code` button on the repository
- - Select the `Codespaces` tab and click `Create codespace...` 
- 
+ - Select the `Codespaces` tab and click `Create codespace...` You can also click this button:
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/agent-openai-python-prompty)
+
 This should open a new browser tab with a Codespaces container setup process running. On completion, this will launch a Visual Studio Code editor in the browser, with all relevant dependencies already installed in the running development container beneath. **Congratulations! Your cloud dev environment is ready!**
 
-### 1.2 Pre-Built Environment, on device (Docker Desktop)
+- Once you've launched Codespaces you can proceed to [step 2]().
+
+### Step 1.2: Pre-Built Environment, on device (Docker Desktop)
 
 This option uses the same `devcontainer.json` configuration, but launches the development container in your local device using Docker Desktop. To use this approach, you need to have the following tools pre-installed in your local device:
  - Visual Studio Code (with Dev Containers Extension)
@@ -92,37 +107,44 @@ If your Dev Containers extension is installed correctly, you will be prompted to
 
 Once your project launches in the local Docker desktop container, you should see the Visual Studio Code editor reflect that connection in the status bar (blue icon, bottom left). **Congratulations! Your local dev environment is ready!**
 
-### 1.3 Manual Setup Environment, on device (Anaconda or venv)
+- Once you've launched your docker container environment you can proceed to [step 2]().
 
-1. Clone the repo
+### Step 1.3: Manual Setup Environment, on device (Anaconda or venv)
 
-    ```bash
-    git clone https://github.com/Azure-Samples/agent-openai-python-prompty.git
-    ```
+#### Local Requirements
+In order to run this sample locally you will need to: 
 
-1. Open the repo in VS Code
+If all of the above are correctly installed you can set up your local developer environment as follows. 
 
-    ```bash
-    cd agent-openai-python-prompty
-    code .
-    ```
+1. First, fork the repo, and then clone the code sample locally: 
 
-1. Install the [Prompt Flow Extension](https://marketplace.visualstudio.com/items?itemName=prompt-flow.prompt-flow) in VS Code
+   ``` bash
+   git clone https://github.com/Azure-Samples/agent-openai-python-prompty.git
+   ```
+
+2. Open the repo in VS Code and navgate to the src directory
+
+   ```bash
+   cd 
+   code .
+   cd src
+   ```
+
+3. Install the [Prompt Flow Extension](https://marketplace.visualstudio.com/items?itemName=prompt-flow.prompt-flow) in VS Code
       - Open the VS Code Extensions tab
       - Search for "Prompt Flow"
       - Install the extension
 
-1. Install the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) for your device OS
+4. Install the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) for your device OS
 
-1. Cd into the src/api folder
+5. Cd into the src/api folder
 
 ```
 cd src/api
 ```
+6. Create a new local Python environment using **either** [anaconda](https://www.anaconda.com/products/individual) **or** [venv](https://docs.python.org/3/library/venv.html) for a managed environment.
 
-1. Create a new local Python environment using **either** [anaconda](https://www.anaconda.com/products/individual) **or** [venv](https://docs.python.org/3/library/venv.html) for a managed environment.
-
-    1. **Option 1**: Using anaconda
+    a. **Option 1**: Using anaconda
 
         ```bash
         conda create -n agent-openai-python-prompty python=3.11
@@ -130,22 +152,13 @@ cd src/api
         pip install -r requirements.txt
         ```
 
-    1. **Option 2:** Using venv
+    b. **Option 2:** Using venv
 
-        Mac/Linux
         ```bash
         python3 -m venv .venv
         source .venv/bin/activate
         pip install -r requirements.txt
         ```
-
-        Windows
-        ```
-        py -3 -m venv .venv
-        .venv\scripts\activate
-        pip install -r requirements.txt
-        ```
-
 
 ## 2. Create Azure resources
 
@@ -157,13 +170,13 @@ We setup our development ennvironment in the previous step. In this step, we'll 
 Start by connecting your Visual Studio Code environment to your Azure account:
 
 1. Open the terminal in VS Code and use command `az login`. 
-1. Complete the authentication flow. 
+2. Complete the authentication flow. 
 
 **If you are running within a dev container, use these instructions to login instead:**
  1. Open the terminal in VS Code and use command `az login --use-device-code`
- 1. The console message will give you an alphanumeric code
- 1. Navigate to _https://microsoft.com/devicelogin_ in a new tab
- 1. Enter the code from step 2 and complete the flow.
+ 2. The console message will give you an alphanumeric code
+ 3. Navigate to _https://microsoft.com/devicelogin_ in a new tab
+ 4. Enter the code from step 2 and complete the flow.
 
 In either case, verify that the console shows a message indicating a successful authentication. **Congratulations! Your VS Code session is now connected to your Azure subscription!**
 
@@ -207,16 +220,14 @@ Visit the [azd reference](https://learn.microsoft.com/azure/developer/azure-deve
 
 That's it! You should now be ready to continue the process as before. Note that this is a new process so there may be some issues to iron out. Start by completing the verification steps below and taking any troubleshooting actions identified.
 
-
 #### 2.2.4 Verify Provisioning
-
 
 The script should **set up a dedicated resource group** with the following resources:
 
  - **Azure AI services** resource
  - **Azure Machine Learning workspace** (Azure AI Project) resource
  - **Search service** (Azure AI Search) resource
- - **Azure Cosmos DB account** resource
+ - **Bing Search** (Bing Search) resource
 
 The script will set up an **Azure AI Studio** project with the following model deployments created by default, in a relevant region that supports them. _Your Azure subscription must be [enabled for Azure OpenAI access](https://learn.microsoft.com/azure/ai-services/openai/overview#how-do-i-get-access-to-azure-openai)_.
  - gpt-3.5-turbo
@@ -314,26 +325,19 @@ Just follow the instructions and steps in the notebook `push_and_deploy_pf.ipynb
 
 <br/>
 
+## Contributing
 
-## Demo
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
 
-A demo app is included to show how to use the project.
+When you submit a pull request, a CLA bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
 
-To run the demo, follow these steps:
-
-(Add steps to start up the demo)
-
-1.
-2.
-3.
-
-## Resources
-
-(Any additional resources or related projects)
-
-- Link to supporting information
-- Link to similar sample
-- ...
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 
 
