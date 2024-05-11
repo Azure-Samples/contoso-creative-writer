@@ -1,4 +1,3 @@
-import os
 from api.__init__ import create_app
 from dotenv import load_dotenv
 
