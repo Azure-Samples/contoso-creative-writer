@@ -13,7 +13,7 @@ from threading import Thread
 
 from opentelemetry import trace
 from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
-
+from opentelemetry.trace import set_span_in_context
 folder = Path(__file__).parent.absolute().as_posix()
 
 def run_evaluators(data, trace_context):
@@ -32,16 +32,16 @@ def run_evaluators(data, trace_context):
         results = evaluator(query=data['query'], context=data['context'], response=data['response'])
         span.set_attribute("outputs", str(results))
 
-    print("Done offline evals:")
-    print(trace_context)
+        print("results: ", results)
+
+
 
 def trace_eval_data(data):
     span = trace.get_current_span()
     # only run evaluators if data is being recorded
     if (span.is_recording):
         # propagate trace context to new thread, TODO: not quite working
-        trace_context = {}
-        TraceContextTextMapPropagator().inject(trace_context)
+        trace_context = set_span_in_context(span)
         thread = Thread(target=run_evaluators, args=(data, trace_context,))
         thread.start()
 

@@ -20,7 +20,6 @@ def evaluate_aistudio(model_config, data_path):
         evaluation_name=run_id,
         data=data_path,
         evaluators={
-            #"violence": violence_eval,
             "writer": WriterEvaluator(model_config),
         },
         evaluator_config={
