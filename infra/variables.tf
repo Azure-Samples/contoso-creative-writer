@@ -60,7 +60,17 @@ variable "openai_api_version" {
   type        = string
   default     = "2023-12-01-preview"
 }
+variable "search_index_name" {
+  description = "value of search index name"
+  type        = string
+  default     = "docs"
+}
 
+variable "vectordb_type" {
+  description = "value of vectordb type"
+  type        = string
+  default     = "azure_search"
+}
 variable "k8s_namespace" {
   description = "value of kubernetes namespace"
   type        = string

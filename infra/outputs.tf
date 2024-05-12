@@ -70,6 +70,22 @@ output "AZURE_RESOURCE_GROUP" {
 output "AZURE_TENANT_ID" {
   value = data.azurerm_client_config.current.tenant_id
 }
+output "AZURE_SEARCH_ENDPOINT" {
+  value = "https://${azurerm_search_service.search.name}.search.windows.net"
+}
+
+output "AZURE_SEARCH_INDEX_NAME" {
+  value = var.search_index_name
+}
+
+output "AZURE_SEARCH_API_KEY" {
+  value     = azurerm_search_service.search.primary_key
+  sensitive = true
+}
+
+output "VECTORDB_TYPE" {
+  value = var.vectordb_type
+}
 
 output "BING_SEARCH_ENDPOINT" {
   value = jsondecode(azapi_resource.bing.output).properties.endpoint

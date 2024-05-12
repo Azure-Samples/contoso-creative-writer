@@ -34,6 +34,14 @@ spec:
               value: {{.Env.BING_SEARCH_ENDPOINT}}
             - name: BING_SEARCH_KEY
               value: {{.Env.BING_SEARCH_KEY}}
+            - name: AZURE_SEARCH_ENDPOINT
+              value: {{.Env.AZURE_SEARCH_ENDPOINT}}
+            - name: AZURE_SEARCH_API_KEY
+              value: {{.Env.AZURE_SEARCH_API_KEY}}
+            - name: AZURE_SEARCH_INDEX_NAME
+              value: {{.Env.AZURE_SEARCH_INDEX_NAME}}
+            - name: VECTORDB_TYPE
+              value: {{.Env.VECTORDB_TYPE}}
           resources:
             requests:
               memory: "256Mi"
