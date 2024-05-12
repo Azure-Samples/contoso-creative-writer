@@ -4,7 +4,7 @@ from typing import Dict, List
 import prompty
 from openai import AzureOpenAI
 import pathlib
-from product.ai_search import retrieve_documentation
+from api.agents.product.ai_search import retrieve_documentation
 from promptflow.tools.common import init_azure_openai_client
 from promptflow.connections import AzureOpenAIConnection
 from promptflow.core import (AzureOpenAIModelConfiguration, Prompty, tool)
