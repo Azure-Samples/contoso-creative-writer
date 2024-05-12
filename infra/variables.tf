@@ -28,7 +28,7 @@ variable "openai_model_name" {
 variable "openai_model_version" {
   description = "value of azure openai model version"
   type        = string
-  default     = "vision-preview"
+  default     = "1106-Preview"
 }
 
 variable "openai_model_capacity" {
@@ -46,7 +46,7 @@ variable "openai_35_turbo_model_name" {
 variable "openai_35_turbo_model_version" {
   description = "value of azure openai model version"
   type        = string
-  default     = "1106"
+  default     = "0613"
 }
 
 variable "openai_35_turbo_model_capacity" {
