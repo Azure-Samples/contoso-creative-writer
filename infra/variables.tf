@@ -55,6 +55,25 @@ variable "openai_35_turbo_model_capacity" {
   default     = 30
 }
 
+variable "openai_embedding_model_name" {
+  description = "value of azure openai model name"
+  type        = string
+  default     = "text-embedding-ada-002"
+}
+
+variable "openai_embedding_model_version" {
+  description = "value of azure openai model version"
+  type        = string
+  default     = "2"
+}
+
+variable "openai_embedding_model_capacity" {
+  description = "value of azure openai model capacity"
+  type        = number
+  default     = 30
+}
+
+
 variable "openai_api_version" {
   description = "value of azure openai api version"
   type        = string
