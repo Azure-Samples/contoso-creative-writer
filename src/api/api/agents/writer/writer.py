@@ -8,7 +8,7 @@ from promptflow.core import AzureOpenAIModelConfiguration
 from promptflow.core import Flow
 from pathlib import Path
 
-from api.evaluate.writer import WriterEvaluator
+#from api.evaluate.writer import WriterEvaluator
 from threading import Thread
 
 from opentelemetry import trace
@@ -33,8 +33,6 @@ def run_evaluators(data, trace_context):
         span.set_attribute("outputs", str(results))
 
         print("results: ", results)
-
-
 
 def trace_eval_data(data):
     span = trace.get_current_span()
@@ -88,7 +86,7 @@ def execute(context, feedback, instructions, research, products):
         products=products
     )
 
-    log_eval_data(context, feedback, instructions, research, products, result)
+    #log_eval_data(context, feedback, instructions, research, products, result)
     return result
 
 
