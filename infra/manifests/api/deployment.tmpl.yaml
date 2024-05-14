@@ -42,6 +42,8 @@ spec:
               value: {{.Env.AZURE_SEARCH_INDEX_NAME}}
             - name: VECTORDB_TYPE
               value: {{.Env.VECTORDB_TYPE}}
+            - name: APPLICATIONINSIGHTS_CONNECTION_STRING
+              value: {{.Env.APPLICATIONINSIGHTS_CONNECTION_STRING}}
           resources:
             requests:
               memory: "256Mi"

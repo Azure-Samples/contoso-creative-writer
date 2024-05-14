@@ -70,6 +70,7 @@ output "AZURE_RESOURCE_GROUP" {
 output "AZURE_TENANT_ID" {
   value = data.azurerm_client_config.current.tenant_id
 }
+
 output "AZURE_SEARCH_ENDPOINT" {
   value = "https://${azurerm_search_service.search.name}.search.windows.net"
 }
@@ -93,5 +94,10 @@ output "BING_SEARCH_ENDPOINT" {
 
 output "BING_SEARCH_KEY" {
   value     = jsondecode(data.azapi_resource_action.bing.output).key1
+  sensitive = true
+}
+
+output "APPLICATIONINSIGHTS_CONNECTION_STRING" {
+  value     = local.deploy_observability_tools ? "" : azurerm_application_insights.applicationinsights[0].connection_string
   sensitive = true
 }
