@@ -51,4 +51,3 @@ mkdir -p "$TF_WORKSPACE_DIR"
 
 # Use the variable with the terraform command
 terraform -chdir="$TF_WORKSPACE_DIR" workspace select -or-create "$WORKSPACE"
-

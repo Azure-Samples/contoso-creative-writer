@@ -18,7 +18,7 @@ const AppHeader = () => {
               mr: 2,
             }}
           />
-          <span>Klug - Your AI Creative Team</span>
+          <span>Your AI Creative Team</span>
         </Header.Link>
       </Header.Item>
       <Header.Item full></Header.Item>

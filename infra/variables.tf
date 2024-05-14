@@ -28,7 +28,7 @@ variable "openai_model_name" {
 variable "openai_model_version" {
   description = "value of azure openai model version"
   type        = string
-  default     = "vision-preview"
+  default     = "1106-Preview"
 }
 
 variable "openai_model_capacity" {
@@ -46,7 +46,7 @@ variable "openai_35_turbo_model_name" {
 variable "openai_35_turbo_model_version" {
   description = "value of azure openai model version"
   type        = string
-  default     = "1106"
+  default     = "0613"
 }
 
 variable "openai_35_turbo_model_capacity" {
@@ -55,12 +55,41 @@ variable "openai_35_turbo_model_capacity" {
   default     = 30
 }
 
+variable "openai_embedding_model_name" {
+  description = "value of azure openai model name"
+  type        = string
+  default     = "text-embedding-ada-002"
+}
+
+variable "openai_embedding_model_version" {
+  description = "value of azure openai model version"
+  type        = string
+  default     = "2"
+}
+
+variable "openai_embedding_model_capacity" {
+  description = "value of azure openai model capacity"
+  type        = number
+  default     = 30
+}
+
+
 variable "openai_api_version" {
   description = "value of azure openai api version"
   type        = string
   default     = "2023-12-01-preview"
 }
+variable "search_index_name" {
+  description = "value of search index name"
+  type        = string
+  default     = "docs"
+}
 
+variable "vectordb_type" {
+  description = "value of vectordb type"
+  type        = string
+  default     = "azure_search"
+}
 variable "k8s_namespace" {
   description = "value of kubernetes namespace"
   type        = string

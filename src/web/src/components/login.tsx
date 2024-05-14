@@ -19,10 +19,10 @@ export const Login = () => {
         <MortarBoardIcon size="medium" />
       </Box>
       <Box>
-        <h1>Welcome to Klug - your AI Creative Team!</h1>
+        <h1>Welcome to your AI Creative Team!</h1>
       </Box>
       <Box>
-        Klug is your creative team that helps you to create your best written
+        You creative team that helps you to create your best written
         work.
       </Box>
       <Box

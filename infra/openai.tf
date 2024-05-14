@@ -46,3 +46,19 @@ resource "azurerm_cognitive_deployment" "gpt35_deployment" {
     capacity = var.openai_35_turbo_model_capacity
   }
 }
+
+resource "azurerm_cognitive_deployment" "embedding_deployment" {
+  name                 = var.openai_embedding_model_name
+  cognitive_account_id = azurerm_cognitive_account.cog.id
+
+  model {
+    format  = "OpenAI"
+    name    = var.openai_embedding_model_name
+    version = var.openai_embedding_model_version
+  }
+
+  scale {
+    type     = "Standard"
+    capacity = var.openai_embedding_model_capacity
+  }
+}

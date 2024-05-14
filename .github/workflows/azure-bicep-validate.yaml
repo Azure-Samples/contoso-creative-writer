@@ -1,0 +1,43 @@
+name: Bicep scripts
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR
+        if: ${{ github.event_name == 'pull_request'}}
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Checkout branch
+        if: ${{ github.event_name == 'push'}}
+        uses: actions/checkout@v2
+
+      - name: Build Bicep
+        uses: azure/CLI@v1
+        with:
+          inlineScript: az bicep build -f infra/main.bicep
+
+      - name: Format Bicep
+        uses: azure/CLI@v1
+        with:
+          inlineScript: az bicep format -f infra/main.bicep
+
+      - name: Add updated Bicep files to commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'Update Bicep files'
+          add: '*.bicep'

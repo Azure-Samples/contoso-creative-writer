@@ -4,7 +4,7 @@ from typing import Dict, List
 import prompty
 from openai import AzureOpenAI
 import pathlib
-from product.ai_search import retrieve_documentation
+from api.agents.product.ai_search import retrieve_documentation
 from promptflow.tools.common import init_azure_openai_client
 from promptflow.connections import AzureOpenAIConnection
 from promptflow.core import (AzureOpenAIModelConfiguration, Prompty, tool)
@@ -18,7 +18,7 @@ def get_context(question, embedding):
 
 def get_embedding(question: str):
     connection = AzureOpenAIConnection(        
-                    azure_deployment=os.environ["AZURE_EMBEDDING_NAME"],
+                    azure_deployment="text-embedding-ada-002",
                     api_key=os.environ["AZURE_OPENAI_API_KEY"],
                     api_version=os.environ["AZURE_OPENAI_API_VERSION"],
                     api_base=os.environ["AZURE_OPENAI_ENDPOINT"]
@@ -28,7 +28,7 @@ def get_embedding(question: str):
 
     return client.embeddings.create(
             input=question,
-            model=os.environ["AZURE_EMBEDDING_NAME"]
+            model="text-embedding-ada-002"
         ).data[0].embedding
 
 

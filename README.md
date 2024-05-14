@@ -67,7 +67,10 @@ To ensure best practices in your repo we recommend anyone creating solutions bas
 - **GitHub Account** - [Signup for a free account.](https://github.com/signup)
 - **Access to Azure Open AI Services** - [Learn about getting access.](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access)
 - **Ability to provision Azure AI Search (Paid)** - Required for Semantic Ranker
-- **Service Region Selection** - We recommend using East US 2
+- **Terrafrom** - Install terraform to run deployments
+- **Docker Desktop** - Install Docker Desktop to run deployments
+- **Recommended Deployment Region** - East US 2 is the recommened region for this deployment. Not all models and services are available for each region. Learn more [here](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models#model-summary-table-and-region-availability).
+
 
 ## Step 1: Development Environment
 
