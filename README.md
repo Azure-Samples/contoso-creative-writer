@@ -71,6 +71,7 @@ To ensure best practices in your repo we recommend anyone creating solutions bas
 - **Docker Desktop** - Install Docker Desktop to run deployments
 - **Recommended Deployment Region** - East US 2 is the recommened region for this deployment. Not all models and services are available for each region. Learn more [here](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models#model-summary-table-and-region-availability).
 
+
 ## Step 1: Development Environment
 
 The repository is instrumented with a `devcontainer.json` configuration that can provide you with a _pre-built_ environment that can be launched locally, or in the cloud. You can also elect to do a _manual_ environment setup locally, if desired. Here are the three options in increasing order of complexity and effort on your part. **Pick one!**
@@ -267,6 +268,9 @@ To run the flask webserver:
 ```
 flask --debug --app api.app:app run --port 5000
 ```
+```
+http://127.0.0.1:5000/get_article?context=Write an article about camping in alaska&instruction=find specifics about what type of gear they would need and explain in detail
+```
 
 In a new terminal
 ```
@@ -349,12 +353,3 @@ provided by the bot. You will only need to do this once across all repos using o
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
-
-
-
-____
-commands to run
-flask --debug --app src/api/api/app:app run --port 5000
-http://127.0.0.1:5000/get_article?context=Write an article about camping in alaska&instruction=find specifics about what type of gear they would need and explain in detail
-
