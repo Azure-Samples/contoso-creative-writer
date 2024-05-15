@@ -17,22 +17,37 @@ urlFragment: agent-openai-python-prompty
 
 # Creative Writing Assistant: Working with Agents using Promptflow (Python Implementation) 
 
+### Samples in JavaScript, Python, and Java. Learn more at [https://aka.ms/azai](https://aka.ms/azai).
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Azure account requirements](#azure-account-requirements)
+- [Azure Deployment](#azure-deployment)
+  - [Cost estimation](#cost-estimation)
+  - [Project setup](#project-setup)
+    - [GitHub Codespaces](#option-1-github-codespaces)
+    - [VS Code Dev Containers](#option-2-vs-code-dev-containers)
+    - [Local environment](#option-3-local-environment)
+- [Deploying](#deploying)
+- [Using the app](#using-the-app)
+- [Evaluating prompt flow results](#evaluating-prompt-flow-results)
+- [Contributing](#contributing)
+- [Code of Conduct](#code-of-conduct)
+
+
+[![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://codespaces.new/Azure-Samples/agent-openai-python-prompty)
+[![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/Azure-Samples/agent-openai-python-prompty) 
+
 This sample demonstrates how to create and work with AI agents. The app takes a topic and instruction input and then calls a research agent, writer agent, and editor agent. 
 
-# Creative Writing Assistant: Working with Agents using Promptflow (Python Implementation) 
-
-In this sample we will be using the creative writting assistant to find the latest camping trends and activities in winter. The `research agent` will recieve some context we provide and an instruction to find information on what we are looking for. It will use this information to create queries, which it will pass to the [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to search the web for relevant information to return. The `product agent` will also recieve the context we provided and will use [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) to search through camping product information in a vector store and return the products that are semantically similar to the context. 
+We will be using the creative writting assistant to find the latest camping trends and activities in winter. The `research agent` will recieve some context we provide and an instruction to find information on what we are looking for. It will use this information to create queries, which it will pass to the [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to search the web for relevant information to return. The `product agent` will also recieve the context we provided and will use [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) to search through camping product information in a vector store and return the products that are semantically similar to the context. 
 
 The research and products returned will be sent to the `writing agent`, along with the context and instructions we provided. The writer then uses all of this information to create an article. This article is passed to an `editor agent` that analyzes the article, provides feedback for writer and decides whether to accept or reject the article. If the article is rejected the feedback is sent to the researcher and writer agents and a new article is created that incoperates the feedback. In this sample the editor can only reject the article twice. The edited article is then returned to the user. 
 
-  This sample uses the **[Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/)** to access the LLM that will drive the agents. For this sample we recommend using either GPT-35-turbo or GPT-4 with versions 1106 or 0125. You can find the regions where these versions are available [here](). It also leverages **[Prompty and Prompt Flow](https://microsoft.github.io/promptflow/how-to-guides/develop-a-prompty/index.html)** to create, manage and evaluate the prompts into the code. Prompty is a 'markdown-like' file with a `.prompty` extension for developing prompt templates. 
+This sample uses the **[Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/)** to access the LLM that will drive the agents. It also leverages **[Prompty and Prompt Flow](https://microsoft.github.io/promptflow/how-to-guides/develop-a-prompty/index.html)** to create, manage and evaluate the prompts into the code. Prompty is a 'markdown-like' file with a `.prompty` extension for developing prompt templates. 
 
-By the end of deploying this template you should be able to:
-
- 1. Describe what Prompty and Prompt Flow provide
- 2. Understand Agentic workflows for building LLM Apps
- 3. Build, run, evaluate, and deploy, an AI Agent App to Azure.
- 
 ## Features
 
 This project template provides the following features:
@@ -42,217 +57,119 @@ This project template provides the following features:
 * `requirements.txt` file with all the python packages needed to run this example.
 * An `app.py` file that enables you to run this application as a Flask app. 
 * A `.env.sample` file to let you know which provisioned resources you will need to run this app. 
+  
 
-## Security
-
-Each template has either [Managed Identity](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview) or Key Vault built in to eliminate the need for developers to manage these credentials. Applications can use managed identities to obtain Microsoft Entra tokens without having to manage any credentials. 
-
-Additionally, we have added a [GitHub Action tool](https://github.com/microsoft/security-devops-action) that scans the infrastructure-as-code files and generates a report containing any detected issues. 
-
-To ensure best practices in your repo we recommend anyone creating solutions based on our templates ensure that the [Github secret scanning](https://docs.github.com/en/code-security/secret-scanning/about-secret-scanning) setting is enabled in your repos.
-
-### Architecture Diagram
 ![Architecture Digram]()
 
+## Azure account requirements
 
-### Demo Video 
-(Embed demo video here)
+**IMPORTANT:** In order to deploy and run this example, you'll need:
 
-## Getting Started
+* **Azure account**. If you're new to Azure, [get an Azure account for free](https://azure.microsoft.com/free/cognitive-search/) and you'll get some free Azure credits to get started. See [guide to deploying with the free trial](docs/deploy_lowcost.md).
+* **Azure subscription with access enabled for the Azure OpenAI service**. You can request access with [this form](https://aka.ms/oaiapply). If your access request to Azure OpenAI service doesn't match the [acceptance criteria](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access?context=%2Fazure%2Fcognitive-services%2Fopenai%2Fcontext%2Fcontext), you can use [OpenAI public API](https://platform.openai.com/docs/api-reference/introduction) instead.
+    - Ability to deploy `gpt-35-turbo-0613` and `gpt-4-1106-Preview`.
+    - We recommend using East US 2, as this region has access to all models and services required. 
+* **Azure subscription with access enabled for [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)**
+* * **Azure subscription with access enabled for [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search)**
+* **Azure account permissions**:
+  * Your Azure account must have `Microsoft.Authorization/roleAssignments/write` permissions, such as [Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview), [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator), or [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner). If you don't have subscription-level permissions, you must be granted [RBAC](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview) for an existing resource group and [deploy to that existing group](docs/deploy_existing.md#resource-group).
+  * Your Azure account also needs `Microsoft.Resources/deployments/write` permissions on the subscription level.
 
-### Prerequisites
+## Azure deployment
 
-- **Azure Subscription** - [Signup for a free account.](https://azure.microsoft.com/free/)
-- **Visual Studio Code** - [Download it for free.](https://code.visualstudio.com/download)
-- **GitHub Account** - [Signup for a free account.](https://github.com/signup)
-- **Access to Azure Open AI Services** - [Learn about getting access.](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access)
-- **Ability to provision Azure AI Search (Paid)** - Required for Semantic Ranker
-- **Terrafrom** - Install terraform to run deployments
-- **Docker Desktop** - Install Docker Desktop to run deployments
-- **Recommended Deployment Region** - East US 2 is the recommened region for this deployment. Not all models and services are available for each region. Learn more [here](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models#model-summary-table-and-region-availability).
+### Cost estimation
 
+Pricing varies per region and usage, so it isn't possible to predict exact costs for your usage.
+However, you can try the [Azure pricing calculator](https://azure.com/e/d18187516e9e421e925b3b311eec8aae) for the resources mentioned above.
 
-## Step 1: Development Environment
+### Project setup
 
-The repository is instrumented with a `devcontainer.json` configuration that can provide you with a _pre-built_ environment that can be launched locally, or in the cloud. You can also elect to do a _manual_ environment setup locally, if desired. Here are the three options in increasing order of complexity and effort on your part. **Pick one!**
+You have a few options for setting up this project.
+The easiest way to get started is GitHub Codespaces, since it will setup all the tools for you, but you can also set it up locally if desired.
+Here are the three options in increasing order of complexity and effort on your part. 
 
- 1. **Pre-built environment, in cloud** with GitHub Codespaces
- 2. **Pre-built environment, on device** with Docker Desktop
- 3. **Manual setup environment, on device** with Anaconda or venv
+Pick one!
 
-The first approach is _recommended_ for minimal user effort in startup and maintenance. The third approach will require you to manually update or maintain your local environment, to reflect any future updates to the repo.
+ 1. [GitHub Codespaces](#option-1-github-codespaces) (recommended)
+ 2. [VS Code Dev Containers](#option-2-vs-code-dev-containers) 
+ 3. [Local environment](#option-3-local-environment) 
 
-To setup the development environment you can leverage either GitHub Codespaces, a local Python environment (using Anaconda or venv), or a VS Code Dev Container environment (using Docker).
+#### Option 1: GitHub Codespaces
 
-### Step 1.1: Pre-Built Environment, in cloud (GitHub Codespaces)
-
-**This is the recommended option.**
+  **This is the recommended option!**
+  You can run this repo virtually by using GitHub Codespaces, which will open a web-based VS Code in your browser. To run code spaces:
  - Fork the repo into your personal profile.
- - In your fork, click the green `Code` button on the repository
- - Select the `Codespaces` tab and click `Create codespace...` You can also click this button:
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/agent-openai-python-prompty)
+ - In your fork, click the green Code button on the repository
+ - Select the `Codespaces` tab and click `Create codespace...`
 
-This should open a new browser tab with a Codespaces container setup process running. On completion, this will launch a Visual Studio Code editor in the browser, with all relevant dependencies already installed in the running development container beneath. **Congratulations! Your cloud dev environment is ready!**
+ You can also click this button:
+[![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://codespaces.new/Azure-Samples/agent-openai-python-prompty)
 
-- Once you've launched Codespaces you can proceed to [step 2]().
+Once the codespace opens (this may take several minutes), open a terminal window.
+Once you've launched Codespaces you can now [deploy this app](#deploying).
 
-### Step 1.2: Pre-Built Environment, on device (Docker Desktop)
+#### Option 2: VS Code Dev Containers
 
-This option uses the same `devcontainer.json` configuration, but launches the development container in your local device using Docker Desktop. To use this approach, you need to have the following tools pre-installed in your local device:
- - Visual Studio Code (with Dev Containers Extension)
- - Docker Desktop (community or free version is fine)
+A related option is VS Code Dev Containers, which will open the project in your local VS Code using the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers):
 
-**Make sure your Docker Desktop daemon is running on your local device.** Then,
- - Fork this repo to your personal profile
- - Clone that fork to your local device
- - Open the cloned repo using Visual Studio Code
+1. Start Docker Desktop (install it if not already installed)
+2. Open the project:
+    [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/Azure-Samples/agent-openai-python-prompty.git)
+3. In the VS Code window that opens, once the project files show up (this may take several minutes), open a terminal window.
 
-If your Dev Containers extension is installed correctly, you will be prompted to "re-open the project in a container" - just confirm to launch the container locally. Alternatively, you may need to trigger this step manually. See the [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) for more information.
+Once you've launched your docker container environment you can now [deploy this app](#deploying).
 
-Once your project launches in the local Docker desktop container, you should see the Visual Studio Code editor reflect that connection in the status bar (blue icon, bottom left). **Congratulations! Your local dev environment is ready!**
+#### Option 3: Local environment
 
-- Once you've launched your docker container environment you can proceed to [step 2]().
+1. Install the required tools:
 
-### Step 1.3: Manual Setup Environment, on device (Anaconda or venv)
+    * [Azure Developer CLI](https://aka.ms/azure-dev/install)
+    * [Python 3.9, 3.10, or 3.11](https://www.python.org/downloads/)
+      * **Important**: Python and the pip package manager must be in the path in Windows for the setup scripts to work.
+      * **Important**: Ensure you can run `python --version` from console. On Ubuntu, you might need to run `sudo apt install python-is-python3` to link `python` to `python3`.
+    * [Node.js 14+](https://nodejs.org/en/download/)
+    * [Git](https://git-scm.com/downloads)
+    * [Powershell 7+ (pwsh)](https://github.com/powershell/powershell) - For Windows users only.
+      * **Important**: Ensure you can run `pwsh.exe` from a PowerShell terminal. If this fails, you likely need to upgrade PowerShell.
 
-#### Local Requirements
-In order to run this sample locally you will need to: 
+2. Create a new folder and switch to it in the terminal.
+3. Run this command to download the project code:
 
-If all of the above are correctly installed you can set up your local developer environment as follows. 
+    ```shell
+    azd init -t agent-openai-python-prompty
+    ```
 
-1. First, fork the repo, and then clone the code sample locally: 
+    Note that this command will initialize a git repository, so you do not need to clone this repository.
 
-   ``` bash
-   git clone https://github.com/Azure-Samples/agent-openai-python-prompty.git
-   ```
+### Deploying
 
-2. Open the repo in VS Code and navgate to the src directory
+Follow these steps to provision Azure resources and deploy the application code:
 
-   ```bash
-   cd 
-   code .
-   cd src
-   ```
+1. Login to your Azure account:
 
-3. Install the [Prompt Flow Extension](https://marketplace.visualstudio.com/items?itemName=prompt-flow.prompt-flow) in VS Code
-      - Open the VS Code Extensions tab
-      - Search for "Prompt Flow"
-      - Install the extension
-
-4. Install the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) for your device OS
-
-5. Cd into the src/api folder
-
-```
-cd src/api
-```
-6. Create a new local Python environment using **either** [anaconda](https://www.anaconda.com/products/individual) **or** [venv](https://docs.python.org/3/library/venv.html) for a managed environment.
-
-    a. **Option 1**: Using anaconda
-
-        ```bash
-        conda create -n agent-openai-python-prompty python=3.11
-        conda activate agent-openai-python-prompty
-        pip install -r requirements.txt
-        ```
-
-    b. **Option 2:** Using venv
-
-        ```bash
-        python3 -m venv .venv
-        source .venv/bin/activate
-        pip install -r requirements.txt
-        ```
-
-## 2. Create Azure resources
-
-We setup our development ennvironment in the previous step. In this step, we'll **provision Azure resources** for our project, ready to use for developing our LLM Application.
-
-
-### 2.1 Authenticate with Azure
-
-Start by connecting your Visual Studio Code environment to your Azure account:
-
-1. Open the terminal in VS Code and use command `az login`. 
-2. Complete the authentication flow. 
-
-**If you are running within a dev container, use these instructions to login instead:**
- 1. Open the terminal in VS Code and use command `az login --use-device-code`
- 2. The console message will give you an alphanumeric code
- 3. Navigate to _https://microsoft.com/devicelogin_ in a new tab
- 4. Enter the code from step 2 and complete the flow.
-
-In either case, verify that the console shows a message indicating a successful authentication. **Congratulations! Your VS Code session is now connected to your Azure subscription!**
-
-### 2.2 Provision with Azure Developer CLI
-
-For this project, we need to provision multiple Azure resources in a specific order. **Before**, we achieved this by running the `provision.sh` script. **Now**, we'll use the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview) (or `azd`) instead, and follow the steps below.
-Visit the [azd reference](https://learn.microsoft.com/azure/developer/azure-developer-cli/reference) for more details on tool syntax, commands and options.
-
-#### 2.2.1 Install `azd`
-- If you setup your development environment manually, follow [these instructions](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd?tabs=winget-windows%2Cbrew-mac%2Cscript-linux&pivots=os-windows) to install `azd` for your local device OS.
-- If you used a pre-built dev container environment (e.g., GitHub Codespaces or Docker Desktop) the tool is pre-installed for you.
-- Verify that the tool is installed by typing ```azd version``` in a terminal.
-
-#### 2.2.2 Authenticate with Azure
-- Start the authentication flow from a terminal:
-    ```bash
+    ```shell
     azd auth login
     ```
-- This should activate a Device Code authentication flow as shown below. Just follow the instructions and complete the auth flow till you get the `Logged in on Azure` message indicating success.
-    ```bash
-    Start by copying the next code: <code-here>
-    Then press enter and continue to log in from your browser...
+
+2. Create a new azd environment:
+
+    ```shell
+    azd env new
     ```
 
-#### 2.2.3 Provision and Deploy 
+    Enter a name that will be used for the resource group.
+    This will create a new folder in the `.azure` folder, and set it as the active environment for any     calls to `azd` going forward.
 
-- Run this unified command to provision all resources. This will take a non-trivial amount of time to complete.
-    ```bash
+3. Run:
+   
+   ```shell
     azd up
     ```
-- On completion, it automatically invokes a`postprovision.sh` script that will attempt to log you into Azure. You may see something like this. Just follow the provided instructions to complete the authentication flow.
-    ```bash
-    No Azure user signed in. Please login.
-    ```
-- Once logged in, the script will do the following for you:
-    - Download `config.json` to the local device
-    - Populate `.env` with required environment variables
-    - Populate your data (in Azure AI Search, Azure CosmosDB)
-    - Create relevant Connections (for prompt flow)
-    - Upload your prompt flow to Azure (for deployment)
+   This will provision Azure resources and deploy this sample to those resources.
+   You will be prompted to select two locations, one for the majority of resources and one for the OpenAI resource, which is currently a short list. That location list is based on the [OpenAI model availability table](https://learn.microsoft.com/azure/cognitive-services/openai/concepts/models#model-summary-table-and-region-availability) and may become outdated as availability changes. For this sample we recommend using US East 2.
 
-That's it! You should now be ready to continue the process as before. Note that this is a new process so there may be some issues to iron out. Start by completing the verification steps below and taking any troubleshooting actions identified.
 
-#### 2.2.4 Verify Provisioning
-
-The script should **set up a dedicated resource group** with the following resources:
-
- - **Azure AI services** resource
- - **Azure Machine Learning workspace** (Azure AI Project) resource
- - **Search service** (Azure AI Search) resource
- - **Bing Search** (Bing Search) resource
-
-The script will set up an **Azure AI Studio** project with the following model deployments created by default, in a relevant region that supports them. _Your Azure subscription must be [enabled for Azure OpenAI access](https://learn.microsoft.com/azure/ai-services/openai/overview#how-do-i-get-access-to-azure-openai)_.
- - gpt-3.5-turbo
- - text-embeddings-ada-002
- - gpt-4
-
-The Azure AI Search resource will have **Semantic Ranker** enabled for this project, which requires the use of a paid tier of that service. It may also be created in a different region, based on availability of that feature.
-
-### 2.3 Verify `config.json` setup
-
-The script should automatically create a `config.json` in your root directory, with the relevant Azure subscription, resource group, and AI workspace properties defined. _These will be made use of by the Azure AI SDK for relevant API interactions with the Azure AI platform later_.
-
-If the config.json file is not created, simply download it from your Azure portal by visiting the _Azure AI project_ resource created, and looking at its Overview page.
-
-### 2.4 Verify `.env` setup
-
-The default sample has an `.env.sample` file that shows the relevant environment variables that need to be configured in this project. The script should create a `.env` file that has these same variables _but populated with the right values_ for your Azure resources.
-
-If the file is not created, simply copy over `.env.sample` to `.env` - then populate those values manually from the respective Azure resource pages using the Azure Portal (for Azure CosmosDB and Azure AI Search) and the Azure AI Studio (for the Azure OpenAI values)
-
-## 3. Run the app locally
+## Using the app
 
 Change to api/agents folder:
 ```
@@ -292,53 +209,26 @@ Then run evaluation
 cd evaluate
 python evaluate.py
 ```
-## 4. Evaluating prompt flow results
+## Evaluating prompt flow results
 
 Now, we need to understand how well our prompt flow performs using defined metrics like **groundedness**, **coherence** etc. To evaluate the prompt flow, we need to be able to compare it to what we see as "good results" in order to understand how well it aligns with our expectations. 
 
 We may be able to evaluate the flow manually (e.g., using Azure AI Studio) but for now, we'll evaluate this by running the prompt flow using **gpt-4** and comparing our performance to the results obtained there. To do this, follow the instructions and steps in the notebook `evaluate-chat-prompt-flow.ipynb` under the `eval` folder.
 
-## 5. Deployment with SDK
 
-At this point, we've built, run, and evaluated, the prompt flow **locally** in our Visual Studio Code environment. We are now ready to deploy the prompt flow to a hosted endpoint on Azure, allowing others to use that endpoint to send _user questions_ and receive relevant responses.
+## Code of Conduct
 
-This process consists of the following steps:
- 1. We push the prompt flow to Azure (effectively uploading flow assets to Azure AI Studio)
- 2. We activate an automatic runtime and run the uploaded flow once, to verify it works.
- 3. We deploy the flow, triggering a series of actions that results in a hosted endpoint.
- 4. We can now use built-in tests on Azure AI Studio to validate the endpoint works as desired.
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
-Just follow the instructions and steps in the notebook `push_and_deploy_pf.ipynb` under the `deployment` folder. Once this is done, the deployment endpoint and key can be used in any third-party application to _integrate_ with the deployed flow for real user experiences.
+Resources:
+
+- [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/)
+- [Microsoft Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
+- Contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with questions or concerns
 
 
-## 6. Deploy with GitHub Actions
-
-### 6.1. Create Connection to Azure in GitHub
-- Login to [Azure Shell](https://shell.azure.com/)
-- Follow the instructions to [create a service principal here](hhttps://github.com/microsoft/llmops-promptflow-template/blob/main/docs/github_workflows_how_to_setup.md#create-azure-service-principal)
-- Follow the [instructions in steps 1 - 8  here](https://github.com/microsoft/llmops-promptflow-template/blob/main/docs/github_workflows_how_to_setup.md#steps) to add create and add the user-assigned managed identity to the subscription and workspace.
-
-- Assign `Data Science Role` and the `Azure Machine Learning Workspace Connection Secrets Reader` to the service principal. Complete this step in the portal under the IAM.
-- Setup authentication with Github [here](https://github.com/microsoft/llmops-promptflow-template/blob/main/docs/github_workflows_how_to_setup.md#set-up-authentication-with-azure-and-github)
-
-```bash
-{
-  "clientId": <GUID>,
-  "clientSecret": <GUID>,
-  "subscriptionId": <GUID>,
-  "tenantId": <GUID>
-}
-```
-- Add `SUBSCRIPTION` (this is the subscription) , `GROUP` (this is the resource group name), `WORKSPACE` (this is the project name), and `KEY_VAULT_NAME` to GitHub.
-
-### 6.2. Create a custom environment for endpoint
-- Follow the instructions to create a custom env with the packages needed [here](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-manage-environments-in-studio?view=azureml-api-2#create-an-environment)
-  - Select the `upload existing docker` option 
-  - Upload from the folder `runtime\docker`
-
-- Update the deployment.yml image to the newly created environemnt. You can find the name under `Azure container registry` in the environment details page.
-
-<br/>
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## Contributing
 
