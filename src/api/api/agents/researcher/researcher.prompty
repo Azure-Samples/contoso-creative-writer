@@ -7,7 +7,6 @@ model:
     api: chat
     configuration:
         type: azure_openai
-        api_key: ${AZURE_OPENAI_API_KEY}
         azure_endpoint: ${AZURE_OPENAI_ENDPOINT}
         azure_deployment: gpt-35-turbo
         api_version: 2023-07-01-preview

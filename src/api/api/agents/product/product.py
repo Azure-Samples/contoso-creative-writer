@@ -1,14 +1,11 @@
 import os
 import json
-from typing import Dict, List
-import prompty
-from openai import AzureOpenAI
-import pathlib
+from typing import Dict
+from promptflow.tools.common import init_azure_openai_client
 from api.agents.product.ai_search import retrieve_documentation
 from promptflow.connections import AzureOpenAIConnection
-from promptflow.core import (AzureOpenAIModelConfiguration, Prompty, tool)
-from azure.core.credentials import AzureKeyCredential
 from dotenv import load_dotenv
+
 load_dotenv()
 
 def get_context(question, embedding):
@@ -18,7 +15,6 @@ def get_context(question, embedding):
 def get_embedding(question: str):
     connection = AzureOpenAIConnection(        
                     azure_deployment="text-embedding-ada-002",
-                    api_key=os.environ["AZURE_OPENAI_API_KEY"],
                     api_version=os.environ["AZURE_OPENAI_API_VERSION"],
                     api_base=os.environ["AZURE_OPENAI_ENDPOINT"]
                     )

@@ -1,5 +1,3 @@
-
-from promptflow.core import Flow
 from promptflow.core import Prompty, AzureOpenAIModelConfiguration
 import json
 import os 
@@ -15,8 +13,8 @@ def edit(article, feedback):
     # Load prompty with AzureOpenAIModelConfiguration override
     configuration = AzureOpenAIModelConfiguration(
         azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
-        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
         api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
     )
     override_model = {
         "configuration": configuration,
