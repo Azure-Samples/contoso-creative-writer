@@ -1,6 +1,7 @@
 flask
 requests
 promptflow-core
+promptflow-evals
 azure-monitor-opentelemetry-exporter
 jsonlines
 azure-search-documents

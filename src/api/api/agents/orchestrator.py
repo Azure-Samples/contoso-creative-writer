@@ -130,9 +130,9 @@ if __name__ == "__main__":
         trace.set_tracer_provider(TracerProvider())
         trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(AzureMonitorTraceExporter(connection_string=connection_string)))
 
-    #  start pf tracing
-    start_trace()
-
+    if 'PROMPTFLOW_TRACING_SERVER' in os.environ and os.environ['PROMPTFLOW_TRACING_SERVER'] != 'false':
+        start_trace()
+        
     context = "Can you find the latest camping trends and what folks are doing in the winter?"
     instructions = "Can you find the relevant information need and good places to visit"
     get_article(context, instructions)

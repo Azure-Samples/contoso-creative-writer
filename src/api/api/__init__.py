@@ -25,10 +25,9 @@ def init_logging():
         trace.set_tracer_provider(TracerProvider())
         trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(AzureMonitorTraceExporter(connection_string=connection_string)))
 
-    #  start pf tracing
-    start_trace()
-
-
+    if 'PROMPTFLOW_TRACING_SERVER' in os.environ and os.environ['PROMPTFLOW_TRACING_SERVER'] != 'false':
+        start_trace()
+        
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
     )
