@@ -7,6 +7,7 @@ model:
   api: chat
   configuration:
     type: azure_openai
+    azure_endpoint: ${AZURE_OPENAI_ENDPOINT}
     azure_deployment: gpt-4
     api_version: 2023-07-01-preview
   parameters:

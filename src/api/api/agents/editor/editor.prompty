@@ -8,6 +8,8 @@ model:
     api: chat
     configuration:
         type: azure_openai
+        azure_endpoint: ${AZURE_OPENAI_ENDPOINT}
+        api_version: ${env:AZURE_OPENAI_API_VERSION}
     parameters:
         max_tokens: 1200
         temperature: 0.2
