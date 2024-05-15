@@ -13,5 +13,5 @@ resource "azurerm_search_service" "search" {
 
   local_authentication_enabled = true
   authentication_failure_mode  = "http403"
-  semantic_search_sku = "free"
+  semantic_search_sku          = "free"
 }
