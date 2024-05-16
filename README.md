@@ -140,14 +140,14 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 
 ### Testing the sample
 
-This sample repository contains an agents folder that includes subfolders for each agent. Each agent forlder contains a prompty file where the agents prompty is defined and a python file with the code used to run it. Exploring these files will help you understand what each agent is doing. The agents folder also contains an orchestrator.py file that can be used to run the entire flow and to create an article.
+This sample repository contains an agents folder that includes subfolders for each agent. Each agent forlder contains a prompty file where the agents prompty is defined and a python file with the code used to run it. Exploring these files will help you understand what each agent is doing. The agents folder also contains an `orchestrator.py` file that can be used to run the entire flow and to create an article.
 
 To test the sample we start by populating an Azure AI Search vectore store index with product data. 
 To do this change to the api/data folder:
 ```
 cd src/api/data
 ```
-Look for the create-azure-search.ipynb notebook and run all of the cells in the notebook. This will create an index named 'contoso-products'. You're now ready to run the full promptflow. 
+Look for the `create-azure-search.ipynb` notebook and run all of the cells in the notebook. This will create an index named 'contoso-products'. You're now ready to run the full promptflow. 
 
 To run the sample using just the orchestrator logic use the following command:
 ```
