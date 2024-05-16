@@ -31,9 +31,8 @@ This project template provides the following features:
 * [Prompty and Prompt Flow](https://microsoft.github.io/promptflow/how-to-guides/develop-a-prompty/index.html) to create, manage and evaluate the prompt into our code.
 * [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to research the topic provided
 * [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) for performing semantic similarity search
-
   
-![Architecture Digram](https://github.com/Azure-Samples/agent-openai-python-prompty/main/images/Creative_writing.png)
+![Architecture Digram](https://github.com/Azure-Samples/agent-openai-python-prompty/blob/main/images/Creative_writing.png)
 
 ## Azure account requirements
 
