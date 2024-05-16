@@ -63,5 +63,4 @@ pipeline:
     - AZURE_OPENAI_API_ENDPOINT
     - BING_SEARCH_ENDPOINT
   secrets:
-    - AZURE_OPENAI_API_KEY
     - BING_SEARCH_KEY
