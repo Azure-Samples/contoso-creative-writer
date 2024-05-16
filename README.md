@@ -15,8 +15,7 @@ This sample demonstrates how to create and work with AI agents driven by [Azure 
       - [Prerequisites](#prerequisites)
       - [Initializing the project](#initializing-the-project)
 - [Deployment](#deployment)
-- [Local Development](#local-development)
-  - [Testing the sample](#testing-the-sample)
+- [Testing the sample](#testing-the-sample)
   - [Evaluating prompt flow results](#evaluating-prompt-flow-results)
 - [Costs](#costs)
 - [Security Guidelines](#security-guidelines)
@@ -135,33 +134,40 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 
     This project uses `gpt-35-turbo-0613` and `gpt-4-1106-Preview` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. We recommend using East US 2 for this project. 
 
-## Local Development
-
-### Testing the sample
+## Testing the sample
 
 This sample repository contains an agents folder that includes subfolders for each agent. Each agent forlder contains a prompty file where the agents prompty is defined and a python file with the code used to run it. Exploring these files will help you understand what each agent is doing. The agents folder also contains an `orchestrator.py` file that can be used to run the entire flow and to create an article.
 
-To test the sample we start by populating an Azure AI Search vectore store index with product data. 
-To do this change to the api/data folder:
+To test the sample: 
+
+1. Populate the Azure AI Search vectore store index with product data. 
+
+- Change into the api/data folder:
 ```
 cd src/api/data
 ```
-Look for the `create-azure-search.ipynb` notebook and run all of the cells in the notebook. This will create an index named 'contoso-products'. You're now ready to run the full promptflow. 
+-  Install the [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter). 
+- Once the extension has been installed, open the `create-azure-search.ipynb` notebook. We will use this notebook to upload a catalogue of products to the Azure AI Search vector store. Click `select kernel` in the top right hand corner of the notebook, choose Python environment and then select the recommended Python version. 
+- Run all of the cells in the notebook. If this process was successful you should see "uploading 20 documents to index contoso-products". You're now ready to run the full promptflow. 
 
-To run the sample using just the orchestrator logic use the following command:
-```
-python -m api.agents.orchestrator
-```
+2. Test with sample data
 
-You also have the option of testing this code locally using a Flask app. 
+    2.1 To run the sample using just the orchestrator logic use the following command:
 
-To run the flask webserver:
-```
-flask --debug --app api.app:app run --port 5000
-```
-```
-http://127.0.0.1:5000/get_article?context=Write an article about camping in alaska&instruction=find specifics about what type of gear they would need and explain in detail
-```
+        ```
+        cd ..
+        python -m api.agents.orchestrator
+        ```
+
+    2.2 You also have the option of testing this code locally using a Flask app. (You should run this from the src/api folder)
+
+    To run the flask webserver:
+    ```
+    flask --debug --app api.app:app run --port 5000
+    ```
+    ```
+    http://127.0.0.1:5000/get_article?context=Write an article about camping in alaska&instruction=find specifics about what type of gear they would need and explain in detail
+    ```
 
 ## Evaluating prompt flow results
 

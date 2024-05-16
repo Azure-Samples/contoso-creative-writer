@@ -2,11 +2,6 @@ output "AZURE_OPENAI_ENDPOINT" {
   value = azurerm_cognitive_account.cog.endpoint
 }
 
-output "AZURE_OPENAI_API_KEY" {
-  value     = azurerm_cognitive_account.cog.primary_access_key
-  sensitive = true
-}
-
 output "AZURE_OPENAI_API_VERSION" {
   value = var.openai_api_version
 }
@@ -77,11 +72,6 @@ output "AZURE_SEARCH_ENDPOINT" {
 
 output "AZURE_SEARCH_INDEX_NAME" {
   value = var.search_index_name
-}
-
-output "AZURE_SEARCH_API_KEY" {
-  value     = azurerm_search_service.search.primary_key
-  sensitive = true
 }
 
 output "VECTORDB_TYPE" {
