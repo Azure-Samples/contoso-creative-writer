@@ -33,7 +33,7 @@ This project template provides the following features:
 * [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) for performing semantic similarity search
 
   
-![Architecture Digram]()
+![Architecture Digram](https://github.com/Azure-Samples/agent-openai-python-prompty/main/images/Creative_writing.png)
 
 ## Azure account requirements
 
