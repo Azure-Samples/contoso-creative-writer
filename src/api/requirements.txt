@@ -3,7 +3,6 @@ requests
 promptflow-core
 azure-monitor-opentelemetry-exporter
 jsonlines
-azure-search-documents
 python-dotenv==1.0.1
 azure-search-documents==11.4.0
 gunicorn==21.2.0
