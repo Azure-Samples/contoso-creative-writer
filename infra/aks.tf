@@ -53,3 +53,24 @@ resource "azurerm_kubernetes_cluster" "aks" {
     dns_zone_id = ""
   }
 }
+
+resource "azurerm_user_assigned_identity" "uai" {
+  location            = azurerm_resource_group.rg.location
+  name                = "identity-${local.resource_token}"
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
+resource "azurerm_federated_identity_credential" "afic" {
+  name                =  "afic"
+  resource_group_name =  azurerm_resource_group.rg.name
+  audience            =  ["api://AzureADTokenExchange"]
+  issuer              =  azurerm_kubernetes_cluster.aks[0].oidc_issuer_url
+  parent_id           =  azurerm_user_assigned_identity.uai.id
+  subject             =  "system:serviceaccount:creativeagent:afic"
+
+  depends_on = [
+    azurerm_kubernetes_cluster.aks,
+    azurerm_resource_group.rg,
+    azurerm_user_assigned_identity.uai
+  ]
+ }
