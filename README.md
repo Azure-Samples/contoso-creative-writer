@@ -44,7 +44,7 @@ This project template provides the following features:
     - Ability to deploy `gpt-35-turbo-0613` and `gpt-4-1106-Preview`.
     - We recommend using East US 2, as this region has access to all models and services required. 
 * **Azure subscription with access enabled for [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)**
-* * **Azure subscription with access enabled for [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search)**
+* **Azure subscription with access enabled for [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search)**
 
 ## Opening the project
 
