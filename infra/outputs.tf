@@ -44,7 +44,7 @@ output "AZURE_AKS_CLUSTER_NAME" {
 }
 
 output "AZURE_AKS_IDENTITY_CLIENT_ID" {
-  value = local.is_default_workspace ? "" : azurerm_kubernetes_cluster.aks[0].kubelet_identity[0].object_id
+  value = local.is_default_workspace ? "" : azurerm_user_assigned_identity.uai.client_id
 }
 
 output "AZURE_AKS_NAMESPACE" {
