@@ -134,8 +134,6 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 
     This project uses `gpt-35-turbo-0613` and `gpt-4-1106-Preview` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. We recommend using East US 2 for this project.
 
-4. At the end of this process a `.env` file will be created for you. Copy this file to the `src/api` folder. 
-
 ## Testing the sample
 
 This sample repository contains an agents folder that includes subfolders for each agent. Each agent forlder contains a prompty file where the agents prompty is defined and a python file with the code used to run it. Exploring these files will help you understand what each agent is doing. The agents folder also contains an `orchestrator.py` file that can be used to run the entire flow and to create an article.
