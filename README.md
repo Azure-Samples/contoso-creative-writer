@@ -90,6 +90,8 @@ A related option is VS Code Dev Containers, which will open the project in your 
 * [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 * [Git](https://git-scm.com/downloads)
 
+**Note for Windows users:** If you are not using a container to run this sample, our hooks are currently all shell scripts. To provision this sample correctly while we work on updates we recommend using [git bash](https://gitforwindows.org/). 
+
 #### Initializing the project
 
 1. Create a new folder and switch to it in the terminal, then run this command to download the project code:
