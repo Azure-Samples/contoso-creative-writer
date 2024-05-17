@@ -120,15 +120,9 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 
     If you have any issues with that command, you may also want to try `azd auth login --use-device-code`.
 
-2. Create a new azd environment:
-
-    ```shell
-    azd env new
-    ```
-
     This will create a folder under `.azure/` in your project to store the configuration for this deployment. You may have multiple azd environments if desired.
 
-3. Provision the resources and deploy the code:
+2. Provision the resources and deploy the code:
 
     ```shell
     azd up
