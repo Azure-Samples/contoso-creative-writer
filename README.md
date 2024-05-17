@@ -154,31 +154,65 @@ To test the sample:
 
 1. Populate the Azure AI Search vectore store index with product data. 
 
-- Change into the api/data folder:
-```
-cd src/api/data
-```
--  Install the [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter). 
-- Once the extension has been installed, open the `create-azure-search.ipynb` notebook. We will use this notebook to upload a catalogue of products to the Azure AI Search vector store. Click `select kernel` in the top right hand corner of the notebook, choose Python environment and then select the recommended Python version. 
-- Run all of the cells in the notebook. If this process was successful you should see "uploading 20 documents to index contoso-products". You're now ready to run the full promptflow. 
-
-2. Test with sample data
-
-    2.1 To run the sample using just the orchestrator logic use the following command:
-
-        ```
-        cd ..
-        python -m api.agents.orchestrator
-        ```
-
-    2.2 You also have the option of testing this code locally using a Flask app. (You should run this from the src/api folder)
-
-    To run the flask webserver:
+    - Change into the api/data folder:
     ```
-    flask --debug --app api.app:app run --port 5000
+    cd src/api/data
     ```
+    -  Install the [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter). 
+    - Once the extension has been installed, open the `create-azure-search.ipynb` notebook. We will use this notebook to upload a catalogue of products to the Azure AI Search vector store. Click `select kernel` in the top right hand corner of the notebook, choose Python environment and then select the recommended Python version. 
+    - Run all of the cells in the notebook. If this process was successful you should see "uploading 20 documents to index contoso-products". You're now ready to run the full promptflow. 
+
+2. You can run the example web app locally using a Flask server. 
+
+    First navigate to the src/api folder 
     ```
-    http://127.0.0.1:5000/get_article?context=Write an article about camping in alaska&instruction=find specifics about what type of gear they would need and explain in detail
+    cd ..
+    ```
+    Run the Flask webserver
+    ```
+    flask --debug --app api.app:app run --port 8080
+    ```
+
+    Then in a new terminal, navigate to the web folder
+    ```
+    cd src/web
+    ```
+    First install node packages:
+    ```
+    npm install
+    ```
+
+    Then run the web app with a local dev web server:
+    ```
+    npm run dev
+    ```
+
+    This will launch the app, where you can use example context and instructions to get started. 
+    On the 'Creative Team' page you can examine the output of each agent by clicking on it. The app should look like this: 
+
+
+        Getting Started        |  Creative Team
+    :-------------------------:|:-------------------------:
+    ![getting started](images/get_started.png)  |  ![creative team](images/creative_team.png)
+
+    The article that was created: 
+    ![generated article](images/articlepage.png)
+
+    Change the instructions and context to create an article of your choice. 
+
+2. Testing directly with Python using the orchestrator Logic
+
+    To run the sample using just the orchestrator logic use the following command:
+
+    ```
+    cd ..
+    python -m api.agents.orchestrator
+
+    ```
+
+    You can also pass context and instructions directly to the flask `get_article` api by running:
+    ```
+    http://127.0.0.1:8080/get_article?context=Write an article about camping in alaska&instructions=find specifics about what type of gear they would need and explain in detail
     ```
 
 ## Evaluating prompt flow results
