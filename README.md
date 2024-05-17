@@ -188,14 +188,18 @@ To test the sample:
     ```
 
     This will launch the app, where you can use example context and instructions to get started. 
-    On the 'Creative Team' page you can examine the output of each agent by clicking on it. The app should look like this: 
+    On the 'Creative Team' page you can examine the output of each agent by clicking on it. The app should look like this:
 
+   The getting started tab to send your instructions and context to the prompt:
+   
+    ![getting started](images/get_started.png)
 
-        Getting Started        |  Creative Team
-    :-------------------------:|:-------------------------:
-    ![getting started](images/get_started.png)  |  ![creative team](images/creative_team.png)
+    The creative team tab that let's you follow and understand the agents workflow:
+   
+    ![creative team](images/creative_team.png)
 
-    The article that was created: 
+    The document tab that displays the article that was created:
+   
     ![generated article](images/articlepage.png)
 
     Change the instructions and context to create an article of your choice. 
