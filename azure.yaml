@@ -2,7 +2,7 @@
 
 name: agent-openai-python-prompty
 metadata:
-  template: agent-openai-python-prompty
+  template: agent-openai-python-prompty@0.0.1
 services:
   api:
     project: ./src/api
