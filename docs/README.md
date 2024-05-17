@@ -1,3 +1,20 @@
+---
+page_type: sample
+languages:
+  - azdeveloper
+  - python
+  - bicep
+products:
+  - azure
+  - ai-services
+  - azure-openai
+urlFragment: agent-openai-python-prompty
+name: Creative Writing Assistant: Working with Agents using Promptflow (Python Implementation)
+description: A python sample app that demonstrates how to create and work with AI agents driven by Azure OpenAI.
+---
+
+<!-- YAML front-matter schema: https://review.learn.microsoft.com/help/contribute/samples/process/onboarding?branch=main#supported-metadata-fields-for-readmemd -->
+
 # Creative Writing Assistant: Working with Agents using Promptflow (Python Implementation) 
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/agent-openai-python-prompty) [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/azure-samples/agent-openai-python-prompty) 
@@ -31,7 +48,7 @@ This project template provides the following features:
 * [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to research the topic provided
 * [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) for performing semantic similarity search
   
-![Architecture Digram](images/Creative_writing.png)
+![Architecture Digram](https://github.com/Azure-Samples/agent-openai-python-prompty/blob/main/images/Creative_writing.png)
 
 ## Azure account requirements
 
@@ -90,8 +107,6 @@ A related option is VS Code Dev Containers, which will open the project in your 
 * [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 * [Git](https://git-scm.com/downloads)
 
-**Note for Windows users:** If you are not using a container to run this sample, our hooks are currently all shell scripts. To provision this sample correctly while we work on updates we recommend using [git bash](https://gitforwindows.org/). 
-
 #### Initializing the project
 
 1. Create a new folder and switch to it in the terminal, then run this command to download the project code:
@@ -120,9 +135,15 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 
     If you have any issues with that command, you may also want to try `azd auth login --use-device-code`.
 
+2. Create a new azd environment:
+
+    ```shell
+    azd env new
+    ```
+
     This will create a folder under `.azure/` in your project to store the configuration for this deployment. You may have multiple azd environments if desired.
 
-2. Provision the resources and deploy the code:
+3. Provision the resources and deploy the code:
 
     ```shell
     azd up
@@ -130,15 +151,7 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 
     This project uses `gpt-35-turbo-0613` and `gpt-4-1106-Preview` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. We recommend using East US 2 for this project.
 
-   After running azd up, you may be asked the following question during `Github Setup`:
-
-   ```shell 
-   Do you want to configure a GitHub action to automatically deploy this repo to Azure when you push code changes?
-   (Y/n) Y
-   ```
-
-   You should respond with `N`, as this is not a necessary step, and take some time to setup. 
-
+4. At the end of this process a `.env` file will be created for you. Copy this file to the `src/api` folder. 
 
 ## Testing the sample
 
@@ -148,69 +161,31 @@ To test the sample:
 
 1. Populate the Azure AI Search vectore store index with product data. 
 
-    - Change into the api/data folder:
-    ```
-    cd src/api/data
-    ```
-    -  Install the [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter). 
-    - Once the extension has been installed, open the `create-azure-search.ipynb` notebook. We will use this notebook to upload a catalogue of products to the Azure AI Search vector store. Click `select kernel` in the top right hand corner of the notebook, choose Python environment and then select the recommended Python version. 
-    - Run all of the cells in the notebook. If this process was successful you should see "uploading 20 documents to index contoso-products". You're now ready to run the full promptflow. 
+- Change into the api/data folder:
+```
+cd src/api/data
+```
+-  Install the [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter). 
+- Once the extension has been installed, open the `create-azure-search.ipynb` notebook. We will use this notebook to upload a catalogue of products to the Azure AI Search vector store. Click `select kernel` in the top right hand corner of the notebook, choose Python environment and then select the recommended Python version. 
+- Run all of the cells in the notebook. If this process was successful you should see "uploading 20 documents to index contoso-products". You're now ready to run the full promptflow. 
 
-2. Run the example web app locally using a Flask server. 
+2. Test with sample data
 
-    First navigate to the src/api folder 
-    ```
-    cd ..
-    ```
-    Run the Flask webserver
-    ```
-    flask --debug --app api.app:app run --port 8080
-    ```
+    2.1 To run the sample using just the orchestrator logic use the following command:
 
-    Then in a new terminal, navigate to the web folder
+        ```
+        cd ..
+        python -m api.agents.orchestrator
+        ```
+
+    2.2 You also have the option of testing this code locally using a Flask app. (You should run this from the src/api folder)
+
+    To run the flask webserver:
     ```
-    cd src/web
+    flask --debug --app api.app:app run --port 5000
     ```
-    First install node packages:
     ```
-    npm install
-    ```
-
-    Then run the web app with a local dev web server:
-    ```
-    npm run dev
-    ```
-
-    This will launch the app, where you can use example context and instructions to get started. 
-    On the 'Creative Team' page you can examine the output of each agent by clicking on it. The app should look like this:
-
-   The getting started tab to send your instructions and context to the prompt:
-   
-    ![getting started](images/get_started_page.png)
-
-    The creative team tab that let's you follow and understand the agents workflow:
-   
-    ![creative team](images/creative_team_agents.png)
-
-    The document tab that displays the article that was created:
-   
-    ![generated article](images/winter_article.png)
-
-    Change the instructions and context to create an article of your choice. 
-
-2. Testing directly with Python using the orchestrator Logic
-
-    To run the sample using just the orchestrator logic use the following command:
-
-    ```
-    cd ..
-    python -m api.agents.orchestrator
-
-    ```
-
-    You can also pass context and instructions directly to the flask `get_article` api by running:
-    ```
-    http://127.0.0.1:8080/get_article?context=Write an article about camping in alaska&instructions=find specifics about what type of gear they would need and explain in detail
+    http://127.0.0.1:5000/get_article?context=Write an article about camping in alaska&instruction=find specifics about what type of gear they would need and explain in detail
     ```
 
 ## Evaluating prompt flow results
@@ -221,7 +196,22 @@ We may be able to evaluate the flow manually (e.g., using Azure AI Studio) but f
 
 You can also view the evaluation metrics by running the following commands. 
 
-Run evaluation:
+In a new terminal
+```
+cd src/web
+```
+
+First install node packages:
+```
+npm install
+```
+
+Then run the web app with a local dev web server:
+```
+npm run dev
+```
+
+Then run evaluation
 ```
 cd evaluate
 python evaluate.py

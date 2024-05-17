@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
-name: creativeagent
+name: agent-openai-python-prompty
 metadata:
-  template: creativeagent@0.0.1-beta
+  template: agent-openai-python-prompty@0.0.1
 services:
   api:
     project: ./src/api
