@@ -189,22 +189,7 @@ We may be able to evaluate the flow manually (e.g., using Azure AI Studio) but f
 
 You can also view the evaluation metrics by running the following commands. 
 
-In a new terminal
-```
-cd src/web
-```
-
-First install node packages:
-```
-npm install
-```
-
-Then run the web app with a local dev web server:
-```
-npm run dev
-```
-
-Then run evaluation
+Run evaluation:
 ```
 cd evaluate
 python evaluate.py
