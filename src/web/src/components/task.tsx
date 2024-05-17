@@ -15,10 +15,10 @@ export const Task = ({ startWork }: IProps) => {
   const dispatch = useAppDispatch();
   const setExamples = () => {
     setContext(
-      "I am writing a thought piece on early career development with Satya Nadella as an example."
+      "Can you find the latest camping trends and what folks are doing in the winter?"
     );
     setInstructions(
-      "Can you find the relevant information on both him as a person, what he studied and maybe some news articles to include in the thought piece?"
+      "Can you find the relevant information needed and good places to visit"
     );
   };
 

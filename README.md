@@ -31,7 +31,7 @@ This project template provides the following features:
 * [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to research the topic provided
 * [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) for performing semantic similarity search
   
-![Architecture Digram](https://github.com/Azure-Samples/agent-openai-python-prompty/blob/main/images/Creative_writing.png)
+![Architecture Digram](images/Creative_writing.png)
 
 ## Azure account requirements
 
@@ -162,7 +162,7 @@ To test the sample:
     - Once the extension has been installed, open the `create-azure-search.ipynb` notebook. We will use this notebook to upload a catalogue of products to the Azure AI Search vector store. Click `select kernel` in the top right hand corner of the notebook, choose Python environment and then select the recommended Python version. 
     - Run all of the cells in the notebook. If this process was successful you should see "uploading 20 documents to index contoso-products". You're now ready to run the full promptflow. 
 
-2. You can run the example web app locally using a Flask server. 
+2. Run the example web app locally using a Flask server. 
 
     First navigate to the src/api folder 
     ```
@@ -192,15 +192,15 @@ To test the sample:
 
    The getting started tab to send your instructions and context to the prompt:
    
-    ![getting started](images/get_started.png)
+    ![getting started](images/get_started_page.png)
 
     The creative team tab that let's you follow and understand the agents workflow:
    
-    ![creative team](images/creative_team.png)
+    ![creative team](images/creative_team_agents.png)
 
     The document tab that displays the article that was created:
    
-    ![generated article](images/articlepage.png)
+    ![generated article](images/winter_article.png)
 
     Change the instructions and context to create an article of your choice. 
 
