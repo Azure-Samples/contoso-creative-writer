@@ -136,6 +136,16 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 
     This project uses `gpt-35-turbo-0613` and `gpt-4-1106-Preview` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. We recommend using East US 2 for this project.
 
+   After running azd up, you may be asked the following question during `Github Setup`:
+
+   ```shell 
+   Do you want to configure a GitHub action to automatically deploy this repo to Azure when you push code changes?
+   (Y/n) Y
+   ```
+
+   You should respond with `N`, as this is not a necessary step, and take some time to setup. 
+
+
 ## Testing the sample
 
 This sample repository contains an agents folder that includes subfolders for each agent. Each agent forlder contains a prompty file where the agents prompty is defined and a python file with the code used to run it. Exploring these files will help you understand what each agent is doing. The agents folder also contains an `orchestrator.py` file that can be used to run the entire flow and to create an article.
