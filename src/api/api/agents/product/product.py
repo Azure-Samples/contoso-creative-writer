@@ -1,15 +1,10 @@
 import os
 import json
 from typing import Dict, List
-import prompty
 from openai import AzureOpenAI
-import pathlib
 
 from api.agents.product.ai_search import retrieve_documentation
-from promptflow.connections import AzureOpenAIConnection
 from openai import AzureOpenAI
-from promptflow.core import (AzureOpenAIModelConfiguration, Prompty, tool)
-from azure.core.credentials import AzureKeyCredential
 from promptflow.tracing import trace
 
 from dotenv import load_dotenv
@@ -29,7 +24,7 @@ def get_embedding(question: str):
 
     return client.embeddings.create(
             input=question,
-            model=os.environ["AZURE_EMBEDDING_NAME"]
+            model="text-embedding-ada-002"
         ).data[0].embedding
 
 

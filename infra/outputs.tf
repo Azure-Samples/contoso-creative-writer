@@ -2,11 +2,6 @@ output "AZURE_OPENAI_ENDPOINT" {
   value = azurerm_cognitive_account.cog.endpoint
 }
 
-output "AZURE_OPENAI_API_KEY" {
-  value     = azurerm_cognitive_account.cog.primary_access_key
-  sensitive = true
-}
-
 output "AZURE_OPENAI_API_VERSION" {
   value = var.openai_api_version
 }
@@ -44,7 +39,7 @@ output "AZURE_AKS_CLUSTER_NAME" {
 }
 
 output "AZURE_AKS_IDENTITY_CLIENT_ID" {
-  value = local.is_default_workspace ? "" : azurerm_kubernetes_cluster.aks[0].kubelet_identity[0].object_id
+  value = local.is_default_workspace ? "" : azurerm_user_assigned_identity.uai.client_id
 }
 
 output "AZURE_AKS_NAMESPACE" {
@@ -71,11 +66,28 @@ output "AZURE_TENANT_ID" {
   value = data.azurerm_client_config.current.tenant_id
 }
 
+output "AZURE_SEARCH_ENDPOINT" {
+  value = "https://${azurerm_search_service.search.name}.search.windows.net"
+}
+
+output "AZURE_SEARCH_INDEX_NAME" {
+  value = var.search_index_name
+}
+
+output "VECTORDB_TYPE" {
+  value = var.vectordb_type
+}
+
 output "BING_SEARCH_ENDPOINT" {
   value = jsondecode(azapi_resource.bing.output).properties.endpoint
 }
 
 output "BING_SEARCH_KEY" {
   value     = jsondecode(data.azapi_resource_action.bing.output).key1
+  sensitive = true
+}
+
+output "APPLICATIONINSIGHTS_CONNECTION_STRING" {
+  value     = local.deploy_observability_tools ? "" : azurerm_application_insights.applicationinsights[0].connection_string
   sensitive = true
 }

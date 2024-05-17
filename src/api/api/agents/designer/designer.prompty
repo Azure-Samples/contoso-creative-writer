@@ -8,8 +8,7 @@ model:
   api: chat
   configuration:
         type: azure_openai
-        azure_deployment: ${env:AZURE_DEPLOYMENT_NAME}
-        api_key: ${env:AZURE_OPENAI_API_KEY"}
+        azure_deployment: ${env:AZURE_OPENAI_DEPLOYMENT_NAME}
         api_version: ${env:AZURE_OPENAI_API_VERSION}
         azure_endpoint: ${env:AZURE_OPENAI_ENDPOINT}
 inputs:

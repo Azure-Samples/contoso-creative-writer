@@ -57,3 +57,14 @@ resource "azurerm_monitor_data_collection_rule_association" "example_msci_to_aks
   target_resource_id      = azurerm_kubernetes_cluster.aks[0].id
   data_collection_rule_id = azurerm_monitor_data_collection_rule.example_msci[0].id
 }
+
+
+resource "azurerm_application_insights" "applicationinsights" {
+  count               = local.deploy_observability_tools ? 1 : 0
+  name                = "ai-${local.resource_token}"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  application_type    = "web"
+  workspace_id        = azurerm_log_analytics_workspace.example[0].id
+  tags                = local.tags
+}

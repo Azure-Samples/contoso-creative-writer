@@ -7,7 +7,7 @@ from azure.search.documents.models import (
     QueryCaptionType,
     QueryAnswerType,
 )
-from azure.core.credentials import AzureKeyCredential
+from azure.identity import DefaultAzureCredential
 
 
 def retrieve_documentation(
@@ -17,9 +17,9 @@ def retrieve_documentation(
 ) -> str:
     
     search_client = SearchClient(
-        endpoint=os.environ["CONTOSO_SEARCH_ENDPOINT"],
+        endpoint=os.environ["AZURE_SEARCH_ENDPOINT"],
         index_name=index_name,
-        credential=AzureKeyCredential(os.environ["CONTOSO_SEARCH_KEY"]),
+        credential=DefaultAzureCredential(),
     )
 
     vector_query = VectorizedQuery(
