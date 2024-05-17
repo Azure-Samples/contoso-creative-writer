@@ -16,7 +16,7 @@ This sample demonstrates how to create and work with AI agents driven by [Azure 
       - [Initializing the project](#initializing-the-project)
 - [Deployment](#deployment)
 - [Testing the sample](#testing-the-sample)
-  - [Evaluating prompt flow results](#evaluating-prompt-flow-results)
+    - [Evaluating prompt flow results](#evaluating-prompt-flow-results)
 - [Costs](#costs)
 - [Security Guidelines](#security-guidelines)
 - [Resources](#resources)
@@ -68,7 +68,16 @@ The easiest way to get started is GitHub Codespaces, since it will setup all the
     azd up
     ```
 
-    This project uses `gpt-35-turbo-0613` and `gpt-4-1106-Preview` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. For this project we recommend East US 2. 
+    This project uses `gpt-35-turbo-0613` and `gpt-4-1106-Preview` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. For this project we recommend East US 2.
+
+5. Install the necessary Python packages:
+
+    ```
+    src/api
+    pip install -r requirements.txt
+    ```
+
+Once the above steps are completed you can jump straight to [testing the sample](#testing-the-sample). 
 
 ### VS Code Dev Containers
 
@@ -80,6 +89,14 @@ A related option is VS Code Dev Containers, which will open the project in your 
     [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/Azure-Samples/agent-openai-python-prompty.git)
 
 3. In the VS Code window that opens, once the project files show up (this may take several minutes), open a terminal window.
+
+4. Install required packages:
+
+    ```shell
+    cd src/api
+    pip install -r requirements.txt
+    ```
+   Once you've completed these steps jump to [deployment](#deployment). 
 
 ### Local environment
 
