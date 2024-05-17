@@ -8,7 +8,7 @@ from promptflow.core import AzureOpenAIModelConfiguration
 from promptflow.core import Flow
 from pathlib import Path
 
-#from api.evaluate.writer import WriterEvaluator
+from api.evaluate.writer import WriterEvaluator
 from threading import Thread
 
 from opentelemetry import trace
@@ -30,15 +30,16 @@ def run_evaluators(data, trace_context):
         )
         evaluator = WriterEvaluator(configuration)
         results = evaluator(query=data['query'], context=data['context'], response=data['response'])
-        span.set_attribute("outputs", str(results))
+        span.set_attribute("output", json.dumps(results))
 
         print("results: ", results)
 
 def trace_eval_data(data):
     span = trace.get_current_span()
+    print("Span recording: ", span.is_recording)
     # only run evaluators if data is being recorded
     if (span.is_recording):
-        # propagate trace context to new thread, TODO: not quite working
+        # propagate trace context to new thread
         trace_context = set_span_in_context(span)
         thread = Thread(target=run_evaluators, args=(data, trace_context,))
         thread.start()
@@ -86,7 +87,7 @@ def execute(context, feedback, instructions, research, products):
         products=products
     )
 
-    #log_eval_data(context, feedback, instructions, research, products, result)
+    log_eval_data(context, feedback, instructions, research, products, result)
     return result
 
 
