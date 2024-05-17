@@ -22,10 +22,10 @@ def init_logging():
     """Initializes logging."""
 
     # log to app insights if configured
-    if 'APPINSIGHTS_CONNECTION_STRING' in os.environ:
+    if 'APPLICATIONINSIGHTS_CONNECTION_STRING' in os.environ:
         inject_openai_api()
         
-        connection_string=os.environ['APPINSIGHTS_CONNECTION_STRING']
+        connection_string=os.environ['APPLICATIONINSIGHTS_CONNECTION_STRING']
         trace.set_tracer_provider(TracerProvider(sampler=ParentBasedTraceIdRatio(1.0)))
         trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(AzureMonitorTraceExporter(connection_string=connection_string)))
 

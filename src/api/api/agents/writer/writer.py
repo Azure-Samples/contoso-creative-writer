@@ -23,16 +23,16 @@ def run_evaluators(data, trace_context):
     with tracer.start_as_current_span("run_evaluators", context=trace_context) as span:
         span.set_attribute("inputs", str(data))
         configuration = AzureOpenAIModelConfiguration(
-            azure_deployment=os.getenv("AZURE_DEPLOYMENT_NAME"),
-            api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+            azure_deployment=os.getenv("AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME"),
             api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
             azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
         )
         evaluator = WriterEvaluator(configuration)
         results = evaluator(query=data['query'], context=data['context'], response=data['response'])
-        span.set_attribute("output", json.dumps(results))
+        resultsJson = json.dumps(results)
+        span.set_attribute("output", resultsJson)
 
-        print("results: ", results)
+        print("results: ", resultsJson)
 
 def trace_eval_data(data):
     span = trace.get_current_span()
