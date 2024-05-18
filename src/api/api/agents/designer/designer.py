@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def design(context, instructions, feedback):
+def design(request, instructions, feedback):
     # Load prompty with AzureOpenAIModelConfiguration override
     configuration = AzureOpenAIModelConfiguration(
         azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
@@ -21,7 +21,7 @@ def design(context, instructions, feedback):
         "editor.prompty", model=override_model)
     
     result = prompty_obj(
-        context=context,
+        context=request,
         instructions=instructions,
         feedback=feedback,
     )
@@ -30,7 +30,7 @@ def design(context, instructions, feedback):
 
 if __name__ == "__main__":
     result = design(
-        "The context for the designer.",
+        "The request for the designer.",
         "The instructions for the designer.",
         "The feedback for the designer.")
     print(result)

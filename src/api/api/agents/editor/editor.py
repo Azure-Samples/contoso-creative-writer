@@ -9,7 +9,7 @@ folder = Path(__file__).parent.absolute().as_posix()
 load_dotenv()
 
 def edit(article, feedback):
-
+    
     # Load prompty with AzureOpenAIModelConfiguration override
     configuration = AzureOpenAIModelConfiguration(
         azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
@@ -24,7 +24,6 @@ def edit(article, feedback):
     path_to_prompty = folder + "/editor.prompty"
 
     prompty_obj = Prompty.load(path_to_prompty, model=override_model)
-    
     result = prompty_obj(article=article, feedback=feedback,)
     
     return result

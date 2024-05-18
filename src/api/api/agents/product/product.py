@@ -1,6 +1,6 @@
 import os
 import json
-from typing import Dict, List
+from typing import Dict
 from openai import AzureOpenAI
 
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
@@ -13,10 +13,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 @trace
-def get_context(question, embedding):
-    return retrieve_documentation(question=question, index_name="contoso-products", embedding=embedding)
+def get_context(request, embedding):
+    return retrieve_documentation(request=request, index_name="contoso-products", embedding=embedding)
 
-def get_embedding(question: str):
+def get_embedding(request: str):
     token_provider = get_bearer_token_provider(
         DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
     )
@@ -28,17 +28,14 @@ def get_embedding(question: str):
     )
 
     return client.embeddings.create(
-            input=question,
+            input=request,
             model="text-embedding-ada-002"
         ).data[0].embedding
 
-
-def get_products(context: str) -> Dict[str, any]:
-    embedding = get_embedding(context)
-    products = get_context(context, embedding)
-    print(products)
+def get_products(request: str) -> Dict[str, any]:
+    embedding = get_embedding(request)
+    products = get_context(request, embedding)
     return products
-
 
 if __name__ == "__main__":
     context = "what kind of jackets do you have?"
