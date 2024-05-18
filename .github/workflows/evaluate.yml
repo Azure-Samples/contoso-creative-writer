@@ -29,7 +29,7 @@ jobs:
       AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
       AZURE_OPENAI_API_VERSION: ${{ vars.AZURE_OPENAI_API_VERSION }}
       AZURE_OPENAI_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_DEPLOYMENT_NAME }}
-      AZURE_OPENAI_35_TURBO_DEPLOYMENT: ${{ vars.AZURE_OPENAI_35_TURBO_DEPLOYMENT }}
+      AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME }}
       BING_SEARCH_ENDPOINT: ${{ vars.BING_SEARCH_ENDPOINT }}
       BING_SEARCH_KEY: ${{ secrets.BING_SEARCH_KEY }}
 
@@ -51,6 +51,7 @@ jobs:
         uses: azure/login@v2
         with:
           creds: ${{ env.AZURE_CREDENTIALS }}
+          # WAS:
           #client-id: ${{ env.AZURE_CLIENT_ID }}
           #tenant-id: ${{ env.AZURE_TENANT_ID }}
           #subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
