@@ -2,6 +2,7 @@ flask
 requests
 promptflow-core
 promptflow-evals
+promptflow==1.11.0
 azure-monitor-opentelemetry-exporter
 opentelemetry-instrumentation-flask
 jsonlines
