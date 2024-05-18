@@ -169,8 +169,7 @@ To test the sample:
     ```
     cd src/api/data
     ```
-    -  Install the [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter). 
-    - Once the extension has been installed, open the `create-azure-search.ipynb` notebook. We will use this notebook to upload a catalogue of products to the Azure AI Search vector store. Click `select kernel` in the top right hand corner of the notebook, choose Python environment and then select the recommended Python version. 
+    - Open the `create-azure-search.ipynb` notebook. We will use this notebook to upload a catalogue of products to the Azure AI Search vector store. Click `select kernel` in the top right hand corner of the notebook, choose Python environment and then select the recommended Python version. 
     - Run all of the cells in the notebook. If this process was successful you should see "uploading 20 documents to index contoso-products". You're now ready to run the full promptflow. 
 
 2. Run the example web app locally using a Flask server. 
@@ -184,7 +183,14 @@ To test the sample:
     flask --debug --app api.app:app run --port 8080
     ```
 
-    Then in a new terminal, navigate to the web folder
+    If you open the server link in a browser, you will see a URL not found error, this is because we haven't created a home url route in flask. We have instead created a `/get_article` route which is used to pass context and instructions directly to the get_article.py file which runs the agent workflow.
+
+   We have created a web interface which we will run next, but you can test the api is working as expected by running this in the browser:
+    ```
+    http://127.0.0.1:8080/get_article?context=Write an article about camping in alaska&instructions=find specifics about what type of gear they would need and explain in detail
+    ```
+
+    Once the flask server is running you can now run the web app. To do this open a new terminal window and navigate to the web folder using this command:
     ```
     cd src/web
     ```
@@ -225,23 +231,17 @@ To test the sample:
 
     ```
 
-    You can also pass context and instructions directly to the flask `get_article` api by running:
-    ```
-    http://127.0.0.1:8080/get_article?context=Write an article about camping in alaska&instructions=find specifics about what type of gear they would need and explain in detail
-    ```
-
 ## Evaluating prompt flow results
 
 To understand how well our prompt flow performs using defined metrics like **groundedness**, **coherence** etc we can evaluate the results. To evaluate the prompt flow, we need to be able to compare it to what we see as "good results" in order to understand how well it aligns with our expectations. 
 
 We may be able to evaluate the flow manually (e.g., using Azure AI Studio) but for now, we'll evaluate this by running the prompt flow using **gpt-4** and comparing our performance to the results obtained there. To do this, follow the instructions and steps in the notebook `evaluate-chat-prompt-flow.ipynb` under the `eval` folder.
 
-You can also view the evaluation metrics by running the following commands. 
+You can also view the evaluation metrics by running the following command from the src/api folder. 
 
 Run evaluation:
 ```
-cd evaluate
-python evaluate.py
+python -m api.evaluate.evaluate
 ```
 
 ## Costs
