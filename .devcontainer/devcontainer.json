@@ -20,6 +20,8 @@
 		"vscode": {
 			"extensions": [
 				"esbenp.prettier-vscode",
+				"ms-python.python",
+				"ms-toolsai.jupyter",
 				"GitHub.vscode-github-actions",
 				"ms-azuretools.azure-dev",
 				"ms-azuretools.vscode-docker",
