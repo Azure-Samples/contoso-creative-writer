@@ -1,0 +1,82 @@
+name: Evaluate Chat Relevance, Fluency, Coherence, and Groundedness
+
+on:
+  workflow_dispatch:
+  push:
+    # Run when commits are pushed to mainline branch (main or master)
+    # Set this to the mainline branch you are using
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+# Set up permissions for deploying with secretless Azure federated credentials
+# https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    env:
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
+      AZURE_OPENAI_API_VERSION: ${{ vars.AZURE_OPENAI_API_VERSION }}
+      AZURE_OPENAI_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_DEPLOYMENT_NAME }}
+      AZURE_OPENAI_35_TURBO_DEPLOYMENT: ${{ vars.AZURE_OPENAI_35_TURBO_DEPLOYMENT }}
+      BING_SEARCH_ENDPOINT: ${{ vars.BING_SEARCH_ENDPOINT }}
+      BING_SEARCH_KEY: ${{ secrets.BING_SEARCH_KEY }}
+
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v4 # checkout the repository content
+
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # install the python version needed
+
+      - name: install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r src/api/requirements.txt
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Set az account
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            az account set --subscription ${{env.AZURE_SUBSCRIPTION_ID}}
+
+      - name: evaluate chat data
+        working-directory: ./src/api
+        run: |
+          python -m api.evaluate.evaluate
+      
+      - name: Upload eval results as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval_result
+          path: ./src/api/api/evaluate/eval_results.jsonl
+
+      - name: GitHub Summary Step
+        if: ${{ success() }}
+        working-directory: ./evaluations
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "📊 Promptflow Evaluation Results" >> $GITHUB_STEP_SUMMARY
+          cat src/api/api/evaluate/eval_results.md >> $GITHUB_STEP_SUMMARY
+        

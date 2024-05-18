@@ -99,7 +99,7 @@ def evaluate_orchestrator(model_config, data_path):
             results.append(future.result())
 
     # write out eval data to a file so we can re-run evaluation on it
-    with jsonlines.open('eval_data.jsonl', 'w') as writer:
+    with jsonlines.open(folder + '/eval_data.jsonl', 'w') as writer:
         for row in eval_data:
             writer.write(row)
 
@@ -111,6 +111,14 @@ def evaluate_orchestrator(model_config, data_path):
 
     print("\nAverage scores:")
     print(df.mean())
+
+    df.to_markdown(folder + '/eval_results.md')
+    with open(folder + '/eval_results.md', 'a') as file:
+        file.write("\n\nAverages scores:\n\n")
+    df.mean().to_markdown(folder + '/eval_results.md', 'a')
+
+    with jsonlines.open(folder + '/eval_results.jsonl', 'w') as writer:
+        writer.write(eval_results)
 
     return eval_results
 
@@ -133,6 +141,3 @@ if __name__ == "__main__":
     end=time.time()
     print(f"Finished evaluate in {end - start}s")
 
-    #save evaluation results to a JSONL file
-    with jsonlines.open(folder + '/eval_writer_result.jsonl', 'w') as writer:
-        writer.write(eval_result)
