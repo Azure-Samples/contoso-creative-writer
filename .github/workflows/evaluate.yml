@@ -78,10 +78,10 @@ jobs:
 
       - name: GitHub Summary Step
         if: ${{ success() }}
-        working-directory: ./evaluations
+        working-directory: ./src/api
         run: |
           echo "" >> $GITHUB_STEP_SUMMARY
 
           echo "📊 Promptflow Evaluation Results" >> $GITHUB_STEP_SUMMARY
-          cat src/api/api/evaluate/eval_results.md >> $GITHUB_STEP_SUMMARY
+          cat api/evaluate/eval_results.md >> $GITHUB_STEP_SUMMARY
         
