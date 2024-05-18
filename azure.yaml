@@ -60,8 +60,6 @@ infra:
   provider: terraform
 pipeline:
   variables:
-    pipeline:
-  variables:
     - AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME
     - AZURE_OPENAI_35_TURBO_MODEL_NAME
     - AZURE_OPENAI_API_VERSION
