@@ -18,11 +18,11 @@ def log_output(*args):
 def init_logging(sampling_rate=1.0):
     # Enable logging to app insights if a connection string is provided
     if 'APPLICATIONINSIGHTS_CONNECTION_STRING' in os.environ:
-        inject_openai_api()
-
         connection_string=os.environ['APPLICATIONINSIGHTS_CONNECTION_STRING']
-        trace.set_tracer_provider(TracerProvider(sampler=ParentBasedTraceIdRatio(sampling_rate)))
-        trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(AzureMonitorTraceExporter(connection_string=connection_string)))
+        if connection_string != "":
+            inject_openai_api()
+            trace.set_tracer_provider(TracerProvider(sampler=ParentBasedTraceIdRatio(sampling_rate)))
+            trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(AzureMonitorTraceExporter(connection_string=connection_string)))
 
     # Enable logging locally if the below variable is set
     if 'PROMPTFLOW_TRACING_SERVER' in os.environ and os.environ['PROMPTFLOW_TRACING_SERVER'] != 'false':
