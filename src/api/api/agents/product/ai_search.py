@@ -11,7 +11,7 @@ from azure.identity import DefaultAzureCredential
 
 
 def retrieve_documentation(
-    question: str,
+    request: str,
     index_name: str,
     embedding: List[float],
 ) -> str:
@@ -27,7 +27,7 @@ def retrieve_documentation(
     )
 
     results = search_client.search(
-        search_text=question,
+        search_text=request,
         vector_queries=[vector_query],
         query_type=QueryType.SEMANTIC,
         semantic_configuration_name="default",

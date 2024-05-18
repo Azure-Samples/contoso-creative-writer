@@ -70,7 +70,7 @@ def find_news(query, market="en-US"):
     return articles
 
 @trace
-def execute(context: str, instructions: str, feedback: str = ""):
+def execute(request: str, instructions: str, feedback: str = ""):
     """Assign a research task to a researcher"""
     functions = {
         "find_information": find_information,
@@ -80,7 +80,7 @@ def execute(context: str, instructions: str, feedback: str = ""):
     fns = prompty.execute(
         "researcher.prompty",
         inputs={
-            "context": context,
+            "request": request,
             "instructions": instructions,
             "feedback": feedback,
         },
@@ -129,8 +129,8 @@ def process(research):
     }
 
 
-def research(context, instructions, feedback: str = ""):
-    r = execute(context=context, instructions=instructions, feedback=feedback)
+def research(request, instructions, feedback: str = ""):
+    r = execute(request=request, instructions=instructions, feedback=feedback)
     p = process(r)
     return p
 

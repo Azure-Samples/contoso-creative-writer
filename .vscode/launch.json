@@ -5,23 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: orchestrator.py",
+            "name": "Python: Orchestrator",
             "type": "debugpy",
             "request": "launch",
-            "program": "orchestrator.py",
-            "cwd": "${workspaceFolder}/src/api/api/agents",
-            "console": "integratedTerminal",
+            "module": "api.agents.orchestrator",
+            "cwd": "${workspaceFolder}/src/api",
             "justMyCode": true
         },
         {
-            "name": "Python: evaluate.py",
+            "name": "Python: Evaluate",
             "type": "debugpy",
             "request": "launch",
-            "program": "evaluate.py",
-            "cwd": "${workspaceFolder}/src/api/evaluate",
-            "console": "integratedTerminal",
+            "module": "api.evaluate.evaluate",
+            "cwd": "${workspaceFolder}/src/api",
             "justMyCode": true
-
-        }
+        },
     ]
 }

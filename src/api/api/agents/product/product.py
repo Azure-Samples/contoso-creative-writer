@@ -1,40 +1,43 @@
 import os
 import json
 from typing import Dict
-from promptflow.tools.common import init_azure_openai_client
+from openai import AzureOpenAI
+
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from api.agents.product.ai_search import retrieve_documentation
-from promptflow.connections import AzureOpenAIConnection
+from openai import AzureOpenAI
+from promptflow.tracing import trace
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
-def get_context(question, embedding):
-    return retrieve_documentation(question=question, index_name="contoso-products", embedding=embedding)
+@trace
+def get_context(request, embedding):
+    return retrieve_documentation(request=request, index_name="contoso-products", embedding=embedding)
 
+def get_embedding(request: str):
+    token_provider = get_bearer_token_provider(
+        DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
+    )
 
-def get_embedding(question: str):
-    connection = AzureOpenAIConnection(        
-                    azure_deployment="text-embedding-ada-002",
-                    api_version=os.environ["AZURE_OPENAI_API_VERSION"],
-                    api_base=os.environ["AZURE_OPENAI_ENDPOINT"]
-                    )
-                
-    client = init_azure_openai_client(connection)
+    client = AzureOpenAI(
+        azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT"), 
+        api_version=os.environ["AZURE_OPENAI_API_VERSION"],
+        azure_ad_token_provider=token_provider
+    )
 
     return client.embeddings.create(
-            input=question,
+            input=request,
             model="text-embedding-ada-002"
         ).data[0].embedding
 
-
-def get_products(context: str) -> Dict[str, any]:
-    embedding = get_embedding(context)
-    products = get_context(context, embedding)
-    print(products)
+def get_products(request: str) -> Dict[str, any]:
+    embedding = get_embedding(request)
+    products = get_context(request, embedding)
     return products
 
-
 if __name__ == "__main__":
-    context = "Can you use a selection of tents and backpacks as context?"
+    context = "what kind of jackets do you have?"
     answer = get_products(context)
     print(json.dumps(answer, indent=2))

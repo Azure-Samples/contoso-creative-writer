@@ -3,35 +3,13 @@ import json
 import jsonlines
 import os
 
-from promptflow.tracing import trace
-from promptflow.core import Prompty, AzureOpenAIModelConfiguration
+from promptflow.core import AzureOpenAIModelConfiguration
 from promptflow.core import Flow
 from pathlib import Path
+
 folder = Path(__file__).parent.absolute().as_posix()
 
-@trace
-def trace_eval_data(data):
-    pass
-
-def log_eval_data(context, feedback, instructions, research, products, result):
-    # log evaluation data
-    query = str({
-        'article_request': context, 
-        'research_instructions': instructions,
-        'editor_feedback': feedback
-    })
-    context = str({
-        'research': research,
-        'products': products,
-    })
-    data = {'query': query, 'context': context, 'response': result}
-    if os.environ.get('WRITE_EVAL_DATA'):
-        trace_eval_data(data)
-        with jsonlines.open('output.jsonl', 'a') as writer:
-            writer.write(data)
-
-@trace
-def execute(context, feedback, instructions, research, products):
+def execute(request, feedback, instructions, research, products):
     # Load prompty with AzureOpenAIModelConfiguration override
     configuration = AzureOpenAIModelConfiguration(
         azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
@@ -47,14 +25,13 @@ def execute(context, feedback, instructions, research, products):
     prompty_file = folder + "/writer.prompty"
     loaded_prompty = Flow.load(prompty_file, model=override_model)
     result = loaded_prompty(
-        context=context,
+        request=request,
         feedback=feedback,
         instructions=instructions,
         research=research,
         products=products
     )
 
-    log_eval_data(context, feedback, instructions, research, products, result)
     return result
 
 
@@ -72,10 +49,9 @@ def process(writer):
         "feedback": feedback,
     }
 
-
-def write(context, feedback, instructions, research, products):
+def write(request, feedback, instructions, research, products):
     result = execute(
-        context=context,
+        request=request,
         feedback=feedback,
         instructions=instructions,
         research=research,
@@ -91,12 +67,12 @@ if __name__ == "__main__":
     # feedback = "Research Feedback:\nAdditional specifics on how each phase of his education directly influenced particular career decisions or leadership styles at Microsoft would enhance the narrative. Information on key projects or initiatives that Nadella led, correlating to his expertise gained from his various degrees, would add depth to the discussion on the interplay between his education and career milestones."
     # instructions = "Can you find the relevant information on both him as a person and what he studied and maybe some news articles?"
     # research = []
-    context = sys.argv[1]
+    request = sys.argv[1]
     feedback = sys.argv[2]
     instructions = sys.argv[3]
     research = json.dumps(sys.argv[4])
     result = execute(
-        context=str(context),
+        request=str(request),
         feedback=str(feedback),
         instructions=str(instructions),
         research=research,

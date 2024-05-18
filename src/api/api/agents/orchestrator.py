@@ -1,18 +1,21 @@
 import json
-from promptflow.tracing import trace, start_trace
+import logging
+from promptflow.tracing import trace
 from api.agents.researcher import researcher
 from api.agents.writer import writer
 from api.agents.editor import editor
 from api.agents.designer import designer
 from api.agents.product import product
+from api.logging import log_output
+from api.evaluate.evaluators import evaluate_article_in_background
+
 from dotenv import load_dotenv
 load_dotenv()
 
 @trace
-def get_research(context, instructions, feedback):
-
+def get_research(request, instructions, feedback):
     research_result = researcher.research(
-        context=context,
+        request=request,
         instructions=instructions,
         feedback=feedback
     )
@@ -23,10 +26,9 @@ def get_research(context, instructions, feedback):
 
 
 @trace
-def get_writer(context, feedback, instructions, research=[], products=[]):
-
+def get_writer(request, feedback, instructions, research=[], products=[]):
     writer_reponse = writer.write(
-        context=context, feedback=feedback, instructions=instructions, research=research, products=products
+        request=request, feedback=feedback, instructions=instructions, research=research, products=products
     )
     print(json.dumps(writer_reponse, indent=2))
     return writer_reponse
@@ -41,12 +43,13 @@ def get_editor(article, feedback):
 
 
 @trace
-def get_designer(context, instructions, feedback):
-    designer_task = designer.design(context, instructions, feedback)
+def get_designer(request, instructions, feedback):
+    designer_task = designer.design(request, instructions, feedback)
     print(json.dumps(designer_task, indent=2))
     return designer_task
 
 
+# TODO: delete, I dont think this is used...
 @trace
 def regenerate_process(editor_response, context, instructions, product_documenation):
     # Get feedback for research from writer
@@ -72,67 +75,78 @@ def regenerate_process(editor_response, context, instructions, product_documenat
     )
     return editor_response
 
-
 @trace
-def get_article(context, instructions):
-    # This code is dup in api response to ueild steped results. TODO: Fix this so its not dup later
+def write_article(request, instructions, evaluate=False):
+    log_output("Article generation started for request: %s, instructions: %s", request, instructions)
 
-    feedback = ""
-    print("Getting article for context: ", context)
+    feedback = "No Feedback"
 
-    # researcher task look up the info
-    print("Getting researcher task output...")
-    research_result = get_research(context, instructions, feedback)
-    product_documenation = product.get_products(context)
+    # Researcher task look up the info
+    yield ("message", "Starting research agent task...")
+    log_output("Getting researcher task output...")
+    research_result = get_research(request, instructions, feedback)
+    yield ("researcher", research_result)
 
-    # then send it to the writer, the writer writes the article
-    print("Getting writer task output...")
-    writer_reponse = get_writer(
-        context, feedback, instructions, research=research_result, products=product_documenation
-    )
+    # Retrieve product information relevant to the user's query
+    log_output("Product information...")
+    product_documenation = product.get_products(request)
+    yield ("products", product_documenation)
 
-    # then send it to the editor, to decide if it's good or not
-    print("Getting editor task output...")
-    editor_response = get_editor(
-        writer_reponse["article"], writer_reponse["feedback"]
-    )
-    print(editor_response)
+    # Then send it to the writer, the writer writes the article
+    yield ("message", "Starting writer agent task...")
+    log_output("Getting writer task output...")
+    writer_response = get_writer(request, feedback, instructions, research=research_result, products=product_documenation)
+    yield ("writer", writer_response)
 
-    # retry until decision is accept or until 2x tries
-    if editor_response["decision"] == "reject":
-        print("Editor rejected writer, sending back to writer (1)...")
-        # retry research, writer, and editor with feedback from writer and editor
-        editor_response = regenerate_process(editor_response, context, instructions, product_documenation)
+    # Then send it to the editor, to decide if it's good or not
+    yield ("message", "Starting editor agent task...")
+    log_output("Getting editor task output...")
+    editor_response = get_editor(writer_response["article"], writer_response["feedback"])
+    log_output("Editor response: %s", editor_response)
 
-        if editor_response["decision"] == "reject":
-            print("Editor rejected writer again, sending back to writer (2)...")
-            # retry research, writer, and editor with feedback from writer and editor
-            editor_response = regenerate_process(editor_response, context, product_documenation)
+    yield ("editor", editor_response)
+    retry_count = 0
+    while(str(editor_response["decision"]).lower().startswith("accept")):
+        yield ("message", f"Sending editor feedback ({retry_count + 1})...")
+        log_output("Regeneration attempt %d based on editor feedback", retry_count + 1)
 
-    print("Editor accepted writer and research, sending to designer...")
-    # SETH TODO: send to designer
-    # designer_task = designer.design(context, instructions, feedback)
-    # create result object with editor response and writer response
-    result = {"editor_response": editor_response, "writer_response": writer_reponse}
-    print(json.dumps(result, indent=2))
-    return result
- 
+        # Regenerate with feedback loop
+        researchFeedback = editor_response.get("researchFeedback", "No Feedback")
+        editorFeedback = editor_response.get("editorFeedback", "No Feedback")
+        
+        research_result = get_research(request, instructions, researchFeedback)
+        yield ("researcher", research_result)
+
+        writer_response = get_writer(request, editorFeedback, instructions, research=research_result, products=product_documenation)
+        yield ("writer", writer_response)
+
+        editor_response = get_editor(writer_response["article"], writer_response["feedback"])
+        yield ("editor", editor_response)
+
+        retry_count += 1
+        if retry_count >= 2:
+            break
+
+    log_output("Editor accepted article after %d iterations", retry_count)
+    yield ("message", "Editor accepted article")
+
+    if evaluate:
+        evaluate_article_in_background(
+            request=request,
+            instructions=instructions,
+            research=research_result,
+            products=product_documenation,
+            article=writer_response
+        )
+
+    # Log final editor response
+    log_output("Final editor response: %s", json.dumps(editor_response, indent=2))
+
 if __name__ == "__main__":
-    import os
-    from opentelemetry import trace
-    from opentelemetry.sdk.trace import TracerProvider
-    from opentelemetry.sdk.trace.export import BatchSpanProcessor
-    from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+    from api.logging import init_logging
 
-    # log to app insights if configured
-    if 'APPINSIGHTS_CONNECTION_STRING' in os.environ:
-        connection_string=os.environ['APPINSIGHTS_CONNECTION_STRING']
-        trace.set_tracer_provider(TracerProvider())
-        trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(AzureMonitorTraceExporter(connection_string=connection_string)))
-
-    #  start pf tracing
-    start_trace()
-
+    init_logging()
     context = "Can you find the latest camping trends and what folks are doing in the winter?"
     instructions = "Can you find the relevant information needed and good places to visit"
-    get_article(context, instructions)
+    for result in write_article(context, instructions, evaluate=True):
+        print(*result)

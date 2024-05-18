@@ -1,8 +1,10 @@
 flask
 requests
 promptflow-core
+promptflow-evals
 promptflow==1.11.0
 azure-monitor-opentelemetry-exporter
+opentelemetry-instrumentation-flask
 jsonlines
 python-dotenv==1.0.1
 azure-search-documents==11.4.0
