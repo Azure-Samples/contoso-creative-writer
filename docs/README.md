@@ -9,7 +9,7 @@ products:
   - ai-services
   - azure-openai
 urlFragment: agent-openai-python-prompty
-name: Creative Writing Assistant: Working with Agents using Promptflow (Python Implementation)
+name: Creative Writing Assistant working with Agents using Promptflow (Python)
 description: A python sample app that demonstrates how to create and work with AI agents driven by Azure OpenAI.
 ---
 
