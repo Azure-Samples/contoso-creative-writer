@@ -70,7 +70,8 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_TENANT_ID: ${{ vars.ARM_TENANT_ID }}
           ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-
+          ARM_USE_AZUREAD: true
+          
       - name: Deploy Application
         run: azd deploy --no-prompt
         env:
@@ -81,3 +82,4 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_TENANT_ID: ${{ vars.ARM_TENANT_ID }}
           ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          ARM_USE_AZUREAD: true
