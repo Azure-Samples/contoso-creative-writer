@@ -1,6 +1,7 @@
 name: Evaluate
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows: ["azd provision and deploy"]
     branches: [main]
