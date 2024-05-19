@@ -1,3 +1,5 @@
+name: azd provision and deploy
+
 on:
   workflow_dispatch:
   push:
