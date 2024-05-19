@@ -88,6 +88,6 @@ output "BING_SEARCH_KEY" {
 }
 
 output "APPLICATIONINSIGHTS_CONNECTION_STRING" {
-  value     = local.deploy_observability_tools ? "" : azurerm_application_insights.applicationinsights[0].connection_string
+  value     = local.deploy_observability_tools ? azurerm_application_insights.applicationinsights[0].connection_string : "" 
   sensitive = true
 }

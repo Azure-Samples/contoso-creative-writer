@@ -1,13 +1,18 @@
 import json
 import os
-import prompty
 import requests
 import sys
 import urllib.parse
 
 from promptflow.tracing import trace
-from dotenv import load_dotenv
+from promptflow.core import Prompty, AzureOpenAIModelConfiguration
 
+from api.logging import log_output
+
+from dotenv import load_dotenv
+from pathlib import Path
+
+folder = Path(__file__).parent.absolute().as_posix()
 load_dotenv()
 
 #bing does not currently support managed identity
@@ -77,21 +82,30 @@ def execute(request: str, instructions: str, feedback: str = ""):
         "find_entities": find_entities,
         "find_news": find_news,
     }
-    fns = prompty.execute(
-        "researcher.prompty",
-        inputs={
-            "request": request,
-            "instructions": instructions,
-            "feedback": feedback,
-        },
+
+    # create path to prompty file
+    configuration = AzureOpenAIModelConfiguration(
+        azure_deployment=os.getenv("AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME"),
+        api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
     )
+    override_model = {
+        "configuration": configuration,
+        "parameters": {"max_tokens": 512}
+    }
+    prompty_obj = Prompty.load(folder + "/researcher.prompty", model=override_model)
+    results = prompty_obj(request=request, instructions=instructions, feedback=feedback)
+
     research = []
-    for f in fns:
-        fn = functions[f.name]
-        args = json.loads(f.arguments)
-        r = fn(**args)
+    for tool in results['tool_calls']:
+        if 'function' not in tool:
+            continue
+
+        fn = tool['function']
+        args = json.loads(fn['arguments'])
+        r = functions[fn['name']](**args)
         research.append(
-            {"id": f.id, "function": f.name, "arguments": args, "result": r}
+            {"id": tool['id'], "function": fn['name'], "arguments": args, "result": r}
         )
 
     return research
