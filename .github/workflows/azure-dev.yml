@@ -24,7 +24,6 @@ jobs:
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-      #AZURE_PRINCIPAL_TYPE: 'ServicePrincipal'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -32,6 +31,7 @@ jobs:
       - name: Install azd
         uses: Azure/setup-azd@v0.1.0
 
+      # TODO: figure out why federated credentials aren't working
       # - name: Log in with Azure (Federated Credentials)
       #   if: ${{ env.AZURE_CLIENT_ID != '' }}
       #   run: |
