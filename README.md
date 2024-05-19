@@ -250,22 +250,35 @@ This template is setup to run CI/CD when you push changes to your repo. When CI/
 
 To set up CI/CD with GitHub actions on your repository, run the following command:
 ```
-azd provision config
+azd pipeline config
+```
+
+**Workaround to enable CI/CD:** in the output, look for the "Creating service principal" line and **Copy** the name of the service principal (looks like az-dev-<letters and numbers>), an example is  shown below:
+```
+...
+(✓) Done: Creating service principal az-dev-05-19-2024-02-02-02 (62c51d5e-17f7-4b06-bfab-fza2a4e1e6d8)
+...
 ```
 
 This will create a service principal in your Azure subscription that your GitHub actions to use when running azd and evaluations.
 
-**Workaround:** you will need to do a manual role assignment of this service principal on your subscription to enable azd to successfully run. Take the following steps:
- - First, find the name of the service principal AZD created for your GitHub Repo. From the homepage of your GitHub repo:
-    1. Navigate to: **Settings**, **Secrets and variables**, select the **Variables** tab and copy the value of **ARM_CLIENT_ID**.
-    1. In the azure portal, search for the **ARM_CLIENT_ID** value in the global search box at the top of the page. In the search results, select the service principal that comes up in the list.
-    1. Copy the name of this service principal from the of the page that comes up, it should be of the form **az-dev-<letters and numbers>**.
-    1. Search for your subscription name in the global search box and select it.
-    1. Select the **Access control (IAM)** page, click **Add** > **Role Assignment**
-    1. Search for the **Storage Blob Data Contributor** role, and select **Next**
-    1. Click **+ Select Members**, and add the **az-dev-** role that you copied earlier
+You will need to add a role assignment of this service principal on your tfstate storage account. Open the Azure portal, and take following steps:
+  1. In the search box at the top of the screen, search for _ENVIRONMENT_NAME-tfstate_
+  1. Select the resource group that appears
+  1. Click to open the storage account in that resource group
+  1. Select the **Access control (IAM)** on the left nav
+  1. Then click **Add** > **Role Assignment**
+  1. Search for the **Storage Blob Data Contributor** role, and select **Next**
+  1. Click **+ Select Members**, and add the **az-dev-** role that you copied earlier
+  1. Click **Review + Assign** twice
 
+Currently, when your GitHub action runs, **it will remove your access** to call the OpenAI and AI Search resources from your development environment with your user identity. It essentially takes over this azd environment for CI/CD purposes, and if you want to continue working on this repo you should create a new development environment.
 
+If you do want to re-enable access from your development environment, re-run the provision command:
+
+```
+azd provision
+```
 
 ## Costs
 
