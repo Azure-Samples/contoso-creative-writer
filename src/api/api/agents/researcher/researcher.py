@@ -7,6 +7,8 @@ import urllib.parse
 from promptflow.tracing import trace
 from promptflow.core import Prompty, AzureOpenAIModelConfiguration
 
+from api.logging import log_output
+
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -36,6 +38,7 @@ def find_information(query, market="en-US"):
     """Find information using the Bing Search API"""
     params = {"q": query, "mkt": market, "count": 5}
     items = _make_request("v7.0/search", params)
+    log_output(items)
     pages = [
         {"url": a["url"], "name": a["name"], "description": a["snippet"]}
         for a in items["webPages"]["value"]

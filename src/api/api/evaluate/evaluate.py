@@ -125,7 +125,10 @@ def evaluate_orchestrator(model_config, data_path):
 if __name__ == "__main__":
     import time
     import jsonlines
+    from api.logging import init_logging
 
+    init_logging()
+    
     # Initialize Azure OpenAI Connection
     model_config = AzureOpenAIModelConfiguration(
         azure_deployment=os.environ["AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME"],   
