@@ -70,8 +70,12 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_TENANT_ID: ${{ vars.ARM_TENANT_ID }}
           ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          RS_CONTAINER_NAME: ${{ vars.RS_CONTAINER_NAME }}
+          RS_RESOURCE_GROUP: ${{ vars.RS_RESOURCE_GROUP }}
+          RS_STORAGE_ACCOUNT: ${{ vars.RS_STORAGE_ACCOUNT }}
           ARM_USE_AZUREAD: true
-          
+
+
       - name: Deploy Application
         run: azd deploy --no-prompt
         env:
@@ -82,4 +86,7 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_TENANT_ID: ${{ vars.ARM_TENANT_ID }}
           ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          RS_CONTAINER_NAME: ${{ vars.RS_CONTAINER_NAME }}
+          RS_RESOURCE_GROUP: ${{ vars.RS_RESOURCE_GROUP }}
+          RS_STORAGE_ACCOUNT: ${{ vars.RS_STORAGE_ACCOUNT }}
           ARM_USE_AZUREAD: true
