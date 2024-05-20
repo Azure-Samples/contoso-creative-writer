@@ -11,22 +11,6 @@ INTERNAL_ID=$(az cognitiveservices account show \
 # Construct the URL
 COGNITIVE_SERVICE_URL="https://oai.azure.com/portal/${INTERNAL_ID}?tenantid=${AZURE_TENANT_ID}"
 
-# Display OpenAI Endpoint and other details
-echo "======================================================"
-echo " AI Configuration                 "
-echo "======================================================"
-echo "    OpenAI Endpoint: ${AZURE_OPENAI_ENDPOINT}                    "
-echo "    SKU Name: S0                             "
-echo "    AI Model Name: ${AZURE_OPENAI_MODEL_NAME}                    "
-echo "    Model Version: vision-preview                    "
-echo "    Model Capacity: 120                "
-echo "    Azure Portal Link:                                 "
-echo "    https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${AZURE_RESOURCE_GROUP}/providers/Microsoft.CognitiveServices/accounts/${AZURE_OPENAI_NAME}/overview"
-echo "    Azure OpenAI Studio: ${COGNITIVE_SERVICE_URL}    "
-echo ""
-
-
-
 echo "--- ✅ | 1. Post-provisioning - env configured ---"
 
 # Setup to run notebooks
