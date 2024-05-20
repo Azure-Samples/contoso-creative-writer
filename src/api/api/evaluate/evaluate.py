@@ -126,8 +126,8 @@ if __name__ == "__main__":
     import time
     import jsonlines
     from api.logging import init_logging
-
-    init_logging()
+    import logging
+    init_logging(logging.DEBUG)
     
     # Initialize Azure OpenAI Connection
     model_config = AzureOpenAIModelConfiguration(
