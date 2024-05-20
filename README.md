@@ -163,7 +163,7 @@ This sample repository contains an agents folder that includes subfolders for ea
 
 To test the sample: 
 
-1. Populate the Azure AI Search vectore store index with product data. 
+1. Populate the Azure AI Search vector store index with product data. 
 
     - Change into the api/data folder:
     ```
