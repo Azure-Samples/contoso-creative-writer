@@ -7,10 +7,10 @@ import urllib.parse
 from promptflow.tracing import trace
 from promptflow.core import Prompty, AzureOpenAIModelConfiguration
 
-from api.logging import log_output
-
 from dotenv import load_dotenv
 from pathlib import Path
+
+import base64
 
 folder = Path(__file__).parent.absolute().as_posix()
 load_dotenv()
@@ -38,6 +38,7 @@ def find_information(query, market="en-US"):
     """Find information using the Bing Search API"""
     params = {"q": query, "mkt": market, "count": 5}
     print(params)
+    print("value: ", base64.b64encode(BING_SEARCH_KEY.encode()))
     items = _make_request("v7.0/search", params)
     print(items)
     pages = [
