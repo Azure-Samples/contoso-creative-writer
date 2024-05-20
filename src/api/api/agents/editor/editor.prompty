@@ -3,18 +3,15 @@ name: Editor Agent
 description: Given an article and some feedback, this agent decides whether to accept or reject the feedback.
 authors:
   - Seth Juarez
-api: chat
 model:
     api: chat
     configuration:
         type: azure_openai
-        azure_endpoint: ${AZURE_OPENAI_ENDPOINT}
-        api_version: ${env:AZURE_OPENAI_API_VERSION}
+        azure_deployment: gpt-35-turbo
+        api_version: 2023-07-01-preview
     parameters:
         max_tokens: 1200
         temperature: 0.2
-        response_format:
-            type: json_object
 inputs:
     article:
         type: string
@@ -22,9 +19,11 @@ inputs:
     feedback:
         type: string
         default: " "
-sample: file:context.json
+sample: ${file:context.json}
 ---
 system:
+
+# Editor Agent
 You are an editor at a publishing company. You have been asked to review an article and some research feedback. 
 You need to decide whether to accept or reject the feedback. Additionally, you need to provide a response to 
 the feedback and even suggest feedback to the author if necessary. You may even decide that there's nothing
