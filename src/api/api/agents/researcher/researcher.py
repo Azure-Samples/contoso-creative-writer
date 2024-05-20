@@ -96,6 +96,12 @@ def execute(request: str, instructions: str, feedback: str = ""):
     prompty_obj = Prompty.load(folder + "/researcher.prompty", model=override_model)
     results = prompty_obj(request=request, instructions=instructions, feedback=feedback)
 
+    # validate the result as the expected format
+    if "tool_calls" not in results:
+        feedback = "Unexpected response from the researcher. Result:" + str(results)
+        #print feedback and result from llm
+        print(feedback)
+        
     research = []
     for tool in results['tool_calls']:
         if 'function' not in tool:
