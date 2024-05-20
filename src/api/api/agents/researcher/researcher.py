@@ -17,7 +17,7 @@ load_dotenv()
 
 #bing does not currently support managed identity
 BING_SEARCH_ENDPOINT = os.environ["BING_SEARCH_ENDPOINT"]
-BING_SEARCH_KEY = os.getenv["BING_SEARCH_KEY"]
+BING_SEARCH_KEY = os.environ["BING_SEARCH_KEY"]
 BING_HEADERS = {"Ocp-Apim-Subscription-Key": BING_SEARCH_KEY}
 
 
