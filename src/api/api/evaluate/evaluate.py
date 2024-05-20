@@ -139,6 +139,7 @@ if __name__ == "__main__":
     start=time.time()
     print(f"Starting evaluate...")
     print(os.environ["BING_SEARCH_ENDPOINT"])
+    print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
     eval_result = evaluate_orchestrator(model_config, data_path=folder +"/eval_inputs.jsonl")
 
     end=time.time()

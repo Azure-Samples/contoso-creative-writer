@@ -37,7 +37,9 @@ def _make_request(path, params=None):
 def find_information(query, market="en-US"):
     """Find information using the Bing Search API"""
     params = {"q": query, "mkt": market, "count": 5}
+    print(params)
     items = _make_request("v7.0/search", params)
+    print(items)
     pages = [
         {"url": a["url"], "name": a["name"], "description": a["snippet"]}
         for a in items["webPages"]["value"]
