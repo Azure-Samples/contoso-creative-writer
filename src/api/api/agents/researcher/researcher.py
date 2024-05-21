@@ -42,6 +42,12 @@ def find_information(query, market="en-US"):
         {"url": a["url"], "name": a["name"], "description": a["snippet"]}
         for a in items["webPages"]["value"]
     ]
+    
+    # check if relatedsearches exists
+    if "relatedSearches" not in items:
+        return {"pages": pages, "related": []}
+
+    # else add related searching
     related = [a["text"] for a in items["relatedSearches"]["value"]]
     return {"pages": pages, "related": related}
 
