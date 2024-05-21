@@ -34,6 +34,8 @@ spec:
               value: {{.Env.AZURE_OPENAI_DEPLOYMENT_NAME}}
             - name: AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME
               value: {{.Env.AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME}}
+            - name: AZURE_OPENAI_GPT4_EVAL_DEPLOYMENT
+              value: {{.Env.AZURE_OPENAI_GPT4_EVAL_DEPLOYMENT}}
             - name: AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME
               value: {{.Env.AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME}}
             - name: AZURE_OPENAI_ENDPOINT

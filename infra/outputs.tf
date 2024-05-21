@@ -22,6 +22,15 @@ output "AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME" {
   value = var.openai_35_turbo_model_name
 }
 
+output "AZURE_OPENAI_GPT4_EVAL_DEPLOYMENT" {
+  value = var.openai_4_eval_deployment_name
+}
+
+output "AZURE_OPENAI_4_EVAL_MODEL_VERSION" {
+  value = var.openai_4_eval_model_version
+}
+
+
 output "AZURE_OPENAI_35_TURBO_MODEL_NAME" {
   value = var.openai_35_turbo_model_name
 }
