@@ -89,7 +89,7 @@ def evaluate_orchestrator(model_config, data_path):
         eval_data = run_orchestrator(row['request'], row['instructions'])
         print("Evaluating results...")
         eval_result = writer_evaluator(query=eval_data["query"], context=eval_data["context"], response=eval_data["response"])
-        eval_result.update({"request": row['request']})
+        #eval_result.update({"request": row['request']})
         print("Evaluation results: ", eval_result)
         eval_results.append(eval_result)
 
