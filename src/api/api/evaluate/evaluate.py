@@ -85,11 +85,12 @@ def evaluate_orchestrator(model_config, data_path):
     results = []
     futures = []
     def evaluate_row(request, instructions):
+        result = { "request": request }
         print("Running orchestrator...")
-        eval_data = run_orchestrator(row['request'], row['instructions'])
+        eval_data = run_orchestrator(request, instructions)
         print("Evaluating results...")
         eval_result = writer_evaluator(query=eval_data["query"], context=eval_data["context"], response=eval_data["response"])
-        eval_result.update({"request": row['request']})
+        result.update(eval_result)
         print("Evaluation results: ", eval_result)
         eval_results.append(eval_result)
 

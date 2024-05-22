@@ -61,7 +61,7 @@ jobs:
           inlineScript: |
             az account set --subscription ${{env.AZURE_SUBSCRIPTION_ID}}
 
-      - name: evaluate chat data
+      - name: evaluate orchestrator
         working-directory: ./src/api
         run: |
           python -m api.evaluate.evaluate
