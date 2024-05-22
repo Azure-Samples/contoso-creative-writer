@@ -92,7 +92,7 @@ def evaluate_orchestrator(model_config, data_path):
         eval_result = writer_evaluator(query=eval_data["query"], context=eval_data["context"], response=eval_data["response"])
         result.update(eval_result)
         print("Evaluation results: ", eval_result)
-        eval_results.append(eval_result)
+        eval_results.append(result)
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         for row in data:
