@@ -89,7 +89,7 @@ def evaluate_orchestrator(model_config, data_path):
         eval_data = run_orchestrator(row['request'], row['instructions'])
         print("Evaluating results...")
         eval_result = writer_evaluator(query=eval_data["query"], context=eval_data["context"], response=eval_data["response"])
-        #eval_result.update({"request": row['request']})
+        eval_result.update({"request": row['request']})
         print("Evaluation results: ", eval_result)
         eval_results.append(eval_result)
 
@@ -107,16 +107,17 @@ def evaluate_orchestrator(model_config, data_path):
     import pandas as pd
 
     print("Evaluation summary:\n")
-    df = pd.DataFrame.from_dict(eval_results)
-    print(df)
+    results_df = pd.DataFrame.from_dict(eval_results)
+    print(results_df)
 
+    mean_df = df.drop("request", axis=1).mean()
     print("\nAverage scores:")
-    print(df.mean())
+    print(mean_df)
 
-    df.to_markdown(folder + '/eval_results.md')
+    results_df.to_markdown(folder + '/eval_results.md')
     with open(folder + '/eval_results.md', 'a') as file:
         file.write("\n\nAverages scores:\n\n")
-    df.mean().to_markdown(folder + '/eval_results.md', 'a')
+    mean_df.to_markdown(folder + '/eval_results.md', 'a')
 
     with jsonlines.open(folder + '/eval_results.jsonl', 'w') as writer:
         writer.write(eval_results)
