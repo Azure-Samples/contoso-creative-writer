@@ -19,7 +19,7 @@ def execute(request, feedback, instructions, research, products):
 
     override_model = {
         "configuration": configuration,
-        "parameters": {"max_tokens": 1200}
+        "parameters": {"max_tokens": 512}
     }
         # create path to prompty file
     prompty_file = folder + "/writer.prompty"

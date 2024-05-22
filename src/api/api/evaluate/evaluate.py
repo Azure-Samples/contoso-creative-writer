@@ -110,7 +110,7 @@ def evaluate_orchestrator(model_config, data_path):
     results_df = pd.DataFrame.from_dict(eval_results)
     print(results_df)
 
-    mean_df = df.drop("request", axis=1).mean()
+    mean_df = results_df.drop("request", axis=1).mean()
     print("\nAverage scores:")
     print(mean_df)
 
