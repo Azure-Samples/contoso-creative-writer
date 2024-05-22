@@ -89,6 +89,7 @@ def evaluate_orchestrator(model_config, data_path):
         eval_data = run_orchestrator(row['request'], row['instructions'])
         print("Evaluating results...")
         eval_result = writer_evaluator(query=eval_data["query"], context=eval_data["context"], response=eval_data["response"])
+        eval_result.update({"request": row['request']})
         print("Evaluation results: ", eval_result)
         eval_results.append(eval_result)
 
@@ -125,9 +126,6 @@ def evaluate_orchestrator(model_config, data_path):
 if __name__ == "__main__":
     import time
     import jsonlines
-    from api.logging import init_logging
-    import logging
-    init_logging(logging.DEBUG)
     
     # Initialize Azure OpenAI Connection
     model_config = AzureOpenAIModelConfiguration(
