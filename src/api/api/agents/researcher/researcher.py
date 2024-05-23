@@ -7,17 +7,17 @@ import urllib.parse
 from promptflow.tracing import trace
 from promptflow.core import Prompty, AzureOpenAIModelConfiguration
 
-from api.logging import log_output
-
 from dotenv import load_dotenv
 from pathlib import Path
+
+import base64
 
 folder = Path(__file__).parent.absolute().as_posix()
 load_dotenv()
 
 #bing does not currently support managed identity
-BING_SEARCH_ENDPOINT = os.getenv("BING_SEARCH_ENDPOINT")
-BING_SEARCH_KEY = os.getenv("BING_SEARCH_KEY")
+BING_SEARCH_ENDPOINT = os.environ["BING_SEARCH_ENDPOINT"]
+BING_SEARCH_KEY = os.environ["BING_SEARCH_KEY"]
 BING_HEADERS = {"Ocp-Apim-Subscription-Key": BING_SEARCH_KEY}
 
 

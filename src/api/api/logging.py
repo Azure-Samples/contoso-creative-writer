@@ -15,7 +15,7 @@ DEFAULT_LOG_LEVEL = 25
 def log_output(*args):
     logging.log(DEFAULT_LOG_LEVEL, *args)
 
-def init_logging(sampling_rate=1.0):
+def init_logging(sampling_rate=1.0, log_level=DEFAULT_LOG_LEVEL):
     # Enable logging to app insights if a connection string is provided
     if 'APPLICATIONINSIGHTS_CONNECTION_STRING' in os.environ:
         connection_string=os.environ['APPLICATIONINSIGHTS_CONNECTION_STRING']
@@ -29,6 +29,6 @@ def init_logging(sampling_rate=1.0):
         start_pf_tracing()
 
     logging.basicConfig(
-        level=DEFAULT_LOG_LEVEL, format="%(asctime)s - %(levelname)s - %(message)s"
+        level=log_level, format="%(asctime)s - %(levelname)s - %(message)s"
     )
     log_output("Logging initialized.")

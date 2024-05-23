@@ -85,12 +85,14 @@ def evaluate_orchestrator(model_config, data_path):
     results = []
     futures = []
     def evaluate_row(request, instructions):
+        result = { "request": request }
         print("Running orchestrator...")
-        eval_data = run_orchestrator(row['request'], row['instructions'])
+        eval_data = run_orchestrator(request, instructions)
         print("Evaluating results...")
         eval_result = writer_evaluator(query=eval_data["query"], context=eval_data["context"], response=eval_data["response"])
+        result.update(eval_result)
         print("Evaluation results: ", eval_result)
-        eval_results.append(eval_result)
+        eval_results.append(result)
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         for row in data:
@@ -106,16 +108,17 @@ def evaluate_orchestrator(model_config, data_path):
     import pandas as pd
 
     print("Evaluation summary:\n")
-    df = pd.DataFrame.from_dict(eval_results)
-    print(df)
+    results_df = pd.DataFrame.from_dict(eval_results)
+    print(results_df)
 
+    mean_df = results_df.drop("request", axis=1).mean()
     print("\nAverage scores:")
-    print(df.mean())
+    print(mean_df)
 
-    df.to_markdown(folder + '/eval_results.md')
+    results_df.to_markdown(folder + '/eval_results.md')
     with open(folder + '/eval_results.md', 'a') as file:
         file.write("\n\nAverages scores:\n\n")
-    df.mean().to_markdown(folder + '/eval_results.md', 'a')
+    mean_df.to_markdown(folder + '/eval_results.md', 'a')
 
     with jsonlines.open(folder + '/eval_results.jsonl', 'w') as writer:
         writer.write(eval_results)
@@ -125,9 +128,6 @@ def evaluate_orchestrator(model_config, data_path):
 if __name__ == "__main__":
     import time
     import jsonlines
-    from api.logging import init_logging
-
-    init_logging()
     
     # Initialize Azure OpenAI Connection
     model_config = AzureOpenAIModelConfiguration(
@@ -138,7 +138,8 @@ if __name__ == "__main__":
 
     start=time.time()
     print(f"Starting evaluate...")
-
+    print(os.environ["BING_SEARCH_ENDPOINT"])
+    print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
     eval_result = evaluate_orchestrator(model_config, data_path=folder +"/eval_inputs.jsonl")
 
     end=time.time()
