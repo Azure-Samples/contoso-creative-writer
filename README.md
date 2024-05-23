@@ -159,24 +159,15 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 
 ## Testing the sample
 
-This sample repository contains an agents folder that includes subfolders for each agent. Each agent forlder contains a prompty file where the agents prompty is defined and a python file with the code used to run it. Exploring these files will help you understand what each agent is doing. The agents folder also contains an `orchestrator.py` file that can be used to run the entire flow and to create an article.
+This sample repository contains an agents folder that includes subfolders for each agent. Each agent forlder contains a prompty file where the agents prompty is defined and a python file with the code used to run it. Exploring these files will help you understand what each agent is doing. The agents folder also contains an `orchestrator.py` file that can be used to run the entire flow and to create an article. When you ran `azd up` a catalogue of products was uploaded to the Azure AI Search vector store and index name `contoso-products` was created. 
 
 To test the sample: 
 
-1. Populate the Azure AI Search vectore store index with product data. 
-
-    - Change into the api/data folder:
-    ```
-    cd src/api/data
-    ```
-    - Open the `create-azure-search.ipynb` notebook. We will use this notebook to upload a catalogue of products to the Azure AI Search vector store. Click `select kernel` in the top right hand corner of the notebook, choose Python environment and then select the recommended Python version. 
-    - Run all of the cells in the notebook. If this process was successful you should see "uploading 20 documents to index contoso-products". You're now ready to run the full promptflow. 
-
-2. Run the example web app locally using a Flask server. 
+1. Run the example web app locally using a Flask server. 
 
     First navigate to the src/api folder 
     ```
-    cd ..
+    cd ./src/api
     ```
     Run the Flask webserver
     ```
@@ -190,7 +181,7 @@ To test the sample:
     http://127.0.0.1:8080/get_article?context=Write an article about camping in alaska&instructions=find specifics about what type of gear they would need and explain in detail
     ```
 
-    Once the flask server is running you can now run the web app. To do this open a new terminal window and navigate to the web folder using this command:
+2. Once the flask server is running you can now run the web app. To do this open a new terminal window and navigate to the web folder using this command:
     ```
     cd src/web
     ```
@@ -221,12 +212,12 @@ To test the sample:
 
     Change the instructions and context to create an article of your choice. 
 
-2. Testing directly with Python using the orchestrator Logic
+3. For debugging purposes you may want to test in Python using the orchestrator Logic
 
     To run the sample using just the orchestrator logic use the following command:
 
     ```
-    cd ..
+    cd ./src/api
     python -m api.agents.orchestrator
 
     ```

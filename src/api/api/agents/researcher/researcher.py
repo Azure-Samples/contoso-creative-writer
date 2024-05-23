@@ -42,6 +42,11 @@ def find_information(query, market="en-US"):
         {"url": a["url"], "name": a["name"], "description": a["snippet"]}
         for a in items["webPages"]["value"]
     ]
+    # check if relatedsearches exists
+    if "relatedSearches" not in items:
+        return {"pages": pages, "related": []}
+    
+    # else add related searching
     related = [a["text"] for a in items["relatedSearches"]["value"]]
     return {"pages": pages, "related": related}
 
@@ -96,6 +101,12 @@ def execute(request: str, instructions: str, feedback: str = ""):
     prompty_obj = Prompty.load(folder + "/researcher.prompty", model=override_model)
     results = prompty_obj(request=request, instructions=instructions, feedback=feedback)
 
+    # validate the result as the expected format
+    if "tool_calls" not in results:
+        feedback = "Unexpected response from the researcher. Result:" + str(results)
+        #print feedback and result from llm
+        print(feedback)
+        
     research = []
     for tool in results['tool_calls']:
         if 'function' not in tool:
