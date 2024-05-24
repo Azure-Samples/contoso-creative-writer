@@ -68,7 +68,7 @@ The easiest way to get started is GitHub Codespaces, since it will setup all the
     azd up
     ```
 
-    This project uses `gpt-35-turbo-0613` and `gpt-4-1106-Preview` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. For this project we recommend East US 2.
+    This project uses `gpt-35-turbo-0613`, `gpt-4-1106-Preview` and `gpt-4-0613`which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. For this project we recommend France Central.
 
 5. Install the necessary Python packages:
 
