@@ -43,6 +43,32 @@ variable "openai_35_turbo_model_name" {
   default     = "gpt-35-turbo"
 }
 
+variable "openai_4_eval_deployment_name" {
+  description = "value of azure openai model name"
+  type        = string
+  default     = "gpt-4-eval"
+}
+
+variable "openai_4_eval_model_name" {
+  description = "value of azure openai model name"
+  type        = string
+  default     = "gpt-4"
+}
+
+
+variable "openai_4_eval_model_version" {
+  description = "value of azure openai model name"
+  type        = string
+  default     = "0613"
+}
+
+variable "openai_4_eval_model_capacity" {
+  description = "value of azure openai model capacity"
+  type        = number
+  default     = 20
+}
+
+
 variable "openai_35_turbo_model_version" {
   description = "value of azure openai model version"
   type        = string

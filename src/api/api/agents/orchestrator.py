@@ -142,11 +142,16 @@ def write_article(request, instructions, evaluate=False):
     # Log final editor response
     log_output("Final editor response: %s", json.dumps(editor_response, indent=2))
 
-if __name__ == "__main__":
-    from api.logging import init_logging
-
-    init_logging()
+@trace
+def test_write_article():
     context = "Can you find the latest camping trends and what folks are doing in the winter?"
     instructions = "Can you find the relevant information needed and good places to visit"
     for result in write_article(context, instructions, evaluate=True):
         print(*result)
+    
+if __name__ == "__main__":
+    from api.logging import init_logging
+
+    init_logging()
+    test_write_article()
+

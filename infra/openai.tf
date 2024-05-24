@@ -47,6 +47,22 @@ resource "azurerm_cognitive_deployment" "gpt35_deployment" {
   }
 }
 
+resource "azurerm_cognitive_deployment" "gpt4_deployment" {
+  name                 = var.openai_4_eval_deployment_name
+  cognitive_account_id = azurerm_cognitive_account.cog.id
+
+  model {
+    format  = "OpenAI"
+    name    = var.openai_4_eval_model_name
+    version = var.openai_4_eval_model_version
+  }
+
+  scale {
+    type     = "Standard"
+    capacity = var.openai_4_eval_model_capacity
+  }
+}
+
 resource "azurerm_cognitive_deployment" "embedding_deployment" {
   name                 = var.openai_embedding_model_name
   cognitive_account_id = azurerm_cognitive_account.cog.id
