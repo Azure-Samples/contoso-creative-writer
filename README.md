@@ -1,3 +1,22 @@
+---
+page_type: sample
+languages:
+- azdeveloper
+- python
+- js
+- bicep
+products:
+- azure
+- azure-openai
+- azure-bing-web
+- azure-cognitive-search
+urlFragment: agent-openai-python-prompty
+name: Creative Writing Assistant - Working with Agents using Promptflow (Python Implementation)
+description: Using Azure OpenAI agent with Python, integrating Bing Search API and Azure AI Search, to create articles based on user topics and instruction.
+---
+<!-- YAML front-matter schema: https://review.learn.microsoft.com/en-us/help/contribute/samples/process/onboarding?branch=main#supported-metadata-fields-for-readmemd -->
+
+
 # Creative Writing Assistant: Working with Agents using Promptflow (Python Implementation) 
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/agent-openai-python-prompty) [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/azure-samples/agent-openai-python-prompty) 
