@@ -4,6 +4,8 @@ languages:
 - azdeveloper
 - python
 - js
+- typescript
+- bash
 - bicep
 products:
 - azure
@@ -15,7 +17,6 @@ name: Creative Writing Assistant - Working with Agents using Promptflow (Python 
 description: Using Azure OpenAI agent with Python, integrating Bing Search API and Azure AI Search, to create articles based on user topics and instruction.
 ---
 <!-- YAML front-matter schema: https://review.learn.microsoft.com/en-us/help/contribute/samples/process/onboarding?branch=main#supported-metadata-fields-for-readmemd -->
-
 
 # Creative Writing Assistant: Working with Agents using Promptflow (Python Implementation) 
 
