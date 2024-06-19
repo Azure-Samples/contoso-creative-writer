@@ -10,7 +10,14 @@
 		"ghcr.io/devcontainers/features/terraform:1": {
 			"terragrunt": "0.58.6"
 		},
-		"ghcr.io/devcontainers/features/azure-cli:1": {},
+		"ghcr.io/devcontainers/features/azure-cli:1": {
+			"version": "latest",
+      		"extensions": "aks-preview",
+      		"installBicep": true},
+		"ghcr.io/azure/azure-dev/azd:latest": {},
+		"ghcr.io/devcontainers/features/common-utils:2": {
+      	"configureZshAsDefaultShell": true
+    	},
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
 		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
 		"ghcr.io/devcontainers/features/node:1": {},
@@ -34,10 +41,12 @@
 	},
 	"forwardPorts": [
 		3000,
-		5000
+		5000,
+		8080
 
 	],
 	"containerEnv": {
 		"AZD_SKIP_UPDATE_CHECK": "true"
 	}
 }
+
