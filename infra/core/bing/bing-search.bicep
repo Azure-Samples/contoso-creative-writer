@@ -15,5 +15,5 @@ resource bing 'Microsoft.Bing/accounts@2020-06-10' = {
 }
 
 #disable-next-line outputs-should-not-contain-secrets
-output bingApiKey string = bing.listKeys().keys[0].value
+output bingApiKey string = bing.listKeys().key1
 output endpoint string = 'https://api.bing.microsoft.com/'
