@@ -17,11 +17,17 @@
     "openAiApiVersion": {
       "value": "${AZURE_OPENAI_API_VERSION=2023-07-01-preview}"
     },
-    "openAiEmbeddingDeploymentName": {
-      "value": "${AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME=text-embedding-ada-002}"
-    },
     "openAi_35_turbo_DeploymentName": {
       "value": "${AZURE_OPENAI_DEPLOYMENT_NAME=gpt-35-turbo}"
+    },
+    "openAi_4_DeploymentName": {
+      "value": "${AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4}"
+    },
+    "openAi_4_eval_DeploymentName": {
+      "value": "${AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME=gpt-4-eval}"
+    },
+    "openAiEmbeddingDeploymentName": {
+      "value": "${AZURE_EMBEDDING_NAME=text-embedding-ada-002}"
     },
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"

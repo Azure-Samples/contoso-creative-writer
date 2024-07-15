@@ -74,7 +74,7 @@ module app '../core/host/container-app-upsert.bicep' = {
         value: openAi_35_turbo_DeploymentName
       }
       {
-        name: 'AZURE_OPENAI_4_DEPLOYMENT_NAME'
+        name: 'AZURE_OPENAI_DEPLOYMENT_NAME'
         value: openAi_4_DeploymentName
       }
       {

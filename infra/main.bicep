@@ -366,7 +366,7 @@ output AZURE_LOCATION string = location
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
 
 output AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME string = openAi_35_turbo_DeploymentName
-output AZURE_OPENAI_4_DEPLOYMENT_NAME string = openAi_4_DeploymentName
+output AZURE_OPENAI_DEPLOYMENT_NAME string = openAi_4_DeploymentName
 output AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME string = openAi_4_eval_DeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
 output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
