@@ -1,52 +1,40 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/python
 {
-	"build": {
-		"dockerfile": "Dockerfile",
-		"args": {
-			"IMAGE": "python",
-			"TAG": "3.11"
-		}
-	},
-	"features": {
-		"ghcr.io/devcontainers/features/terraform:1": {
-			"terragrunt": "0.58.6"
-		},
-		"ghcr.io/devcontainers/features/azure-cli:1": {
-			"version": "latest",
-      		"extensions": "aks-preview",
-      		"installBicep": true},
-		"ghcr.io/azure/azure-dev/azd:latest": {},
-		"ghcr.io/devcontainers/features/common-utils:2": {
-      	"configureZshAsDefaultShell": true
-    	},
-		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
-		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
-		"ghcr.io/devcontainers/features/node:1": {},
-		"ghcr.io/devcontainers/features/github-cli:1": {}
-	},
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"esbenp.prettier-vscode",
-				"ms-python.python",
-				"ms-toolsai.jupyter",
+    "name": "Contoso Chat (v2)",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/azure-cli:1": {
+            "installBicep": true,
+            "extensions": "ml"
+        },
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/azure/azure-dev/azd:latest": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "prompt-flow.prompt-flow",
+                "ms-azuretools.vscode-docker",
+                "ms-python.python",
+                "ms-toolsai.jupyter",
+                "ms-azuretools.vscode-bicep",
+                "rogalmic.bash-debug",
+                "esbenp.prettier-vscode",
 				"GitHub.vscode-github-actions",
 				"ms-azuretools.azure-dev",
-				"ms-azuretools.vscode-docker",
-				"ms-kubernetes-tools.vscode-aks-tools",
-				"ms-kubernetes-tools.vscode-kubernetes-tools",
-				"hashicorp.terraform",
 				"ms-python.black-formatter"
-			]
-		}
-	},
-	"forwardPorts": [
+            ]
+        }
+    },
+    "forwardPorts": [
 		3000,
 		5000,
 		8080
 
-	],
-	"containerEnv": {
-		"AZD_SKIP_UPDATE_CHECK": "true"
-	}
+	]
 }
-

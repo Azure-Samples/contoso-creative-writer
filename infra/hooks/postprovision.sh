@@ -1,7 +1,37 @@
 #!/bin/bash
 
+# Output environment variables to .env file using azd env get-values
 azd env get-values > .env
 
+echo  "Building creativeagentapi:latest..."
+az acr build --subscription ${AZURE_SUBSCRIPTION_ID} --registry ${AZURE_CONTAINER_REGISTRY_NAME} --image creativeagentapiapi:latest ./src/
+image_name="${AZURE_CONTAINER_REGISTRY_NAME}.azurecr.io/creativeagentapi:latest"
+az containerapp update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${SERVICE_ACA_NAME} --resource-group ${AZURE_RESOURCE_GROUP} --image ${image_name}
+az containerapp ingress update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${SERVICE_ACA_NAME} --resource-group ${AZURE_RESOURCE_GROUP} --target-port 5000
+
+
+# Retrieve service names, resource group name, and other values from environment variables
+resourceGroupName=$AZURE_RESOURCE_GROUP
+searchService=$AZURE_SEARCH_NAME
+openAiService=$AZURE_OPENAI_NAME
+cosmosService=$AZURE_COSMOS_NAME
+subscriptionId=$AZURE_SUBSCRIPTION_ID
+
+# Ensure all required environment variables are set
+if [ -z "$resourceGroupName" ] || [ -z "$searchService" ] || [ -z "$openAiService" ] || [ -z "$cosmosService" ] || [ -z "$subscriptionId" ]; then
+    echo "One or more required environment variables are not set."
+    echo "Ensure that AZURE_RESOURCE_GROUP, AZURE_SEARCH_NAME, AZURE_OPENAI_NAME, AZURE_COSMOS_NAME, AZURE_SUBSCRIPTION_ID are set."
+    exit 1
+fi
+
+# Set additional environment variables expected by app
+# TODO: Standardize these and remove need for setting here
+azd env set AZURE_OPENAI_API_VERSION 2023-03-15-preview
+azd env set AZURE_OPENAI_CHAT_DEPLOYMENT gpt-35-turbo
+azd env set AZURE_SEARCH_ENDPOINT $AZURE_SEARCH_ENDPOINT
+azd env set REACT_APP_API_BASE_URL $image_name
+
+# Setup to run notebooks
 # Retrieve the internalId of the Cognitive Services account
 INTERNAL_ID=$(az cognitiveservices account show \
     --name ${AZURE_OPENAI_NAME} \

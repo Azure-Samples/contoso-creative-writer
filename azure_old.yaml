@@ -1,0 +1,77 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: creativeagent
+metadata:
+  template: creativeagent@0.0.1-beta
+services:
+  api:
+    project: ./src/api
+    language: python
+    host: aks
+    k8s:
+      deploymentPath: ../../infra/manifests/api
+      ingress:
+        relativePath: api
+    hooks:
+      postdeploy:
+        windows:
+          shell: pwsh
+          run: azd env set REACT_APP_API_BASE_URL $env:SERVICE_API_ENDPOINT_URL
+        posix:
+          shell: sh
+          run: azd env set REACT_APP_API_BASE_URL ${SERVICE_API_ENDPOINT_URL}
+  web:
+    project: ./src/web
+    dist: dist
+    language: js
+    host: aks
+    k8s:
+      deploymentPath: ../../infra/manifests/web
+    hooks:
+      postdeploy:
+        windows:
+          shell: pwsh
+          run: azd env set REACT_APP_WEB_BASE_URL $env:SERVICE_WEB_ENDPOINT_URL
+        posix:
+          shell: sh
+          run: azd env set REACT_APP_WEB_BASE_URL ${SERVICE_WEB_ENDPOINT_URL}
+hooks:
+  preprovision:
+    shell: sh
+    continueOnError: false
+    interactive: true
+    run: infra/hooks/preprovision.sh
+  postprovision:
+    shell: sh
+    continueOnError: false
+    interactive: true
+    run: infra/hooks/postprovision.sh
+  postdeploy:
+    shell: sh
+    continueOnError: false
+    interactive: true
+    run: infra/hooks/postdeploy.sh
+  predown:
+    shell: sh
+    continueOnError: false
+    interactive: true
+    run: infra/hooks/predown.sh
+infra:
+  provider: terraform
+pipeline:
+  variables:
+    - AZURE_OPENAI_GPT4_EVAL_DEPLOYMENT
+    - AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME
+    - AZURE_OPENAI_35_TURBO_MODEL_NAME
+    - AZURE_OPENAI_API_VERSION
+    - AZURE_OPENAI_DEPLOYMENT_NAME
+    - AZURE_OPENAI_ENDPOINT
+    - AZURE_OPENAI_MODEL_NAME
+    - AZURE_OPENAI_MODEL_VERSION
+    - AZURE_OPENAI_NAME
+    - AZURE_SEARCH_ENDPOINT
+    - AZURE_SEARCH_INDEX_NAME  
+    - AZURE_OPENAI_API_ENDPOINT
+    - BING_SEARCH_ENDPOINT
+  secrets:
+    - BING_SEARCH_KEY

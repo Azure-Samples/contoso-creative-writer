@@ -1,0 +1,18 @@
+metadata description = 'Creates a Bing Search instance.'
+param name string
+param location string = 'global'
+param sku string = 'S1'
+param tags object = {}
+
+resource bing 'Microsoft.Bing/accounts@2020-06-10' = {
+  name: name
+  location: location
+  kind: 'Bing.Search.v7'
+  tags: (contains(tags, 'Microsoft.Bing/accounts') ? tags['Microsoft.Bing/accounts'] : json('{}'))
+  sku: {
+    name: sku
+  }
+}
+
+output bingApiKey string = bing.listKeys().keys[0].value
+output endpoint string = 'https://api.bing.microsoft.com/'
