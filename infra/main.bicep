@@ -58,9 +58,6 @@ param bingSearchName string = ''
 @description('The name of the Cosmos account')
 param cosmosAccountName string = ''
 
-@description('The name of the OpenAI embedding deployment')
-param openAiEmbeddingDeploymentName string = ''
-
 @description('The name of the AI search index')
 param aiSearchIndexName string = 'contoso-products'
 
@@ -71,13 +68,16 @@ param cosmosDatabaseName string = 'contoso-outdoor'
 param cosmosContainerName string = 'customers'
 
 @description('The name of the 35 turbo OpenAI deployment')
-param openAi_35_turbo_DeploymentName string = ''
+param openAi_35_turbo_DeploymentName string = 'gpt-35-turbo'
 
 @description('The name of the 4 OpenAI deployment')
-param openAi_4_DeploymentName string = ''
+param openAi_4_DeploymentName string = 'gpt-4'
 
 @description('The name of the 4 eval OpenAI deployment')
-param openAi_4_eval_DeploymentName string = ''
+param openAi_4_eval_DeploymentName string = 'gpt-4-eval'
+
+@description('The name of the OpenAI embedding deployment')
+param openAiEmbeddingDeploymentName string = 'text-embedding-ada-002'
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
@@ -195,7 +195,6 @@ module bing 'core/bing/bing-search.bicep' = {
   params: {
     name: !empty(bingSearchName) ? bingSearchName : '${prefix}-bing-search-creative'
     location: 'global'
-    disableLocalAuth: true
   }
 }
 
