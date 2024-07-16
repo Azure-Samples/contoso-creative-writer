@@ -121,6 +121,8 @@ resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' exi
 
 var prefix = toLower('${environmentName}-${resourceToken}')
 
+var keyVaultName = '${substring(prefix, 0, 18)}-vault'
+
 // USER ROLES
 var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
 module managedIdentity 'core/security/managed-identity.bicep' = {
@@ -213,6 +215,26 @@ module bing 'core/bing/bing-search.bicep' = {
   params: {
     name: !empty(bingSearchName) ? bingSearchName : '${prefix}-bing-search-creative'
     location: 'global'
+  }
+}
+
+module keyVault 'core/security/keyvault.bicep' = {
+  name: 'keyvault'
+  scope: resourceGroup
+  params: {
+    location: location
+    tags: tags
+    name: keyVaultName
+  }
+}
+
+module bingSecret 'core/security/keyvault-secret.bicep' = {
+  name: 'bingSecret'
+  scope: resourceGroup
+  params: {
+    name: 'bingApiKey'
+    keyVaultName: keyVaultName
+    secretValue: bing.outputs.bingApiKey
   }
 }
 
