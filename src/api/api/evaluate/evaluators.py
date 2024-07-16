@@ -34,7 +34,7 @@ def evaluate_article(data, trace_context):
     with tracer.start_as_current_span("run_evaluators", context=trace_context) as span:
         span.set_attribute("inputs", json.dumps(data))
         configuration = AzureOpenAIModelConfiguration(
-            azure_deployment=os.environ["AZURE_OPENAI_GPT4_EVAL_DEPLOYMENT"],
+            azure_deployment=os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],
             api_version=os.environ["AZURE_OPENAI_API_VERSION"],
             azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"]
         )
