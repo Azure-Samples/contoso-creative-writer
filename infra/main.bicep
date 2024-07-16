@@ -121,7 +121,7 @@ resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' exi
 
 var prefix = toLower('${environmentName}-${resourceToken}')
 
-var keyVaultName = '${substring(prefix, 0, 18)}-vault'
+var keyVaultName = '${take(prefix, 18)}-vault'
 
 // USER ROLES
 var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
@@ -328,6 +328,8 @@ module aca 'app/aca.bicep' = {
     cosmosDatabaseName: cosmosDatabaseName
     cosmosContainerName: cosmosContainerName
     appinsights_Connectionstring: monitoring.outputs.applicationInsightsConnectionString
+    bingApiEndpoint: bing.outputs.endpoint
+    bingApiKey: bing.outputs.bingApiKey
   }
 }
 

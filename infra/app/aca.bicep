@@ -21,6 +21,10 @@ param aiSearchEndpoint string
 param aiSearchIndexName string
 param appinsights_Connectionstring string
 
+@secure()
+param bingApiKey string
+param bingApiEndpoint string
+
 
 module app '../core/host/container-app-upsert.bicep' = {
   name: '${serviceName}-container-app-module'
@@ -32,6 +36,9 @@ module app '../core/host/container-app-upsert.bicep' = {
     identityType: 'UserAssigned'
     containerAppsEnvironmentName: containerAppsEnvironmentName
     containerRegistryName: containerRegistryName
+    secrets: {
+      BING_SEARCH_KEY: bingApiKey
+    }
     env: [
       {
         name: 'AZURE_CLIENT_ID'
@@ -88,6 +95,10 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'APPINSIGHTS_CONNECTIONSTRING'
         value: appinsights_Connectionstring
+      }
+      {
+        name: 'BING_SEARCH_ENDPOINT'
+        value: bingApiEndpoint
       }
 
     ]
