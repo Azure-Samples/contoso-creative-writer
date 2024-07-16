@@ -14,11 +14,11 @@ hooks:
       interactive: true
       run: infra/hooks/postprovision.ps1
   postdeploy:
-      windows:
-        shell: pwsh
-        run: azd env set REACT_APP_API_BASE_URL $env:SERVICE_API_ENDPOINT_URL
-      posix:
-        shell: sh
-        run: azd env set REACT_APP_API_BASE_URL ${SERVICE_API_ENDPOINT_URL}
+#      windows:
+#        shell: pwsh
+#        run: azd env set REACT_APP_API_BASE_URL $env:SERVICE_API_ENDPOINT_URL
+#      posix:
+#        shell: sh
+#        run: azd env set REACT_APP_API_BASE_URL ${SERVICE_API_ENDPOINT_URL}
 infra:
     provider: "bicep"
