@@ -14,9 +14,6 @@ param openAiEndpoint string
 param openAiApiVersion string
 param openAiEmbeddingDeploymentName string
 param openAiType string
-param cosmosEndpoint string
-param cosmosDatabaseName string
-param cosmosContainerName string
 param aiSearchEndpoint string
 param aiSearchIndexName string
 param appinsights_Connectionstring string
@@ -37,24 +34,12 @@ module app '../core/host/container-app-upsert.bicep' = {
     containerAppsEnvironmentName: containerAppsEnvironmentName
     containerRegistryName: containerRegistryName
     secrets: {
-      BING_SEARCH_KEY: bingApiKey
+      'bing-search-key': bingApiKey
     }
     env: [
       {
         name: 'AZURE_CLIENT_ID'
         value: identityId
-      }
-      {
-        name: 'COSMOS_ENDPOINT'
-        value: cosmosEndpoint
-      }
-      {
-        name: 'AZURE_COSMOS_NAME'
-        value: cosmosDatabaseName
-      }
-      {
-        name: 'COSMOS_CONTAINER'
-        value: cosmosContainerName
       }
       {
         name: 'AZURE_SEARCH_ENDPOINT'
@@ -99,6 +84,10 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'BING_SEARCH_ENDPOINT'
         value: bingApiEndpoint
+      }
+      {
+        name: 'BING_SEARCH_KEY'
+        secretRef: 'bing-search-key'
       }
 
     ]

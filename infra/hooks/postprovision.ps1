@@ -18,12 +18,6 @@ Write-Host "openAiService: $openAiService"
 $subscriptionId = $env:AZURE_SUBSCRIPTION_ID
 Write-Host "subscriptionId: $subscriptionId"
 
-$cosmosService = $env:AZURE_COSMOS_NAME
-Write-Host "cosmosServiceName: $cosmosService"
-
-$cosmosService = $env:COSMOS_ENDPOINT
-Write-Host "cosmosServiceEndpoint: $cosmosService"
-
 $azureSearchEndpoint = $env:AZURE_SEARCH_ENDPOINT
 Write-Host "azureSearchEndpoint: $azureSearchEndpoint"
 
@@ -49,5 +43,4 @@ python -m pip install -r ./src/requirements.txt > $null
 
 # populate data
 Write-Host "Populating data ...."
-# jupyter nbconvert --execute --to python --ExecutePreprocessor.timeout=-1 data/customer_info/create-cosmos-db.ipynb > $null
 jupyter nbconvert --execute --to python --ExecutePreprocessor.timeout=-1 data/create-azure-search.ipynb > $null
