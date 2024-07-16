@@ -68,16 +68,16 @@ param cosmosDatabaseName string = 'contoso-outdoor'
 param cosmosContainerName string = 'customers'
 
 @description('The name of the 35 turbo OpenAI deployment')
-param openAi_35_turbo_DeploymentName string = 'gpt-35-turbo'
+param openAi_35_turbo_DeploymentName string = ''
 
 @description('The name of the 4 OpenAI deployment')
-param openAi_4_DeploymentName string = 'gpt-4'
+param openAi_4_DeploymentName string = ''
 
 @description('The name of the 4 eval OpenAI deployment')
-param openAi_4_eval_DeploymentName string = 'gpt-4-eval'
+param openAi_4_eval_DeploymentName string = ''
 
 @description('The name of the OpenAI embedding deployment')
-param openAiEmbeddingDeploymentName string = 'text-embedding-ada-002'
+param openAiEmbeddingDeploymentName string = ''
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
@@ -142,24 +142,24 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         name: openAi_4_DeploymentName
         model: {
           format: 'OpenAI'
-          name: 'gpt-4'
-          version: '1106-Preview'
+          name: 'gpt-4o'
+          version: '2024-05-13'
         }
         sku: {
           name: 'Standard'
-          capacity: 30
+          capacity: 20
         }
       }
       {
         name: openAi_4_eval_DeploymentName
         model: {
           format: 'OpenAI'
-          name: 'gpt-4'
-          version: '1106-Preview'
+          name: 'gpt-4o'
+          version: '2024-05-13'
         }
         sku: {
           name: 'Standard'
-          capacity: 30
+          capacity: 20
         }
       }
       {
