@@ -238,6 +238,15 @@ module bingSecret 'core/security/keyvault-secret.bicep' = {
   }
 }
 
+module keyVaultAccess 'core/security/keyvault-access.bicep' = {
+  name: '${prefix}-keyvault-access'
+  scope: resourceGroup
+  params: {
+    keyVaultName: keyVaultName
+    principalId: principalId
+  }
+}
+
 module cosmos 'core/database/cosmos/sql/cosmos-sql-db.bicep' = {
   name: 'cosmos'
   scope: resourceGroup
