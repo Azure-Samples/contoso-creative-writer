@@ -70,11 +70,29 @@ param cosmosContainerName string = 'customers'
 @description('The name of the 35 turbo OpenAI deployment')
 param openAi_35_turbo_DeploymentName string = ''
 
+@description('The name of the 35 turbo OpenAI model')
+param openAi_35_ModelName string = ''
+
+@description('The version of the 35 turbo OpenAI model')
+param openAi_35_ModelVersion string = ''
+
 @description('The name of the 4 OpenAI deployment')
 param openAi_4_DeploymentName string = ''
 
+@description('The name of the 4 OpenAI model')
+param openAi_4_ModelName string = ''
+
+@description('The version of the 4 OpenAI model')
+param openAi_4_ModelVersion string = ''
+
 @description('The name of the 4 eval OpenAI deployment')
 param openAi_4_eval_DeploymentName string = ''
+
+@description('The name of the 4 eval OpenAI model')
+param openAi_4_eval_ModelName string = ''
+
+@description('The version of the 4 eval OpenAI model')
+param openAi_4_eval_ModelVersion string = ''
 
 @description('The name of the OpenAI embedding deployment')
 param openAiEmbeddingDeploymentName string = ''
@@ -130,8 +148,8 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         name: openAi_35_turbo_DeploymentName
         model: {
           format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0613'
+          name: openAi_35_ModelName
+          version: openAi_35_ModelVersion
         }
         sku: {
           name: 'Standard'
@@ -142,8 +160,8 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         name: openAi_4_DeploymentName
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
-          version: '2024-05-13'
+          name: openAi_4_ModelName
+          version: openAi_4_ModelVersion
         }
         sku: {
           name: 'Standard'
@@ -154,8 +172,8 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         name: openAi_4_eval_DeploymentName
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
-          version: '2024-05-13'
+          name: openAi_4_eval_ModelName
+          version: openAi_4_eval_ModelVersion
         }
         sku: {
           name: 'Standard'
