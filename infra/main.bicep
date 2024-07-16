@@ -268,17 +268,17 @@ module containerApps 'core/host/container-apps.bicep' = {
     name: 'app'
     location: location
     tags: tags
-    containerAppsEnvironmentName: '${prefix}-containerapps-env'
+    containerAppsEnvironmentName: '${prefix}-aca-env'
     containerRegistryName: '${replace(prefix, '-', '')}registry'
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.outputs.name
   }
 }
 
-module aca 'app/aca.bicep' = {
-  name: 'aca'
+module apiContainerApp 'app/api.bicep' = {
+  name: 'api'
   scope: resourceGroup
   params: {
-    name: replace('${take(prefix, 19)}-ca', '--', '-')
+    name: replace('${take(prefix, 18)}-api', '--', '-')
     location: location
     tags: tags
     identityName: managedIdentity.outputs.managedIdentityName
@@ -354,9 +354,9 @@ output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
 output AZURE_OPENAI_SKU_NAME string = openAi.outputs.skuName
 output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = openAiResourceGroup.location
 
-output SERVICE_ACA_NAME string = aca.outputs.SERVICE_ACA_NAME
-output SERVICE_ACA_URI string = aca.outputs.SERVICE_ACA_URI
-output SERVICE_ACA_IMAGE_NAME string = aca.outputs.SERVICE_ACA_IMAGE_NAME
+output SERVICE_ACA_NAME string = apiContainerApp.outputs.SERVICE_ACA_NAME
+output SERVICE_ACA_URI string = apiContainerApp.outputs.SERVICE_ACA_URI
+output SERVICE_ACA_IMAGE_NAME string = apiContainerApp.outputs.SERVICE_ACA_IMAGE_NAME
 
 output AZURE_CONTAINER_ENVIRONMENT_NAME string = containerApps.outputs.environmentName
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerApps.outputs.registryLoginServer
