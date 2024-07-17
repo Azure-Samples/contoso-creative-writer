@@ -14,7 +14,7 @@ COPY requirements.txt ./
 RUN pip3 install --no-cache-dir -r requirements.txt --find-links ./whl
 
 # Copy UI static files
-COPY --from=ui /app ./static/
+COPY --from=ui /app/dist ./static/
 
 ENV UI_FOLDER=../static
 ENV API_PREFIX=/api
