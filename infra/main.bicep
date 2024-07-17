@@ -55,29 +55,38 @@ param searchServiceName string = ''
 @description('The name of the bing search service')
 param bingSearchName string = ''
 
-@description('The name of the Cosmos account')
-param cosmosAccountName string = ''
-
-@description('The name of the OpenAI embedding deployment')
-param openAiEmbeddingDeploymentName string = ''
-
 @description('The name of the AI search index')
 param aiSearchIndexName string = 'contoso-products'
-
-@description('The name of the Cosmos database')
-param cosmosDatabaseName string = 'contoso-outdoor'
-
-@description('The name of the Cosmos container')
-param cosmosContainerName string = 'customers'
 
 @description('The name of the 35 turbo OpenAI deployment')
 param openAi_35_turbo_DeploymentName string = ''
 
+@description('The name of the 35 turbo OpenAI model')
+param openAi_35_ModelName string = ''
+
+@description('The version of the 35 turbo OpenAI model')
+param openAi_35_ModelVersion string = ''
+
 @description('The name of the 4 OpenAI deployment')
 param openAi_4_DeploymentName string = ''
 
+@description('The name of the 4 OpenAI model')
+param openAi_4_ModelName string = ''
+
+@description('The version of the 4 OpenAI model')
+param openAi_4_ModelVersion string = ''
+
 @description('The name of the 4 eval OpenAI deployment')
 param openAi_4_eval_DeploymentName string = ''
+
+@description('The name of the 4 eval OpenAI model')
+param openAi_4_eval_ModelName string = ''
+
+@description('The version of the 4 eval OpenAI model')
+param openAi_4_eval_ModelVersion string = ''
+
+@description('The name of the OpenAI embedding deployment')
+param openAiEmbeddingDeploymentName string = ''
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
@@ -102,6 +111,8 @@ resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' exi
 }
 
 var prefix = toLower('${environmentName}-${resourceToken}')
+
+var keyVaultName = '${take(prefix, 18)}-vault'
 
 // USER ROLES
 var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
@@ -130,8 +141,8 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         name: openAi_35_turbo_DeploymentName
         model: {
           format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0613'
+          name: openAi_35_ModelName
+          version: openAi_35_ModelVersion
         }
         sku: {
           name: 'Standard'
@@ -142,24 +153,24 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         name: openAi_4_DeploymentName
         model: {
           format: 'OpenAI'
-          name: 'gpt-4'
-          version: '1106-Preview'
+          name: openAi_4_ModelName
+          version: openAi_4_ModelVersion
         }
         sku: {
           name: 'Standard'
-          capacity: 30
+          capacity: 20
         }
       }
       {
         name: openAi_4_eval_DeploymentName
         model: {
           format: 'OpenAI'
-          name: 'gpt-4'
-          version: '1106-Preview'
+          name: openAi_4_eval_ModelName
+          version: openAi_4_eval_ModelVersion
         }
         sku: {
           name: 'Standard'
-          capacity: 30
+          capacity: 20
         }
       }
       {
@@ -195,28 +206,35 @@ module bing 'core/bing/bing-search.bicep' = {
   params: {
     name: !empty(bingSearchName) ? bingSearchName : '${prefix}-bing-search-creative'
     location: 'global'
-    disableLocalAuth: true
   }
 }
 
-module cosmos 'core/database/cosmos/sql/cosmos-sql-db.bicep' = {
-  name: 'cosmos'
+module keyVault 'core/security/keyvault.bicep' = {
+  name: 'keyvault'
   scope: resourceGroup
   params: {
-    accountName: !empty(cosmosAccountName) ? cosmosAccountName : 'cosmos-contoso-${resourceToken}'
-    databaseName: 'contoso-outdoor'
     location: location
-    tags: union(tags, {
-      defaultExperience: 'Core (SQL)'
-      'hidden-cosmos-mmspecial': ''
-    })
-    containers: [
-      {
-        name: 'customers'
-        id: 'customers'
-        partitionKey: '/id'
-      }
-    ]
+    tags: tags
+    name: keyVaultName
+  }
+}
+
+module bingSecret 'core/security/keyvault-secret.bicep' = {
+  name: 'bingSecret'
+  scope: resourceGroup
+  params: {
+    name: 'bingApiKey'
+    keyVaultName: keyVaultName
+    secretValue: bing.outputs.bingApiKey
+  }
+}
+
+module keyVaultAccess 'core/security/keyvault-access.bicep' = {
+  name: '${prefix}-keyvault-access'
+  scope: resourceGroup
+  params: {
+    keyVaultName: keyVaultName
+    principalId: principalId
   }
 }
 
@@ -250,17 +268,17 @@ module containerApps 'core/host/container-apps.bicep' = {
     name: 'app'
     location: location
     tags: tags
-    containerAppsEnvironmentName: '${prefix}-containerapps-env'
+    containerAppsEnvironmentName: '${prefix}-aca-env'
     containerRegistryName: '${replace(prefix, '-', '')}registry'
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.outputs.name
   }
 }
 
-module aca 'app/aca.bicep' = {
-  name: 'aca'
+module apiContainerApp 'app/api.bicep' = {
+  name: 'api'
   scope: resourceGroup
   params: {
-    name: replace('${take(prefix, 19)}-ca', '--', '-')
+    name: replace('${take(prefix, 18)}-api', '--', '-')
     location: location
     tags: tags
     identityName: managedIdentity.outputs.managedIdentityName
@@ -276,10 +294,23 @@ module aca 'app/aca.bicep' = {
     openAiApiVersion: openAiApiVersion
     aiSearchEndpoint: search.outputs.endpoint
     aiSearchIndexName: aiSearchIndexName
-    cosmosEndpoint: cosmos.outputs.endpoint
-    cosmosDatabaseName: cosmosDatabaseName
-    cosmosContainerName: cosmosContainerName
     appinsights_Connectionstring: monitoring.outputs.applicationInsightsConnectionString
+    bingApiEndpoint: bing.outputs.endpoint
+    bingApiKey: bing.outputs.bingApiKey
+  }
+}
+
+module webContainerApp 'app/web.bicep' = {
+  name: 'web'
+  scope: resourceGroup
+  params: {
+    name: replace('${take(prefix, 18)}-web', '--', '-')
+    location: location
+    tags: tags
+    identityName: managedIdentity.outputs.managedIdentityName
+    identityId: managedIdentity.outputs.managedIdentityClientId
+    containerAppsEnvironmentName: containerApps.outputs.environmentName
+    containerRegistryName: containerApps.outputs.registryName
   }
 }
 
@@ -293,25 +324,6 @@ module aiSearchRole 'core/security/role.bicep' = {
   }
 }
 
-module cosmosRoleContributor 'core/security/role.bicep' = {
-  scope: resourceGroup
-  name: 'ai-search-service-contributor'
-  params: {
-    principalId: managedIdentity.outputs.managedIdentityPrincipalId
-    roleDefinitionId: '7ca78c08-252a-4471-8644-bb5ff32d4ba0' //Search Service Contributor
-    principalType: 'ServicePrincipal'
-  }
-}
-
-module cosmosAccountRole 'core/security/role-cosmos.bicep' = {
-  scope: resourceGroup
-  name: 'cosmos-account-role'
-  params: {
-    principalId: managedIdentity.outputs.managedIdentityPrincipalId
-    databaseAccountId: cosmos.outputs.accountId
-    databaseAccountName: cosmos.outputs.accountName
-  }
-}
 
 module appinsightsAccountRole 'core/security/role.bicep' = {
   scope: resourceGroup
@@ -333,16 +345,6 @@ module userAiSearchRole 'core/security/role.bicep' = if (!empty(principalId)) {
   }
 }
 
-module userCosmosRoleContributor 'core/security/role.bicep' = if (!empty(principalId)) {
-  scope: resourceGroup
-  name: 'user-ai-search-service-contributor'
-  params: {
-    principalId: principalId
-    roleDefinitionId: '7ca78c08-252a-4471-8644-bb5ff32d4ba0' //Search Service Contributor
-    principalType: principalType
-  }
-}
-
 module openaiRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
   scope: resourceGroup
   name: 'user-openai-user'
@@ -353,21 +355,11 @@ module openaiRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
   }
 }
 
-module userCosmosAccountRole 'core/security/role-cosmos.bicep' = if (!empty(principalId)) {
-  scope: resourceGroup
-  name: 'user-cosmos-account-role'
-  params: {
-    principalId: principalId
-    databaseAccountId: cosmos.outputs.accountId
-    databaseAccountName: cosmos.outputs.accountName
-  }
-}
-
 output AZURE_LOCATION string = location
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
 
 output AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME string = openAi_35_turbo_DeploymentName
-output AZURE_OPENAI_4_DEPLOYMENT_NAME string = openAi_4_DeploymentName
+output AZURE_OPENAI_DEPLOYMENT_NAME string = openAi_4_DeploymentName
 output AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME string = openAi_4_eval_DeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
 output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
@@ -376,9 +368,13 @@ output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
 output AZURE_OPENAI_SKU_NAME string = openAi.outputs.skuName
 output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = openAiResourceGroup.location
 
-output SERVICE_ACA_NAME string = aca.outputs.SERVICE_ACA_NAME
-output SERVICE_ACA_URI string = aca.outputs.SERVICE_ACA_URI
-output SERVICE_ACA_IMAGE_NAME string = aca.outputs.SERVICE_ACA_IMAGE_NAME
+output API_SERVICE_ACA_NAME string = apiContainerApp.outputs.SERVICE_ACA_NAME
+output API_SERVICE_ACA_URI string = apiContainerApp.outputs.SERVICE_ACA_URI
+output API_SERVICE_ACA_IMAGE_NAME string = apiContainerApp.outputs.SERVICE_ACA_IMAGE_NAME
+
+output WEB_SERVICE_ACA_NAME string = webContainerApp.outputs.SERVICE_ACA_NAME
+output WEB_SERVICE_ACA_URI string = webContainerApp.outputs.SERVICE_ACA_URI
+output WEB_SERVICE_ACA_IMAGE_NAME string = webContainerApp.outputs.SERVICE_ACA_IMAGE_NAME
 
 output AZURE_CONTAINER_ENVIRONMENT_NAME string = containerApps.outputs.environmentName
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerApps.outputs.registryLoginServer
@@ -389,9 +385,6 @@ output APPINSIGHTS_CONNECTIONSTRING string = monitoring.outputs.applicationInsig
 output OPENAI_TYPE string = 'azure'
 output AZURE_EMBEDDING_NAME string = openAiEmbeddingDeploymentName
 
-output COSMOS_ENDPOINT string = cosmos.outputs.endpoint
-output AZURE_COSMOS_NAME string = cosmosDatabaseName
-output COSMOS_CONTAINER string = cosmosContainerName
 output AZURE_SEARCH_ENDPOINT string = search.outputs.endpoint
 output AZURE_SEARCH_NAME string = search.outputs.name
 

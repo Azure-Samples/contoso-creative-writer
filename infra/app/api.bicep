@@ -6,7 +6,7 @@ param identityName string
 param identityId string
 param containerAppsEnvironmentName string
 param containerRegistryName string
-param serviceName string = 'aca'
+param serviceName string = 'api'
 param openAi_35_turbo_DeploymentName string
 param openAi_4_DeploymentName string
 param openAi_4_eval_DeploymentName string
@@ -14,12 +14,13 @@ param openAiEndpoint string
 param openAiApiVersion string
 param openAiEmbeddingDeploymentName string
 param openAiType string
-param cosmosEndpoint string
-param cosmosDatabaseName string
-param cosmosContainerName string
 param aiSearchEndpoint string
 param aiSearchIndexName string
 param appinsights_Connectionstring string
+
+@secure()
+param bingApiKey string
+param bingApiEndpoint string
 
 
 module app '../core/host/container-app-upsert.bicep' = {
@@ -32,22 +33,13 @@ module app '../core/host/container-app-upsert.bicep' = {
     identityType: 'UserAssigned'
     containerAppsEnvironmentName: containerAppsEnvironmentName
     containerRegistryName: containerRegistryName
+    secrets: {
+      'bing-search-key': bingApiKey
+    }
     env: [
       {
         name: 'AZURE_CLIENT_ID'
         value: identityId
-      }
-      {
-        name: 'COSMOS_ENDPOINT'
-        value: cosmosEndpoint
-      }
-      {
-        name: 'AZURE_COSMOS_NAME'
-        value: cosmosDatabaseName
-      }
-      {
-        name: 'COSMOS_CONTAINER'
-        value: cosmosContainerName
       }
       {
         name: 'AZURE_SEARCH_ENDPOINT'
@@ -74,7 +66,7 @@ module app '../core/host/container-app-upsert.bicep' = {
         value: openAi_35_turbo_DeploymentName
       }
       {
-        name: 'AZURE_OPENAI_4_DEPLOYMENT_NAME'
+        name: 'AZURE_OPENAI_DEPLOYMENT_NAME'
         value: openAi_4_DeploymentName
       }
       {
@@ -88,6 +80,14 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'APPINSIGHTS_CONNECTIONSTRING'
         value: appinsights_Connectionstring
+      }
+      {
+        name: 'BING_SEARCH_ENDPOINT'
+        value: bingApiEndpoint
+      }
+      {
+        name: 'BING_SEARCH_KEY'
+        secretRef: 'bing-search-key'
       }
 
     ]

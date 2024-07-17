@@ -3,24 +3,31 @@
 # Output environment variables to .env file using azd env get-values
 azd env get-values > .env
 
-echo  "Building creativeagentapi:latest..."
-az acr build --subscription ${AZURE_SUBSCRIPTION_ID} --registry ${AZURE_CONTAINER_REGISTRY_NAME} --image creativeagentapiapi:latest ./src/
-image_name="${AZURE_CONTAINER_REGISTRY_NAME}.azurecr.io/creativeagentapi:latest"
-az containerapp update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${SERVICE_ACA_NAME} --resource-group ${AZURE_RESOURCE_GROUP} --image ${image_name}
-az containerapp ingress update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${SERVICE_ACA_NAME} --resource-group ${AZURE_RESOURCE_GROUP} --target-port 5000
+acr_build () {
+    image_name=$1
+    aca_name=$2
+    src_dir=$3
+    target_port=$4
+    image_fqn="${AZURE_CONTAINER_REGISTRY_NAME}.azurecr.io/${image_name}"
+    echo  "Building ${image_name} using ${src_dir} ..."
+    az acr build --subscription ${AZURE_SUBSCRIPTION_ID} --registry ${AZURE_CONTAINER_REGISTRY_NAME} --image ${image_name} ${src_dir}
+    az containerapp update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${aca_name} --resource-group ${AZURE_RESOURCE_GROUP} --image ${image_fqn}
+    az containerapp ingress update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${aca_name} --resource-group ${AZURE_RESOURCE_GROUP} --target-port ${target_port}
+}
 
+acr_build creativeagentapi:latest ${API_SERVICE_ACA_NAME} ./src/api/ 5000
+acr_build creativeagentweb:latest ${WEB_SERVICE_ACA_NAME} ./src/web/ 80
 
 # Retrieve service names, resource group name, and other values from environment variables
 resourceGroupName=$AZURE_RESOURCE_GROUP
 searchService=$AZURE_SEARCH_NAME
 openAiService=$AZURE_OPENAI_NAME
-cosmosService=$AZURE_COSMOS_NAME
 subscriptionId=$AZURE_SUBSCRIPTION_ID
 
 # Ensure all required environment variables are set
-if [ -z "$resourceGroupName" ] || [ -z "$searchService" ] || [ -z "$openAiService" ] || [ -z "$cosmosService" ] || [ -z "$subscriptionId" ]; then
+if [ -z "$resourceGroupName" ] || [ -z "$searchService" ] || [ -z "$openAiService" ] || [ -z "$subscriptionId" ]; then
     echo "One or more required environment variables are not set."
-    echo "Ensure that AZURE_RESOURCE_GROUP, AZURE_SEARCH_NAME, AZURE_OPENAI_NAME, AZURE_COSMOS_NAME, AZURE_SUBSCRIPTION_ID are set."
+    echo "Ensure that AZURE_RESOURCE_GROUP, AZURE_SEARCH_NAME, AZURE_OPENAI_NAME, AZURE_SUBSCRIPTION_ID are set."
     exit 1
 fi
 
@@ -29,7 +36,7 @@ fi
 azd env set AZURE_OPENAI_API_VERSION 2023-03-15-preview
 azd env set AZURE_OPENAI_CHAT_DEPLOYMENT gpt-35-turbo
 azd env set AZURE_SEARCH_ENDPOINT $AZURE_SEARCH_ENDPOINT
-azd env set REACT_APP_API_BASE_URL $image_name
+azd env set REACT_APP_API_BASE_URL $WEB_SERVICE_ACA_URI
 
 # Setup to run notebooks
 # Retrieve the internalId of the Cognitive Services account
