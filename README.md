@@ -88,9 +88,11 @@ The easiest way to get started is GitHub Codespaces, since it will setup all the
     azd up
     ```
 
-    You will be prompted to select some details about your deployed resources, including location. As a reminder we recommend EAST US 2 as the region for this project. 
+    You will be prompted to select some details about your deployed resources, including location. As a reminder we recommend EAST US 2 as the region for this project.
+    Once the deployment is complete you should be able to scroll up in your terminal and see the url that the app has been deployed to. It should look similar to this 
+    `Ingress Updated. Access your app at https://env-name.codespacesname.eastus2.azurecontainerapps.io/`. Navigate to the link to try out the app straight away! 
 
-Once the above steps are completed you can jump straight to [testing the sample](#testing-the-sample). 
+5. Once the above steps are completed you can [test the sample](#testing-the-sample). 
 
 ### VS Code Dev Containers
 
