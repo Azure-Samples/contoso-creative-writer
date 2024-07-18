@@ -112,7 +112,7 @@ resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' exi
 
 var prefix = toLower('${environmentName}-${resourceToken}')
 
-var keyVaultName = '${take(prefix, 18)}-vault'
+//var keyVaultName = replace('${take(prefix, 18)}-vault', '--', '-')
 
 // USER ROLES
 var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
@@ -209,34 +209,34 @@ module bing 'core/bing/bing-search.bicep' = {
   }
 }
 
-module keyVault 'core/security/keyvault.bicep' = {
-  name: 'keyvault'
-  scope: resourceGroup
-  params: {
-    location: location
-    tags: tags
-    name: keyVaultName
-  }
-}
-
-module bingSecret 'core/security/keyvault-secret.bicep' = {
-  name: 'bingSecret'
-  scope: resourceGroup
-  params: {
-    name: 'bingApiKey'
-    keyVaultName: keyVaultName
-    secretValue: bing.outputs.bingApiKey
-  }
-}
-
-module keyVaultAccess 'core/security/keyvault-access.bicep' = {
-  name: '${prefix}-keyvault-access'
-  scope: resourceGroup
-  params: {
-    keyVaultName: keyVaultName
-    principalId: principalId
-  }
-}
+//module keyVault 'core/security/keyvault.bicep' = {
+//  name: 'keyvault'
+//  scope: resourceGroup
+//  params: {
+//    location: location
+//    tags: tags
+//    name: keyVaultName
+//  }
+//}
+//
+//module bingSecret 'core/security/keyvault-secret.bicep' = {
+//  name: 'bingSecret'
+//  scope: resourceGroup
+//  params: {
+//    name: 'bingApiKey'
+//    keyVaultName: keyVaultName
+//    secretValue: bing.outputs.bingApiKey
+//  }
+//}
+//
+//module keyVaultAccess 'core/security/keyvault-access.bicep' = {
+//  name: '${prefix}-keyvault-access'
+//  scope: resourceGroup
+//  params: {
+//    keyVaultName: keyVaultName
+//    principalId: principalId
+//  }
+//}
 
 module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
   name: 'loganalytics'
@@ -268,17 +268,17 @@ module containerApps 'core/host/container-apps.bicep' = {
     name: 'app'
     location: location
     tags: tags
-    containerAppsEnvironmentName: '${prefix}-aca-env'
+    containerAppsEnvironmentName: '${prefix}-containerapps-env'
     containerRegistryName: '${replace(prefix, '-', '')}registry'
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.outputs.name
   }
 }
 
-module apiContainerApp 'app/api.bicep' = {
-  name: 'api'
+module aca 'app/aca.bicep' = {
+  name: 'aca'
   scope: resourceGroup
   params: {
-    name: replace('${take(prefix, 18)}-api', '--', '-')
+    name: replace('${take(prefix, 19)}-ca', '--', '-')
     location: location
     tags: tags
     identityName: managedIdentity.outputs.managedIdentityName
@@ -297,20 +297,6 @@ module apiContainerApp 'app/api.bicep' = {
     appinsights_Connectionstring: monitoring.outputs.applicationInsightsConnectionString
     bingApiEndpoint: bing.outputs.endpoint
     bingApiKey: bing.outputs.bingApiKey
-  }
-}
-
-module webContainerApp 'app/web.bicep' = {
-  name: 'web'
-  scope: resourceGroup
-  params: {
-    name: replace('${take(prefix, 18)}-web', '--', '-')
-    location: location
-    tags: tags
-    identityName: managedIdentity.outputs.managedIdentityName
-    identityId: managedIdentity.outputs.managedIdentityClientId
-    containerAppsEnvironmentName: containerApps.outputs.environmentName
-    containerRegistryName: containerApps.outputs.registryName
   }
 }
 
@@ -368,13 +354,9 @@ output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
 output AZURE_OPENAI_SKU_NAME string = openAi.outputs.skuName
 output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = openAiResourceGroup.location
 
-output API_SERVICE_ACA_NAME string = apiContainerApp.outputs.SERVICE_ACA_NAME
-output API_SERVICE_ACA_URI string = apiContainerApp.outputs.SERVICE_ACA_URI
-output API_SERVICE_ACA_IMAGE_NAME string = apiContainerApp.outputs.SERVICE_ACA_IMAGE_NAME
-
-output WEB_SERVICE_ACA_NAME string = webContainerApp.outputs.SERVICE_ACA_NAME
-output WEB_SERVICE_ACA_URI string = webContainerApp.outputs.SERVICE_ACA_URI
-output WEB_SERVICE_ACA_IMAGE_NAME string = webContainerApp.outputs.SERVICE_ACA_IMAGE_NAME
+output SERVICE_ACA_NAME string = aca.outputs.SERVICE_ACA_NAME
+output SERVICE_ACA_URI string = aca.outputs.SERVICE_ACA_URI
+output SERVICE_ACA_IMAGE_NAME string = aca.outputs.SERVICE_ACA_IMAGE_NAME
 
 output AZURE_CONTAINER_ENVIRONMENT_NAME string = containerApps.outputs.environmentName
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerApps.outputs.registryLoginServer
