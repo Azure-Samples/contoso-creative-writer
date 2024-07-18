@@ -90,13 +90,6 @@ The easiest way to get started is GitHub Codespaces, since it will setup all the
 
     You will be prompted to select some details about your deployed resources, including location. As a reminder we recommend EAST US 2 as the region for this project. 
 
-5. Install the necessary Python packages:
-
-    ```
-    src/api
-    pip install -r requirements.txt
-    ```
-
 Once the above steps are completed you can jump straight to [testing the sample](#testing-the-sample). 
 
 ### VS Code Dev Containers
