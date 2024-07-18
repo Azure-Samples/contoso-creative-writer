@@ -112,7 +112,7 @@ resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' exi
 
 var prefix = toLower('${environmentName}-${resourceToken}')
 
-var keyVaultName = '${take(prefix, 18)}-vault'
+//var keyVaultName = replace('${take(prefix, 18)}-vault', '--', '-')
 
 // USER ROLES
 var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
@@ -209,34 +209,34 @@ module bing 'core/bing/bing-search.bicep' = {
   }
 }
 
-module keyVault 'core/security/keyvault.bicep' = {
-  name: 'keyvault'
-  scope: resourceGroup
-  params: {
-    location: location
-    tags: tags
-    name: keyVaultName
-  }
-}
-
-module bingSecret 'core/security/keyvault-secret.bicep' = {
-  name: 'bingSecret'
-  scope: resourceGroup
-  params: {
-    name: 'bingApiKey'
-    keyVaultName: keyVaultName
-    secretValue: bing.outputs.bingApiKey
-  }
-}
-
-module keyVaultAccess 'core/security/keyvault-access.bicep' = {
-  name: '${prefix}-keyvault-access'
-  scope: resourceGroup
-  params: {
-    keyVaultName: keyVaultName
-    principalId: principalId
-  }
-}
+//module keyVault 'core/security/keyvault.bicep' = {
+//  name: 'keyvault'
+//  scope: resourceGroup
+//  params: {
+//    location: location
+//    tags: tags
+//    name: keyVaultName
+//  }
+//}
+//
+//module bingSecret 'core/security/keyvault-secret.bicep' = {
+//  name: 'bingSecret'
+//  scope: resourceGroup
+//  params: {
+//    name: 'bingApiKey'
+//    keyVaultName: keyVaultName
+//    secretValue: bing.outputs.bingApiKey
+//  }
+//}
+//
+//module keyVaultAccess 'core/security/keyvault-access.bicep' = {
+//  name: '${prefix}-keyvault-access'
+//  scope: resourceGroup
+//  params: {
+//    keyVaultName: keyVaultName
+//    principalId: principalId
+//  }
+//}
 
 module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
   name: 'loganalytics'
