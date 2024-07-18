@@ -4,6 +4,7 @@
 azd env get-values > .env
 
 echo  "Building creativeagentapi:latest..."
+az login --use-device-code
 az acr build --subscription ${AZURE_SUBSCRIPTION_ID} --registry ${AZURE_CONTAINER_REGISTRY_NAME} --image creativeagentapi:latest --file ./src/Dockerfile.fat ./src/
 image_name="${AZURE_CONTAINER_REGISTRY_NAME}.azurecr.io/creativeagentapi:latest"
 az containerapp update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${SERVICE_ACA_NAME} --resource-group ${AZURE_RESOURCE_GROUP} --image ${image_name}

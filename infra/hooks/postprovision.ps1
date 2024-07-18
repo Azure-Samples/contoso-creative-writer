@@ -1,6 +1,7 @@
 #!/usr/bin/env pwsh
 
 Write-Output  "Building creativeagentapi:latest..."
+az login --use-device-code
 az acr build --subscription $env:AZURE_SUBSCRIPTION_ID --registry $env:AZURE_CONTAINER_REGISTRY_NAME --image creativeagentapi:latest ./src/
 $image_name = $env:AZURE_CONTAINER_REGISTRY_NAME + '.azurecr.io/creativeagentapi:latest'
 az containerapp update --subscription $env:AZURE_SUBSCRIPTION_ID --name $env:SERVICE_ACA_NAME --resource-group $env:AZURE_RESOURCE_GROUP --image $image_name
