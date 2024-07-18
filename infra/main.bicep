@@ -331,6 +331,36 @@ module userAiSearchRole 'core/security/role.bicep' = if (!empty(principalId)) {
   }
 }
 
+module searchRoleUser 'core/security/role.bicep' = {
+  scope: resourceGroup
+  name: 'search-role-user'
+  params: {
+    principalId: principalId
+    roleDefinitionId: '1407120a-92aa-4202-b7e9-c0e197c71c8f'
+    principalType: principalType
+  }
+}
+
+module searchContribRoleUser 'core/security/role.bicep' = {
+  scope: resourceGroup
+  name: 'search-contrib-role-user'
+  params: {
+    principalId: principalId
+    roleDefinitionId: '8ebe5a00-799e-43f5-93ac-243d3dce84a7'
+    principalType: principalType
+  }
+}
+
+module searchSvcContribRoleUser 'core/security/role.bicep' = {
+  scope: resourceGroup
+  name: 'search-svccontrib-role-user'
+  params: {
+    principalId: principalId
+    roleDefinitionId: '7ca78c08-252a-4471-8644-bb5ff32d4ba0'
+    principalType: principalType
+  }
+}
+
 module openaiRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
   scope: resourceGroup
   name: 'user-openai-user'
