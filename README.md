@@ -209,11 +209,11 @@ To test the sample:
     ```
     npm run dev
     ```
+    
+    **Note**: If you run in Codespaces, you will have to change the visibility of the API's 8080 and 5173 ports to `public` in VS Code's `PORTS` tab before launching the app.
 
     This will launch the app, where you can use example context and instructions to get started. 
     On the 'Creative Team' page you can examine the output of each agent by clicking on it. The app should look like this:
-
-    Note: If you run in Codespaces, you will have to change the visibility of the API's 8080 port to `public` in VS Code's `PORTS` tab.
 
    The getting started tab to send your instructions and context to the prompt:
    
@@ -229,7 +229,7 @@ To test the sample:
 
     Change the instructions and context to create an article of your choice. 
 
-3. For debugging purposes you may want to test in Python using the orchestrator Logic
+4. For debugging purposes you may want to test in Python using the orchestrator Logic
 
     To run the sample using just the orchestrator logic use the following command:
 
