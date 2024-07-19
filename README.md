@@ -213,6 +213,8 @@ To test the sample:
     This will launch the app, where you can use example context and instructions to get started. 
     On the 'Creative Team' page you can examine the output of each agent by clicking on it. The app should look like this:
 
+    Note: If you run in Codespaces, you will have to change the visibility of the API's 8080 port to `public` in VS Code's `PORTS` tab.
+
    The getting started tab to send your instructions and context to the prompt:
    
     ![getting started](images/get_started_page.png)
