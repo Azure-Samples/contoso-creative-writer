@@ -131,7 +131,7 @@ if __name__ == "__main__":
     
     # Initialize Azure OpenAI Connection
     model_config = AzureOpenAIModelConfiguration(
-        azure_deployment=os.environ["AZURE_OPENAI_GPT4_EVAL_DEPLOYMENT"],   
+        azure_deployment=os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],   
         api_version=os.environ["AZURE_OPENAI_API_VERSION"],
         azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"]
     )
