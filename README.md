@@ -210,7 +210,8 @@ To test the sample:
     npm run dev
     ```
     
-    **Note**: If you run in Codespaces, you will have to change the visibility of the API's 8080 and 5173 ports to `public` in your VS Code terminal's `PORTS` tab.
+    **Note**: If you run in Codespaces, you will have to change the visibility of the API's 8080 and 5173 ports to `public` in your VS Code terminal's `PORTS` tab. The ports tab should look like this:
+   <img src="./images/ports.png" alt="Screenshot showing setting port-visibility" width="800px" />
 
     This will launch the app, where you can use example context and instructions to get started. 
     On the 'Creative Team' page you can examine the output of each agent by clicking on it. The app should look like this:
