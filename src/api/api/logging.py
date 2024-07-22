@@ -17,8 +17,8 @@ def log_output(*args):
 
 def init_logging(sampling_rate=1.0, log_level=DEFAULT_LOG_LEVEL):
     # Enable logging to app insights if a connection string is provided
-    if 'APPLICATIONINSIGHTS_CONNECTION_STRING' in os.environ:
-        connection_string=os.environ['APPLICATIONINSIGHTS_CONNECTION_STRING']
+    if 'APPINSIGHTS_CONNECTIONSTRING' in os.environ:
+        connection_string=os.environ['APPINSIGHTS_CONNECTIONSTRING']
         if connection_string != "":
             inject_openai_api()
             trace.set_tracer_provider(TracerProvider(sampler=ParentBasedTraceIdRatio(sampling_rate)))
