@@ -87,15 +87,6 @@ jobs:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          ARM_CLIENT_ID: ${{ vars.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ vars.ARM_TENANT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          RS_CONTAINER_NAME: ${{ vars.RS_CONTAINER_NAME }}
-          RS_RESOURCE_GROUP: ${{ vars.RS_RESOURCE_GROUP }}
-          RS_STORAGE_ACCOUNT: ${{ vars.RS_STORAGE_ACCOUNT }}
-          ARM_USE_AZUREAD: true
-
 
       - name: Deploy Application
         run: azd deploy --no-prompt
@@ -103,19 +94,5 @@ jobs:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          ARM_CLIENT_ID: ${{ vars.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ vars.ARM_TENANT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          RS_CONTAINER_NAME: ${{ vars.RS_CONTAINER_NAME }}
-          RS_RESOURCE_GROUP: ${{ vars.RS_RESOURCE_GROUP }}
-          RS_STORAGE_ACCOUNT: ${{ vars.RS_STORAGE_ACCOUNT }}
-          AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
-          AZURE_OPENAI_API_VERSION: ${{ vars.AZURE_OPENAI_API_VERSION }}
-          AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME }}
-          AZURE_OPENAI_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_DEPLOYMENT_NAME }}
-          AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME }}
-          AZURE_SEARCH_ENDPOINT: ${{ vars.AZURE_SEARCH_ENDPOINT }}
-          AZURE_SEARCH_INDEX_NAME: ${{ vars.AZURE_SEARCH_INDEX_NAME }}      
-          BING_SEARCH_ENDPOINT: ${{ vars.BING_SEARCH_ENDPOINT }}
-          BING_SEARCH_KEY: ${{ secrets.BING_SEARCH_KEY }}
+          
+          
