@@ -13,3 +13,4 @@ flask-cors==4.0.1
 promptflow-tools==1.4.0
 jupyter
 opentelemetry-instrumentation
+azure-identity==1.17.1
