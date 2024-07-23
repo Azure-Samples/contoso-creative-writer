@@ -74,8 +74,8 @@ jobs:
       - name: Set az account
         uses: azure/CLI@v2
         with:
-          inlineScript: |
-            az account set --subscription ${{env.AZURE_SUBSCRIPTION_ID}}
+            inlineScript: |
+              az account set --subscription ${{env.AZURE_SUBSCRIPTION_ID}}
 
       - name: Provision Infrastructure
         run: azd provision --no-prompt
@@ -90,4 +90,3 @@ jobs:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          
