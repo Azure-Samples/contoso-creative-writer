@@ -3,6 +3,7 @@ import os
 import requests
 import sys
 import urllib.parse
+import logging
 
 from promptflow.tracing import trace
 from promptflow.core import Prompty, AzureOpenAIModelConfiguration
@@ -101,23 +102,24 @@ def execute(request: str, instructions: str, feedback: str = ""):
     prompty_obj = Prompty.load(folder + "/researcher.prompty", model=override_model)
     results = prompty_obj(request=request, instructions=instructions, feedback=feedback)
 
+    research = []
+
     # validate the result as the expected format
     if "tool_calls" not in results:
         feedback = "Unexpected response from the researcher. Result:" + str(results)
         #print feedback and result from llm
-        print(feedback)
-        
-    research = []
-    for tool in results['tool_calls']:
-        if 'function' not in tool:
-            continue
+        logging.warn(feedback)
+    else:
+        for tool in results['tool_calls']:
+            if 'function' not in tool:
+                continue
 
-        fn = tool['function']
-        args = json.loads(fn['arguments'])
-        r = functions[fn['name']](**args)
-        research.append(
-            {"id": tool['id'], "function": fn['name'], "arguments": args, "result": r}
-        )
+            fn = tool['function']
+            args = json.loads(fn['arguments'])
+            r = functions[fn['name']](**args)
+            research.append(
+                {"id": tool['id'], "function": fn['name'], "arguments": args, "result": r}
+            )
 
     return research
 
