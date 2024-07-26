@@ -1,32 +1,12 @@
-# Build stage
-FROM node:18-alpine AS build
+FROM nginx:alpine
+
 WORKDIR /app
 
-# Copy package files and install dependencies
-COPY package*.json ./
-RUN npm ci
+COPY dist/* .
+COPY dist/assets/* ./assets/
 
-# Copy the rest of your application's source code
-COPY . .
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
-# Build the project
-RUN npm run build
+EXPOSE 8080
 
-# Final stage
-FROM nginx:alpine
-WORKDIR /usr/share/nginx/html
-
-# Remove default nginx assets
-RUN rm -rf ./*
-
-# Copy static assets from build stage
-COPY --from=build /app/dist .
-
-# Copy custom nginx configuration
-COPY --from=build /app/nginx/nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port 80
-EXPOSE 80
-
-# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
