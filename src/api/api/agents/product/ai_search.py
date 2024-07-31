@@ -14,6 +14,7 @@ def retrieve_documentation(
     request: str,
     index_name: str,
     embedding: List[float],
+    reranker_score_threshold: float = 0.5  # Default threshold value
 ) -> str:
     
     search_client = SearchClient(
@@ -44,6 +45,7 @@ def retrieve_documentation(
             "url": doc["url"],
         }
         for doc in results
+        if doc["@search.reranker_score"] >= reranker_score_threshold
     ]
 
     return docs

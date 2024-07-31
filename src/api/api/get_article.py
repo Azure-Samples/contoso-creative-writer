@@ -22,7 +22,6 @@ def _create_json_response(type, contents):
 def get_article():
     context = request.args.get("context")
     instructions = request.args.get("instructions")
-
     evaluate = False
     span = trace.get_current_span()
     if (span.is_recording):

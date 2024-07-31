@@ -13,9 +13,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 @trace
-def get_research(request, instructions, feedback):
+def get_research(context, instructions, feedback):
     research_result = researcher.research(
-        request=request,
+        context=context,
         instructions=instructions,
         feedback=feedback
     )
@@ -26,9 +26,9 @@ def get_research(request, instructions, feedback):
 
 
 @trace
-def get_writer(request, feedback, instructions, research=[], products=[]):
+def get_writer(context, feedback, instructions, research=[], products=[]):
     writer_reponse = writer.write(
-        request=request, feedback=feedback, instructions=instructions, research=research, products=products
+        context=context, feedback=feedback, instructions=instructions, research=research, products=products
     )
     print(json.dumps(writer_reponse, indent=2))
     return writer_reponse
@@ -77,7 +77,7 @@ def regenerate_process(editor_response, context, instructions, product_documenat
 
 @trace
 def write_article(request, instructions, evaluate=False):
-    log_output("Article generation started for request: %s, instructions: %s", request, instructions)
+    log_output(f"Article generation started for {request} {instructions}")
 
     feedback = "No Feedback"
 
@@ -132,7 +132,7 @@ def write_article(request, instructions, evaluate=False):
 
     if evaluate:
         evaluate_article_in_background(
-            request=request,
+            context=request,
             instructions=instructions,
             research=research_result,
             products=product_documenation,
