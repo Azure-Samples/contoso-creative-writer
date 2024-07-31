@@ -45,10 +45,10 @@ def evaluate_article(data, trace_context):
 
         print("results: ", resultsJson)
 
-def evaluate_article_in_background(request, instructions, research, products, article):
+def evaluate_article_in_background(context, instructions, research, products, article):
     eval_data = {
         "query": json.dumps({
-            "request": request,
+            "context": context,
             "instructions": instructions,
         }),
         "context": json.dumps({

@@ -81,7 +81,7 @@ def find_news(query, market="en-US"):
     return articles
 
 @trace
-def execute(request: str, instructions: str, feedback: str = ""):
+def execute(context: str, instructions: str, feedback: str = ""):
     """Assign a research task to a researcher"""
     functions = {
         "find_information": find_information,
@@ -100,7 +100,7 @@ def execute(request: str, instructions: str, feedback: str = ""):
         "parameters": {"max_tokens": 512}
     }
     prompty_obj = Prompty.load(folder + "/researcher.prompty", model=override_model)
-    results = prompty_obj(request=request, instructions=instructions, feedback=feedback)
+    results = prompty_obj(context=context, instructions=instructions, feedback=feedback)
 
     research = []
 
@@ -156,8 +156,8 @@ def process(research):
     }
 
 
-def research(request, instructions, feedback: str = ""):
-    r = execute(request=request, instructions=instructions, feedback=feedback)
+def research(context, instructions, feedback: str = ""):
+    r = execute(context=context, instructions=instructions, feedback=feedback)
     p = process(r)
     return p
 

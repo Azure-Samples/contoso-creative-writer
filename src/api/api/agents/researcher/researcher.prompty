@@ -43,7 +43,7 @@ Your queries should be descriptive and match the context and feedback provided.
 Use this context to formulate your queries, market, and tools you will use to description
 your research:
 
-{{request}}
+{{context}}
 
 # Feedback
 Use this feedback to help you refine your queries and responses - if there is any feedback:
