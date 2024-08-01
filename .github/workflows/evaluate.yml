@@ -27,6 +27,7 @@ jobs:
       AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME }}
       AZURE_OPENAI_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_DEPLOYMENT_NAME }}
       AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME }}
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
       AZURE_SEARCH_ENDPOINT: ${{ vars.AZURE_SEARCH_ENDPOINT }}
       BING_SEARCH_ENDPOINT: ${{ vars.BING_SEARCH_ENDPOINT }}
       BING_SEARCH_KEY: ${{ secrets.BING_SEARCH_KEY }}
@@ -71,18 +72,24 @@ jobs:
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # - name: Azure login
-      #   uses: azure/login@v2
-      #   with:
-      #     client-id: ${{ env.AZURE_CLIENT_ID }}
-      #     tenant-id: ${{ env.AZURE_TENANT_ID }}
-      #     subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
 
-      # - name: Set az account
-      #   uses: azure/CLI@v2
-      #   with:
-      #     inlineScript: |
-      #       az account set --subscription ${{env.AZURE_SUBSCRIPTION_ID}}
+      - name: Set az account
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            az account set --subscription ${{env.AZURE_SUBSCRIPTION_ID}}
+
+            az role assignment create \
+              --role "5e0bd9bd-7b93-4f28-af87-19fc36ad61bd" \
+              --assignee-object-id "${az ad signed-in-user show --query id -o tsv}" \
+              --scope /subscriptions/${{env.AZURE_SUBSCRIPTION_ID}}/resourceGroups/${{env.AZURE_RESOURCE_GROUP}}\
+              --assignee-principal-type User
 
       - name: evaluate orchestrator
         working-directory: ./src/api
