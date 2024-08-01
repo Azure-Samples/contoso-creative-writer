@@ -85,9 +85,11 @@ jobs:
           inlineScript: |
             az account set --subscription ${{env.AZURE_SUBSCRIPTION_ID}}
 
+            echo $(az ad sp list --display-name myServicePrincipalName --query "[].{spID:appId}" --output tsv)
+
             az role assignment create \
               --role "5e0bd9bd-7b93-4f28-af87-19fc36ad61bd" \
-              --assignee-object-id $(az ad sp list --display-name myServicePrincipalName --query "[].{spID:appId}" --output tsv) \
+              --assignee-object-id "$(az ad sp list --display-name myServicePrincipalName --query "[].{spID:appId}" --output tsv)" \
               --scope /subscriptions/${{env.AZURE_SUBSCRIPTION_ID}}/resourceGroups/${{env.AZURE_RESOURCE_GROUP}}\
               --assignee-principal-type User
 
