@@ -158,6 +158,7 @@ output containerRegistryEndpoint string = !empty(containerRegistryName) ? contai
 
 output applicationInsightsId string = !empty(applicationInsightsName) ? applicationInsights.outputs.id : ''
 output applicationInsightsName string = !empty(applicationInsightsName) ? applicationInsights.outputs.name : ''
+output applicationInsightsConnectionString string = !empty(applicationInsightsName) ? applicationInsights.outputs.connectionString : ''
 output logAnalyticsWorkspaceId string = !empty(logAnalyticsName) ? logAnalytics.outputs.id : ''
 output logAnalyticsWorkspaceName string = !empty(logAnalyticsName) ? logAnalytics.outputs.name : ''
 

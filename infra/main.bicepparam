@@ -1,7 +1,6 @@
 using './main.bicep'
 
 param environmentName = readEnvironmentVariable('AZURE_ENV_NAME', 'MY_ENV')
-param openAiResourceGroupName = readEnvironmentVariable('AZURE_RESOURCE_GROUP', '')
 param location = readEnvironmentVariable('AZURE_LOCATION', 'eastus2')
 param principalId = readEnvironmentVariable('AZURE_PRINCIPAL_ID', '')
 param resourceGroupName = readEnvironmentVariable('AZURE_RESOURCE_GROUP', '')

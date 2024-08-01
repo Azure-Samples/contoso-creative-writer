@@ -95,6 +95,7 @@ output keyVaultEndpoint string = hubDependencies.outputs.keyVaultEndpoint
 
 // Application Insights
 output applicationInsightsName string = hubDependencies.outputs.applicationInsightsName
+output applicationInsightsConnectionString string = hubDependencies.outputs.applicationInsightsConnectionString
 output logAnalyticsWorkspaceName string = hubDependencies.outputs.logAnalyticsWorkspaceName
 
 // Container Registry

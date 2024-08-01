@@ -14,10 +14,6 @@ param environmentName string
 })
 param location string
 
-
-@description('The name of the resource group for the OpenAI resource')
-param openAiResourceGroupName string = ''
-
 param containerRegistryName string = ''
 param aiHubName string = ''
 @description('The Azure AI Studio project name. If ommited will be generated')
@@ -97,10 +93,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(openAiResourceGroupName)) {
-  name: !empty(openAiResourceGroupName) ? openAiResourceGroupName : resourceGroup.name
-}
-
 var prefix = toLower('${environmentName}-${resourceToken}')
 
 // USER ROLES
@@ -161,74 +153,12 @@ module machineLearningEndpoint './core/host/ml-online-endpoint.bicep' = {
   }
 }
 
-module search 'core/search/search-services.bicep' = {
-  name: 'search'
-  scope: resourceGroup
-  params: {
-    name: !empty(searchServiceName) ? searchServiceName : '${prefix}-search-contoso'
-    location: location
-    semanticSearch: 'standard'
-    disableLocalAuth: true
-  }
-}
-
 module bing 'core/bing/bing-search.bicep' = {
   name: 'bing'
   scope: resourceGroup
   params: {
     name: !empty(bingSearchName) ? bingSearchName : '${prefix}-bing-search-creative'
     location: 'global'
-  }
-}
-
-//module keyVault 'core/security/keyvault.bicep' = {
-//  name: 'keyvault'
-//  scope: resourceGroup
-//  params: {
-//    location: location
-//    tags: tags
-//    name: keyVaultName
-//  }
-//}
-//
-//module bingSecret 'core/security/keyvault-secret.bicep' = {
-//  name: 'bingSecret'
-//  scope: resourceGroup
-//  params: {
-//    name: 'bingApiKey'
-//    keyVaultName: keyVaultName
-//    secretValue: bing.outputs.bingApiKey
-//  }
-//}
-//
-//module keyVaultAccess 'core/security/keyvault-access.bicep' = {
-//  name: '${prefix}-keyvault-access'
-//  scope: resourceGroup
-//  params: {
-//    keyVaultName: keyVaultName
-//    principalId: principalId
-//  }
-//}
-
-module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
-  name: 'loganalytics'
-  scope: resourceGroup
-  params: {
-    name: '${prefix}-loganalytics'
-    location: location
-    tags: tags
-  }
-}
-
-module monitoring 'core/monitor/monitoring.bicep' = {
-  name: 'monitoring'
-  scope: resourceGroup
-  params: {
-    location: location
-    tags: tags
-    logAnalyticsName: logAnalyticsWorkspace.name
-    applicationInsightsName: '${prefix}-appinsights'
-    applicationInsightsDashboardName: '${prefix}-dashboard'
   }
 }
 
@@ -241,8 +171,8 @@ module containerApps 'core/host/container-apps.bicep' = {
     location: location
     tags: tags
     containerAppsEnvironmentName: '${prefix}-containerapps-env'
-    containerRegistryName: '${replace(prefix, '-', '')}registry'
-    logAnalyticsWorkspaceName: logAnalyticsWorkspace.outputs.name
+    containerRegistryName: ai.outputs.containerRegistryName
+    logAnalyticsWorkspaceName: ai.outputs.logAnalyticsWorkspaceName
   }
 }
 
@@ -264,9 +194,9 @@ module aca 'app/aca.bicep' = {
     openAiEndpoint: ai.outputs.openAiEndpoint
     openAiType: openAiType
     openAiApiVersion: openAiApiVersion
-    aiSearchEndpoint: search.outputs.endpoint
+    aiSearchEndpoint: ai.outputs.searchServiceEndpoint
     aiSearchIndexName: aiSearchIndexName
-    appinsights_Connectionstring: monitoring.outputs.applicationInsightsConnectionString
+    appinsights_Connectionstring: ai.outputs.applicationInsightsConnectionString
     bingApiEndpoint: bing.outputs.endpoint
     bingApiKey: bing.outputs.bingApiKey
   }
@@ -352,8 +282,8 @@ output AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME string = openAi_4_eval_DeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
 output AZURE_OPENAI_ENDPOINT string = ai.outputs.openAiEndpoint
 output AZURE_OPENAI_NAME string = ai.outputs.openAiName
-output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
-output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = openAiResourceGroup.location
+output AZURE_OPENAI_RESOURCE_GROUP string = resourceGroup.name
+output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = resourceGroup.location
 
 output SERVICE_ACA_NAME string = aca.outputs.SERVICE_ACA_NAME
 output SERVICE_ACA_URI string = aca.outputs.SERVICE_ACA_URI
@@ -363,13 +293,13 @@ output AZURE_CONTAINER_ENVIRONMENT_NAME string = containerApps.outputs.environme
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerApps.outputs.registryLoginServer
 output AZURE_CONTAINER_REGISTRY_NAME string = containerApps.outputs.registryName
 
-output APPINSIGHTS_CONNECTIONSTRING string = monitoring.outputs.applicationInsightsConnectionString
+output APPINSIGHTS_CONNECTIONSTRING string = ai.outputs.applicationInsightsConnectionString
 
 output OPENAI_TYPE string = 'azure'
 output AZURE_EMBEDDING_NAME string = openAiEmbeddingDeploymentName
 
-output AZURE_SEARCH_ENDPOINT string = search.outputs.endpoint
-output AZURE_SEARCH_NAME string = search.outputs.name
+output AZURE_SEARCH_ENDPOINT string = ai.outputs.searchServiceEndpoint
+output AZURE_SEARCH_NAME string = ai.outputs.searchServiceName
 
 output BING_SEARCH_ENDPOINT string = bing.outputs.endpoint
 output BING_SEARCH_KEY string = bing.outputs.bingApiKey
