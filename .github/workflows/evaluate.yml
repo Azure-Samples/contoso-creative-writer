@@ -35,6 +35,9 @@ jobs:
       - name: checkout repo content
         uses: actions/checkout@v4 # checkout the repository content
 
+      - name: Install azd
+        uses: Azure/setup-azd@v1.0.0
+
       - name: setup python
         uses: actions/setup-python@v5
         with:
