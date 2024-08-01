@@ -186,11 +186,11 @@ To test the sample:
 1. Run the example web app locally using a Flask server. 
 
     First navigate to the src/api folder 
-    ```
+    ```shell
     cd ./src/api
     ```
     Run the Flask webserver
-    ```
+    ```shell
     flask --debug --app api.app:app run --port 8080
     ```
 
@@ -202,16 +202,16 @@ To test the sample:
     ```
 
 2. Once the flask server is running you can now run the web app. To do this open a new terminal window and navigate to the web folder using this command:
-    ```
+    ```shell
     cd src/web
     ```
     First install node packages:
-    ```
+    ```shell
     npm install
     ```
 
     Then run the web app with a local dev web server:
-    ```
+    ```shell
     npm run dev
     ```
 
@@ -236,7 +236,7 @@ To test the sample:
 
     To run the sample using just the orchestrator logic use the following command:
 
-    ```
+    ```shell
     cd ./src/api
     python -m api.agents.orchestrator
 
@@ -251,7 +251,7 @@ We may be able to evaluate the flow manually (e.g., using Azure AI Studio) but f
 You can also view the evaluation metrics by running the following command from the src/api folder. 
 
 Run evaluation:
-```
+```shell
 python -m api.evaluate.evaluate
 ```
 
@@ -260,7 +260,7 @@ python -m api.evaluate.evaluate
 This template is set up to run CI/CD when you push changes to your repo. When CI/CD is configured, evaluations will in GitHub actions and then automatically deploy your app on push to main.
 
 To set up CI/CD with GitHub actions on your repository, run the following command:
-```
+```shell
 azd pipeline config
 ```
 
@@ -287,7 +287,7 @@ Currently, when your GitHub action runs, **it will remove your access** to call 
 
 If you do want to re-enable access from your development environment, re-run the provision command:
 
-```
+```shell
 azd provision
 ```
 
