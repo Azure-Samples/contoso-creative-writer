@@ -1,0 +1,16 @@
+name: Build-Evaluate
+on:
+  push:
+    branches: [ "testing_actions" ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+  call-azure-dev:
+    uses: ./.github/workflows/azure-dev.yml
+  call-evaluate:
+    if: ${{ always() }} #This will make your workflow2 executed even if workflow1 fails, remove this, if you want to run this only on success of workflow1
+    needs: call-azure-dev
+    uses: ./.github/workflows/evaluate.yml

@@ -1,12 +1,12 @@
 name: Deploy
 
 on:
-  workflow_dispatch:
+  workflow_call:
   push:
     # Run when commits are pushed to mainline branch (main or master)
     # Set this to the mainline branch you are using
     branches:
-      - aca-openai-agent
+      - testing_actions
 
 # GitHub Actions workflow to deploy to Azure using azd
 # To configure required secrets for connecting to Azure, simply run `azd pipeline config`
@@ -33,8 +33,7 @@ jobs:
       AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME }}
       AZURE_OPENAI_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_DEPLOYMENT_NAME }}
       AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME }}
-      AZURE_SEARCH_ENDPOINT: ${{ vars.AZURE_SEARCH_ENDPOINT }}
-      AZURE_SEARCH_INDEX_NAME: ${{ vars.AZURE_SEARCH_INDEX_NAME }}      
+      AZURE_SEARCH_ENDPOINT: ${{ vars.AZURE_SEARCH_ENDPOINT }}    
       BING_SEARCH_ENDPOINT: ${{ vars.BING_SEARCH_ENDPOINT }}
       BING_SEARCH_KEY: ${{ secrets.BING_SEARCH_KEY }}
 
