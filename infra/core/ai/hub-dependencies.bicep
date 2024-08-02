@@ -135,16 +135,15 @@ module cognitiveServices '../ai/cognitiveservices.bicep' = {
   }
 }
 
-module searchService '../search/search-services.bicep' =
-  if (!empty(searchServiceName)) {
-    name: 'searchService'
+module searchService '../search/search-services.bicep' = {
+    name: 'search'
     params: {
-      location: location
-      tags: tags
       name: searchServiceName
+      location: location
+      semanticSearch: 'standard'
+      disableLocalAuth: true
     }
   }
-
 output keyVaultId string = keyVault.outputs.id
 output keyVaultName string = keyVault.outputs.name
 output keyVaultEndpoint string = keyVault.outputs.endpoint
