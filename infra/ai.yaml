@@ -17,3 +17,12 @@ deployments:
     sku:
       name: "Standard"
       capacity: 20
+  - name: gpt-4
+    model:
+      format: OpenAI
+      name: gpt-4
+      version: "0613"
+    sku:
+      name: "Standard"
+      capacity: 20
+
