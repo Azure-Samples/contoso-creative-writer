@@ -22,7 +22,6 @@ jobs:
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-      AZURE_PRINCIPAL_ID: ${{ vars.AZURE_PRINCIPAL_ID }}
       AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
       AZURE_OPENAI_API_VERSION: ${{ vars.AZURE_OPENAI_API_VERSION }}
       AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME }}
@@ -62,35 +61,6 @@ jobs:
         with:
           inlineScript: |
             az account set --subscription ${{env.AZURE_SUBSCRIPTION_ID}}
-
-            az role assignment create \
-              --role "5e0bd9bd-7b93-4f28-af87-19fc36ad61bd" \
-              --assignee-object-id $(az ad signed-in-user show --query id -o tsv) \
-              --scope /subscriptions/${{env.AZURE_SUBSCRIPTION_ID}}/resourceGroups/${{env.AZURE_RESOURCE_GROUP}} \
-              --assignee-principal-type ServicePrincipal
-
-      # - name: Log in with Azure (Federated Credentials)
-      #   if: ${{ env.AZURE_CLIENT_ID != '' }}
-      #   run: |
-      #     azd auth login `
-      #       --client-id "$Env:AZURE_CLIENT_ID" `
-      #       --federated-credential-provider "github" `
-      #       --tenant-id "$Env:AZURE_TENANT_ID"
-      #   shell: pwsh
-  
-      # - name: Log in with Azure (Client Credentials)
-      #   if: ${{ env.AZURE_CREDENTIALS != '' }}
-      #   run: |
-      #     $info = $Env:AZURE_CREDENTIALS | ConvertFrom-Json -AsHashtable;
-      #     Write-Host "::add-mask::$($info.clientSecret)"
-
-      #     azd auth login `
-      #       --client-id "$($info.clientId)" `
-      #       --client-secret "$($info.clientSecret)" `
-      #       --tenant-id "$($info.tenantId)"
-      #   shell: pwsh
-      #   env:
-      #     AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: evaluate orchestrator
         working-directory: ./src/api
