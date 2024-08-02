@@ -61,12 +61,6 @@ jobs:
         with:
           inlineScript: |
             az account set --subscription ${{env.AZURE_SUBSCRIPTION_ID}}
-            
-            az role assignment create \
-              --role "5e0bd9bd-7b93-4f28-af87-19fc36ad61bd" \
-              --assignee-object-id "b11e59af-1e0b-4fee-9723-b4e8f21a42c3" \
-              --scope /subscriptions/${{env.AZURE_SUBSCRIPTION_ID}}/resourceGroups/${{env.AZURE_RESOURCE_GROUP}} \
-              --assignee-principal-type ServicePrincipal
 
       # - name: Log in with Azure (Federated Credentials)
       #   if: ${{ env.AZURE_CLIENT_ID != '' }}
