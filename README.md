@@ -188,6 +188,9 @@ To test the sample:
     ```
     flask --debug --app api.app:app run --port 8080
     ```
+    
+    **Note**: If you are running in Codespaces, you will need to change the visibility of the API's 8080 port to `public` in your VS Code terminal's `PORTS` tab. The ports tab should look like this:
+   <img src="./images/ports.png" alt="Screenshot showing setting port-visibility" width="800px" />
 
     If you open the server link in a browser, you will see a URL not found error, this is because we haven't created a home url route in flask. We have instead created a `/get_article` route which is used to pass context and instructions directly to the get_article.py file which runs the agent workflow.
 
@@ -209,9 +212,6 @@ To test the sample:
     ```
     npm run dev
     ```
-    
-    **Note**: If you run in Codespaces, you will have to change the visibility of the API's 8080 port to `public` in your VS Code terminal's `PORTS` tab. The ports tab should look like this:
-   <img src="./images/ports.png" alt="Screenshot showing setting port-visibility" width="800px" />
 
     This will launch the app, where you can use example context and instructions to get started. 
     On the 'Creative Team' page you can examine the output of each agent by clicking on it. The app should look like this:
