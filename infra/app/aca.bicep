@@ -8,19 +8,21 @@ param containerAppsEnvironmentName string
 param containerRegistryName string
 param serviceName string = 'aca'
 
-@secure()
-param bingApiKey string
-param bingApiEndpoint string
 param openAi_35_turbo_DeploymentName string
 param openAi_4_DeploymentName string
 param openAi_4_eval_DeploymentName string
 param openAiEndpoint string
+param openAiName string
 param openAiApiVersion string
 param openAiEmbeddingDeploymentName string
 param openAiType string
 param aiSearchEndpoint string
 param aiSearchIndexName string
 param appinsights_Connectionstring string
+
+@secure()
+param bingApiKey string
+param bingApiEndpoint string
 
 
 module app '../core/host/container-app-upsert.bicep' = {
@@ -60,6 +62,10 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'AZURE_OPENAI_ENDPOINT'
         value: openAiEndpoint
+      }
+      {
+        name: 'AZURE_OPENAI_NAME'
+        value: openAiName
       }
       {
         name: 'AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME'

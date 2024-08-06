@@ -192,6 +192,7 @@ module aca 'app/aca.bicep' = {
     openAi_4_eval_DeploymentName: !empty(openAi_4_eval_DeploymentName) ? openAi_4_eval_DeploymentName : 'gpt-4'
     openAiEmbeddingDeploymentName: openAiEmbeddingDeploymentName
     openAiEndpoint: ai.outputs.openAiEndpoint
+    openAiName: ai.outputs.openAiName
     openAiType: openAiType
     openAiApiVersion: openAiApiVersion
     aiSearchEndpoint: ai.outputs.searchServiceEndpoint
