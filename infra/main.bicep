@@ -47,7 +47,7 @@ param resourceGroupName string = ''
 param searchConnectionName string = ''
 
 @description('The API version of the OpenAI resource')
-param openAiApiVersion string = ''
+param openAiApiVersion string = '2023-03-15-preview'
 
 @description('The type of the OpenAI resource')
 param openAiType string = 'azure'
@@ -62,18 +62,18 @@ param bingSearchName string = ''
 param aiSearchIndexName string = 'contoso-products'
 
 @description('The name of the 35 turbo OpenAI deployment')
-param openAi_35_turbo_DeploymentName string = ''
+param openAi_35_turbo_DeploymentName string = 'gpt-35-turbo'
 
 
 @description('The name of the 4 OpenAI deployment')
-param openAi_4_DeploymentName string = ''
+param openAi_4_DeploymentName string = 'gpt-4'
 
 
 @description('The name of the 4 eval OpenAI deployment')
-param openAi_4_eval_DeploymentName string = ''
+param openAi_4_eval_DeploymentName string = 'gpt-4'
 
 @description('The name of the OpenAI embedding deployment')
-param openAiEmbeddingDeploymentName string = ''
+param openAiEmbeddingDeploymentName string = 'text-embedding-ada-002'
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
@@ -97,7 +97,6 @@ var prefix = toLower('${environmentName}-${resourceToken}')
 
 // USER ROLES
 var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
-
 module managedIdentity 'core/security/managed-identity.bicep' = {
   name: 'managed-identity'
   scope: resourceGroup
