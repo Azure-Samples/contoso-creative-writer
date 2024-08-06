@@ -97,6 +97,7 @@ var prefix = toLower('${environmentName}-${resourceToken}')
 
 // USER ROLES
 var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
+
 module managedIdentity 'core/security/managed-identity.bicep' = {
   name: 'managed-identity'
   scope: resourceGroup

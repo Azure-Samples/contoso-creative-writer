@@ -7,6 +7,10 @@ param identityId string
 param containerAppsEnvironmentName string
 param containerRegistryName string
 param serviceName string = 'aca'
+
+@secure()
+param bingApiKey string
+param bingApiEndpoint string
 param openAi_35_turbo_DeploymentName string
 param openAi_4_DeploymentName string
 param openAi_4_eval_DeploymentName string
@@ -17,10 +21,6 @@ param openAiType string
 param aiSearchEndpoint string
 param aiSearchIndexName string
 param appinsights_Connectionstring string
-
-@secure()
-param bingApiKey string
-param bingApiEndpoint string
 
 
 module app '../core/host/container-app-upsert.bicep' = {

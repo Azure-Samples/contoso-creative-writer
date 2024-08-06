@@ -1,5 +1,6 @@
 # https://github.com/Azure-Samples/contoso-chat/blob/may-2024-updates/evaluations/evaluate-chat-flow-sdk.ipynb
 import os
+import sys
 import json
 import concurrent.futures
 from pathlib import Path
@@ -13,6 +14,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 folder = Path(__file__).parent.absolute().as_posix()
+
+# # Add the api directory to the sys.path
+# sys.path.append(os.path.abspath('../src/api'))
 
 def evaluate_aistudio(model_config, data_path):
     # create unique id for each run with date and time
@@ -133,7 +137,7 @@ if __name__ == "__main__":
     model_config = AzureOpenAIModelConfiguration(
         azure_deployment=os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],   
         api_version=os.environ["AZURE_OPENAI_API_VERSION"],
-        azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"]
+        azure_endpoint=f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
     )
 
     start=time.time()
