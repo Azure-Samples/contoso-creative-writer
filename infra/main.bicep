@@ -47,7 +47,7 @@ param resourceGroupName string = ''
 param searchConnectionName string = ''
 
 @description('The API version of the OpenAI resource')
-param openAiApiVersion string = '2024-03-01-preview'
+param openAiApiVersion string = '2023-07-01-preview'
 
 @description('The type of the OpenAI resource')
 param openAiType string = 'azure'
