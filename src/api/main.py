@@ -2,12 +2,22 @@ import os
 from pathlib import Path
 from fastapi import FastAPI
 from dotenv import load_dotenv
+from prompty.tracer import trace
+from prompty.core import PromptyStream
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
+from tracing import init_tracing
 from orchestrator import Task, create
 
+base = Path(__file__).resolve().parent
+
+
 load_dotenv()
+LOCAL_TRACING = True if os.getenv("LOCAL_TRACING", "false").lower() == "true" else False
+tracer = init_tracing()
+
 
 app = FastAPI()
 
@@ -32,8 +42,14 @@ async def root():
 
 
 @app.post("/api/article")
+@trace
 async def create_article(task: Task):
     return StreamingResponse(
-        create(task.research, task.products, task.assignment),
+        PromptyStream(
+            "crteate_article", create(task.research, task.products, task.assignment)
+        ),
         media_type="application/x-ndjson",
     )
+
+
+FastAPIInstrumentor.instrument_app(app)

@@ -17,8 +17,6 @@ from azure.core.credentials import AzureKeyCredential
 
 load_dotenv()
 
-base = Path(__file__).parent
-
 AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
 AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
 AZURE_OPENAI_VERSION = "2023-07-01-preview"

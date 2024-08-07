@@ -4,7 +4,6 @@ from pathlib import Path
 import prompty
 from prompty.tracer import trace
 
-base = Path(__file__).parent
 
 
 @trace
@@ -28,6 +27,8 @@ if __name__ == "__main__":
     from dotenv import load_dotenv
 
     load_dotenv()
+    
+    base = Path(__file__).parent
 
     researchContext = (
         "Can you find the latest camping trends and what folks are doing in the winter?"

@@ -1,4 +1,4 @@
-import './App.css';
+import './app.css';
 import { version } from "./version";
 import Toolbar from "./components/toolbar";
 import Article from "./components/article";
