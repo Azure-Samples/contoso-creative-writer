@@ -92,7 +92,7 @@ def execute(context: str, instructions: str, feedback: str = ""):
     # create path to prompty file
     configuration = AzureOpenAIModelConfiguration(
         azure_deployment=os.getenv("AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME"),
-        api_version=os.getenv("AZURE_OPENAI_API_VERSION") or "2024-03-01-preview",
+        api_version="2023-07-01-preview",
         azure_endpoint=f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
     )
     override_model = {
