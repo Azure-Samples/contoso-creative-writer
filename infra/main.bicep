@@ -14,37 +14,40 @@ param environmentName string
 })
 param location string
 
-@description('The name of the OpenAI resource')
-param openAiResourceName string = ''
+param containerRegistryName string = ''
+param aiHubName string = ''
+@description('The Azure AI Studio project name. If ommited will be generated')
+param aiProjectName string = ''
+@description('The application insights resource name. If ommited will be generated')
+param applicationInsightsName string = ''
+@description('The Open AI resource name. If ommited will be generated')
+param openAiName string = ''
+@description('The Open AI connection name. If ommited will use a default value')
+param openAiConnectionName string = ''
+@description('The Open AI content safety connection name. If ommited will use a default value')
+param openAiContentSafetyConnectionName string = ''
+param keyVaultName string = ''
+@description('The Azure Storage Account resource name. If ommited will be generated')
+param storageAccountName string = ''
 
-@description('The name of the resource group for the OpenAI resource')
-param openAiResourceGroupName string = ''
+var abbrs = loadJsonContent('./abbreviations.json')
+@description('The log analytics workspace name. If ommited will be generated')
+param logAnalyticsWorkspaceName string = ''
+param useApplicationInsights bool = true
+param useContainerRegistry bool = true
+param useSearch bool = true
+var aiConfig = loadYamlContent('./ai.yaml')
+@description('The name of the machine learning online endpoint. If ommited will be generated')
+param endpointName string = ''
+@description('The name of the azd service to use for the machine learning endpoint')
+param endpointServiceName string = 'chat'
+param resourceGroupName string = ''
 
-@description('Location for the OpenAI resource')
-@allowed([
-  'canadaeast'
-  'eastus'
-  'eastus2'
-  'francecentral'
-  'switzerlandnorth'
-  'uksouth'
-  'japaneast'
-  'northcentralus'
-  'australiaeast'
-  'swedencentral'
-])
-@metadata({
-  azd: {
-    type: 'location'
-  }
-})
-param openAiResourceLocation string
-
-@description('The SKU name of the OpenAI resource')
-param openAiSkuName string = ''
+@description('The Azure Search connection name. If ommited will use a default value')
+param searchConnectionName string = ''
 
 @description('The API version of the OpenAI resource')
-param openAiApiVersion string = ''
+param openAiApiVersion string = '2023-07-01-preview'
 
 @description('The type of the OpenAI resource')
 param openAiType string = 'azure'
@@ -59,34 +62,18 @@ param bingSearchName string = ''
 param aiSearchIndexName string = 'contoso-products'
 
 @description('The name of the 35 turbo OpenAI deployment')
-param openAi_35_turbo_DeploymentName string = ''
+param openAi_35_turbo_DeploymentName string = 'gpt-35-turbo'
 
-@description('The name of the 35 turbo OpenAI model')
-param openAi_35_ModelName string = ''
-
-@description('The version of the 35 turbo OpenAI model')
-param openAi_35_ModelVersion string = ''
 
 @description('The name of the 4 OpenAI deployment')
-param openAi_4_DeploymentName string = ''
+param openAi_4_DeploymentName string = 'gpt-4'
 
-@description('The name of the 4 OpenAI model')
-param openAi_4_ModelName string = ''
-
-@description('The version of the 4 OpenAI model')
-param openAi_4_ModelVersion string = ''
 
 @description('The name of the 4 eval OpenAI deployment')
-param openAi_4_eval_DeploymentName string = ''
-
-@description('The name of the 4 eval OpenAI model')
-param openAi_4_eval_ModelName string = ''
-
-@description('The version of the 4 eval OpenAI model')
-param openAi_4_eval_ModelVersion string = ''
+param openAi_4_eval_DeploymentName string = 'gpt-4'
 
 @description('The name of the OpenAI embedding deployment')
-param openAiEmbeddingDeploymentName string = ''
+param openAiEmbeddingDeploymentName string = 'text-embedding-ada-002'
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
@@ -101,22 +88,15 @@ var resourceToken = toLower(uniqueString(subscription().id, environmentName, loc
 var tags = { 'azd-env-name': environmentName }
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: 'rg-${environmentName}'
+  name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
   location: location
   tags: tags
 }
 
-resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(openAiResourceGroupName)) {
-  name: !empty(openAiResourceGroupName) ? openAiResourceGroupName : resourceGroup.name
-}
-
 var prefix = toLower('${environmentName}-${resourceToken}')
-
-//var keyVaultName = replace('${take(prefix, 18)}-vault', '--', '-')
 
 // USER ROLES
 var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
-
 module managedIdentity 'core/security/managed-identity.bicep' = {
   name: 'managed-identity'
   scope: resourceGroup
@@ -127,77 +107,49 @@ module managedIdentity 'core/security/managed-identity.bicep' = {
   }
 }
 
-module openAi 'core/ai/cognitiveservices.bicep' = {
-  name: 'openai'
-  scope: openAiResourceGroup
+module ai 'core/host/ai-environment.bicep' = {
+  name: 'ai'
+  scope: resourceGroup
   params: {
-    name: !empty(openAiResourceName) ? openAiResourceName : '${resourceToken}-cog'
-    location: !empty(openAiResourceLocation) ? openAiResourceLocation : location
+    location: location
     tags: tags
-    sku: {
-      name: !empty(openAiSkuName) ? openAiSkuName : 'S0'
-    }
-    deployments: [
-      {
-        name: openAi_35_turbo_DeploymentName
-        model: {
-          format: 'OpenAI'
-          name: openAi_35_ModelName
-          version: openAi_35_ModelVersion
-        }
-        sku: {
-          name: 'Standard'
-          capacity: 30
-        }
-      }
-      {
-        name: openAi_4_DeploymentName
-        model: {
-          format: 'OpenAI'
-          name: openAi_4_ModelName
-          version: openAi_4_ModelVersion
-        }
-        sku: {
-          name: 'Standard'
-          capacity: 20
-        }
-      }
-      {
-        name: openAi_4_eval_DeploymentName
-        model: {
-          format: 'OpenAI'
-          name: openAi_4_eval_ModelName
-          version: openAi_4_eval_ModelVersion
-        }
-        sku: {
-          name: 'Standard'
-          capacity: 20
-        }
-      }
-      {
-        name: openAiEmbeddingDeploymentName
-        model: {
-          format: 'OpenAI'
-          name: 'text-embedding-ada-002'
-          version: '2'
-        }
-        sku: {
-          name: 'Standard'
-          capacity: 20
-        }
-      }
-    ]
+    hubName: !empty(aiHubName) ? aiHubName : 'ai-hub-${resourceToken}'
+    projectName: !empty(aiProjectName) ? aiProjectName : 'ai-project-${resourceToken}'
+    keyVaultName: !empty(keyVaultName) ? keyVaultName : '${abbrs.keyVaultVaults}${resourceToken}'
+    storageAccountName: !empty(storageAccountName)
+      ? storageAccountName
+      : '${abbrs.storageStorageAccounts}${resourceToken}'
+    openAiName: !empty(openAiName) ? openAiName : 'aoai-${resourceToken}'
+    openAiConnectionName: !empty(openAiConnectionName) ? openAiConnectionName : 'aoai-connection'
+    openAiContentSafetyConnectionName: !empty(openAiContentSafetyConnectionName) ? openAiContentSafetyConnectionName : 'aoai-content-safety-connection'
+    openAiModelDeployments: array(contains(aiConfig, 'deployments') ? aiConfig.deployments : [])
+    logAnalyticsName: !useApplicationInsights
+      ? ''
+      : !empty(logAnalyticsWorkspaceName)
+          ? logAnalyticsWorkspaceName
+          : '${abbrs.operationalInsightsWorkspaces}${resourceToken}'
+    applicationInsightsName: !useApplicationInsights
+      ? ''
+      : !empty(applicationInsightsName) ? applicationInsightsName : '${abbrs.insightsComponents}${resourceToken}'
+    containerRegistryName: !useContainerRegistry
+      ? ''
+      : !empty(containerRegistryName) ? containerRegistryName : '${abbrs.containerRegistryRegistries}${resourceToken}'
+    searchServiceName: !useSearch ? '' : !empty(searchServiceName) ? searchServiceName : '${abbrs.searchSearchServices}${resourceToken}'
+    searchConnectionName: !useSearch ? '' : !empty(searchConnectionName) ? searchConnectionName : 'search-service-connection'
   }
 }
 
-module search 'core/search/search-services.bicep' = {
-  name: 'search'
+module machineLearningEndpoint './core/host/ml-online-endpoint.bicep' = {
+  name: 'endpoint'
   scope: resourceGroup
   params: {
-    name: !empty(searchServiceName) ? searchServiceName : '${prefix}-search-contoso'
+    name: !empty(endpointName) ? endpointName : 'mloe-${resourceToken}'
     location: location
-    semanticSearch: 'standard'
-    disableLocalAuth: true
+    tags: tags
+    serviceName: endpointServiceName
+    aiHubName: ai.outputs.hubName
+    aiProjectName: ai.outputs.projectName
+    keyVaultName: ai.outputs.keyVaultName
   }
 }
 
@@ -210,57 +162,6 @@ module bing 'core/bing/bing-search.bicep' = {
   }
 }
 
-//module keyVault 'core/security/keyvault.bicep' = {
-//  name: 'keyvault'
-//  scope: resourceGroup
-//  params: {
-//    location: location
-//    tags: tags
-//    name: keyVaultName
-//  }
-//}
-//
-//module bingSecret 'core/security/keyvault-secret.bicep' = {
-//  name: 'bingSecret'
-//  scope: resourceGroup
-//  params: {
-//    name: 'bingApiKey'
-//    keyVaultName: keyVaultName
-//    secretValue: bing.outputs.bingApiKey
-//  }
-//}
-//
-//module keyVaultAccess 'core/security/keyvault-access.bicep' = {
-//  name: '${prefix}-keyvault-access'
-//  scope: resourceGroup
-//  params: {
-//    keyVaultName: keyVaultName
-//    principalId: principalId
-//  }
-//}
-
-module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
-  name: 'loganalytics'
-  scope: resourceGroup
-  params: {
-    name: '${prefix}-loganalytics'
-    location: location
-    tags: tags
-  }
-}
-
-module monitoring 'core/monitor/monitoring.bicep' = {
-  name: 'monitoring'
-  scope: resourceGroup
-  params: {
-    location: location
-    tags: tags
-    logAnalyticsName: logAnalyticsWorkspace.name
-    applicationInsightsName: '${prefix}-appinsights'
-    applicationInsightsDashboardName: '${prefix}-dashboard'
-  }
-}
-
 // Container apps host (including container registry)
 module containerApps 'core/host/container-apps.bicep' = {
   name: 'container-apps'
@@ -270,8 +171,8 @@ module containerApps 'core/host/container-apps.bicep' = {
     location: location
     tags: tags
     containerAppsEnvironmentName: '${prefix}-containerapps-env'
-    containerRegistryName: '${replace(prefix, '-', '')}registry'
-    logAnalyticsWorkspaceName: logAnalyticsWorkspace.outputs.name
+    containerRegistryName: ai.outputs.containerRegistryName
+    logAnalyticsWorkspaceName: ai.outputs.logAnalyticsWorkspaceName
   }
 }
 
@@ -290,12 +191,13 @@ module aca 'app/aca.bicep' = {
     openAi_4_DeploymentName: !empty(openAi_4_DeploymentName) ? openAi_4_DeploymentName : 'gpt-4'
     openAi_4_eval_DeploymentName: !empty(openAi_4_eval_DeploymentName) ? openAi_4_eval_DeploymentName : 'gpt-4'
     openAiEmbeddingDeploymentName: openAiEmbeddingDeploymentName
-    openAiEndpoint: openAi.outputs.endpoint
+    openAiEndpoint: ai.outputs.openAiEndpoint
+    openAiName: ai.outputs.openAiName
     openAiType: openAiType
     openAiApiVersion: openAiApiVersion
-    aiSearchEndpoint: search.outputs.endpoint
+    aiSearchEndpoint: ai.outputs.searchServiceEndpoint
     aiSearchIndexName: aiSearchIndexName
-    appinsights_Connectionstring: monitoring.outputs.applicationInsightsConnectionString
+    appinsights_Connectionstring: ai.outputs.applicationInsightsConnectionString
     bingApiEndpoint: bing.outputs.endpoint
     bingApiKey: bing.outputs.bingApiKey
   }
@@ -379,11 +281,10 @@ output AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME string = openAi_35_turbo_Deployment
 output AZURE_OPENAI_DEPLOYMENT_NAME string = openAi_4_DeploymentName
 output AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME string = openAi_4_eval_DeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
-output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
-output AZURE_OPENAI_NAME string = openAi.outputs.name
-output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
-output AZURE_OPENAI_SKU_NAME string = openAi.outputs.skuName
-output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = openAiResourceGroup.location
+output AZURE_OPENAI_ENDPOINT string = ai.outputs.openAiEndpoint
+output AZURE_OPENAI_NAME string = ai.outputs.openAiName
+output AZURE_OPENAI_RESOURCE_GROUP string = resourceGroup.name
+output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = resourceGroup.location
 
 output SERVICE_ACA_NAME string = aca.outputs.SERVICE_ACA_NAME
 output SERVICE_ACA_URI string = aca.outputs.SERVICE_ACA_URI
@@ -393,13 +294,13 @@ output AZURE_CONTAINER_ENVIRONMENT_NAME string = containerApps.outputs.environme
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerApps.outputs.registryLoginServer
 output AZURE_CONTAINER_REGISTRY_NAME string = containerApps.outputs.registryName
 
-output APPINSIGHTS_CONNECTIONSTRING string = monitoring.outputs.applicationInsightsConnectionString
+output APPINSIGHTS_CONNECTIONSTRING string = ai.outputs.applicationInsightsConnectionString
 
 output OPENAI_TYPE string = 'azure'
 output AZURE_EMBEDDING_NAME string = openAiEmbeddingDeploymentName
 
-output AZURE_SEARCH_ENDPOINT string = search.outputs.endpoint
-output AZURE_SEARCH_NAME string = search.outputs.name
+output AZURE_SEARCH_ENDPOINT string = ai.outputs.searchServiceEndpoint
+output AZURE_SEARCH_NAME string = ai.outputs.searchServiceName
 
 output BING_SEARCH_ENDPOINT string = bing.outputs.endpoint
 output BING_SEARCH_KEY string = bing.outputs.bingApiKey

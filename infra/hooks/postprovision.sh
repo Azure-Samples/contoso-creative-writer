@@ -45,7 +45,7 @@ COGNITIVE_SERVICE_URL="https://oai.azure.com/portal/${INTERNAL_ID}?tenantid=${AZ
 echo "--- ✅ | 1. Post-provisioning - env configured ---"
 
 # Setup to run notebooks
-echo 'Installing dependencies from "src/api/requirements.txt"'
+echo 'Installing dependencies from "requirements.txt"'
 python -m pip install -r src/api/requirements.txt > /dev/null
 python -m pip install ipython ipykernel > /dev/null      # Install ipython and ipykernel
 ipython kernel install --name=python3 --user > /dev/null # Configure the IPython kernel
