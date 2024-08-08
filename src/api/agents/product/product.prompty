@@ -11,7 +11,7 @@ model:
   parameters:
     stream: false
 sample:
-  context: Can you use a selection of sportz and outdoor cooking gear as context?
+  context: Can you use a selection of sports and outdoor cooking gear as context?
 ---
 system:
 You are an AI assistant who helps people find information from a search index.

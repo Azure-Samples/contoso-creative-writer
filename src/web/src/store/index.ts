@@ -1,4 +1,4 @@
-import { endpoint } from "../endpoint";
+import { endpoint } from "../constants";
 export interface IMessage {
   type: "message" | "researcher" | "marketing" | "writer" | "error" | "partial";
   message: string;

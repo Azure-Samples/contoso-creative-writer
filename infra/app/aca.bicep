@@ -7,10 +7,12 @@ param identityId string
 param containerAppsEnvironmentName string
 param containerRegistryName string
 param serviceName string = 'aca'
+
 param openAi_35_turbo_DeploymentName string
 param openAi_4_DeploymentName string
 param openAi_4_eval_DeploymentName string
 param openAiEndpoint string
+param openAiName string
 param openAiApiVersion string
 param openAiEmbeddingDeploymentName string
 param openAiType string
@@ -60,6 +62,10 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'AZURE_OPENAI_ENDPOINT'
         value: openAiEndpoint
+      }
+      {
+        name: 'AZURE_OPENAI_NAME'
+        value: openAiName
       }
       {
         name: 'AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME'

@@ -21,11 +21,17 @@ tracer = init_tracing()
 
 app = FastAPI()
 
+code_space = os.getenv("CODESPACE_NAME")
 
-origins = [
-    o.strip()
-    for o in Path(Path(__file__).parent / "origins.txt").read_text().splitlines()
-]
+if code_space: 
+    origin_8000= f"https://{code_space}-8000.app.github.dev"
+    origin_5173 = f"https://{code_space}-5173.app.github.dev"
+    origins = [origin_8000, origin_5173]
+else:
+    origins = [
+        o.strip()
+        for o in Path(Path(__file__).parent / "origins.txt").read_text().splitlines()
+    ]
 
 app.add_middleware(
     CORSMiddleware,
@@ -46,7 +52,7 @@ async def root():
 async def create_article(task: Task):
     return StreamingResponse(
         PromptyStream(
-            "crteate_article", create(task.research, task.products, task.assignment)
+            "create_article", create(task.research, task.products, task.assignment)
         ),
         media_type="application/x-ndjson",
     )

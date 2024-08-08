@@ -1,6 +1,8 @@
 fastapi
+fastapi[standard]
 requests
 prompty
+pandas
 azure-monitor-opentelemetry-exporter
 opentelemetry-instrumentation-fastapi
 jsonlines

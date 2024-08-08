@@ -1,6 +1,7 @@
 import os
 import json
 from typing import Dict, List
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from prompty.tracer import trace
 import prompty
 from openai import AzureOpenAI
@@ -18,25 +19,25 @@ from azure.core.credentials import AzureKeyCredential
 load_dotenv()
 
 AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
-AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
 AZURE_OPENAI_VERSION = "2023-07-01-preview"
 AZURE_OPENAI_DEPLOYMENT = "text-embedding-ada-002"
 AZURE_AI_SEARCH_ENDPOINT = os.getenv("AI_SEARCH_ENDPOINT")
-AZURE_AI_SEARCH_KEY = os.getenv("AI_SEARCH_KEY")
 AZURE_AI_SEARCH_INDEX = "contoso-products"
 
 
 @trace
 def generate_embeddings(queries: List[str]) -> str:
-
-    client = AzureOpenAI(
-        api_version=AZURE_OPENAI_VERSION,
-        azure_endpoint=AZURE_OPENAI_ENDPOINT,
-        azure_deployment=AZURE_OPENAI_DEPLOYMENT,
-        api_key=AZURE_OPENAI_KEY,
+    token_provider = get_bearer_token_provider(
+        DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
     )
 
-    embeddings = client.embeddings.create(input=queries, model=AZURE_OPENAI_DEPLOYMENT)
+    client = AzureOpenAI(
+        azure_endpoint = f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/", 
+        api_version=os.environ["AZURE_OPENAI_API_VERSION"],
+        azure_ad_token_provider=token_provider
+    )
+
+    embeddings = client.embeddings.create(input=queries, model="text-embedding-ada-002")
     embs = [emb.embedding for emb in embeddings.data]
     items = [{"item": queries[i], "embedding": embs[i]} for i in range(len(queries))]
 
@@ -46,9 +47,9 @@ def generate_embeddings(queries: List[str]) -> str:
 @trace
 def retrieve_products(items: List[Dict[str, any]], index_name: str) -> str:
     search_client = SearchClient(
-        endpoint=AZURE_AI_SEARCH_ENDPOINT,
+        endpoint=os.environ["AZURE_SEARCH_ENDPOINT"],
         index_name=index_name,
-        credential=AzureKeyCredential(AZURE_AI_SEARCH_KEY),
+        credential=DefaultAzureCredential(),
     )
 
     products = []
@@ -90,7 +91,7 @@ def find_products(context: str) -> Dict[str, any]:
     # Generate embeddings
     items = generate_embeddings(qs)
     # Retrieve products
-    products = retrieve_products(items, AZURE_AI_SEARCH_INDEX)
+    products = retrieve_products(items, "contoso-products")
     return products
 
 

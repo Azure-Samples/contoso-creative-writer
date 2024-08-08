@@ -36,7 +36,7 @@ def init_tracing(local_tracing: bool = False):
     oteltrace.set_tracer_provider(TracerProvider())
 
     # Configure Azure Monitor as the Exporter
-    app_insights = os.getenv("APPINSIGHTS_CONNECTION_STRING")
+    app_insights = os.getenv("APPINSIGHTS_CONNECTIONSTRING")
     trace_exporter = AzureMonitorTraceExporter(connection_string=app_insights)
 
     # Add the Azure exporter to the tracer provider

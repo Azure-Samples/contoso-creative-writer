@@ -22,7 +22,7 @@ description: Using Azure OpenAI agent with Python, integrating Bing Search API a
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/agent-openai-python-prompty) [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/azure-samples/agent-openai-python-prompty) 
 
-This sample demonstrates how to create and work with AI agents driven by [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/). It includes a Flask app that takes a topic and instruction from a user and then calls a research agent that uses the [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to research the topic, a product agent that uses [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) to do a semantic similarity search for related products from a vector store, a writer agent to combine the research and product information into a helpful article, and an editor agent to refine the article that's finally presented to the user.
+This sample demonstrates how to create and work with AI agents driven by [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/). It includes a FastAPI app that takes a topic and instruction from a user and then calls a research agent that uses the [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to research the topic, a product agent that uses [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) to do a semantic similarity search for related products from a vector store, a writer agent to combine the research and product information into a helpful article, and an editor agent to refine the article that's finally presented to the user.
 
 ## Table of Contents
 
@@ -178,25 +178,29 @@ This sample repository contains an agents folder that includes subfolders for ea
 
 To test the sample: 
 
-1. Run the example web app locally using a Flask server. 
+1. Run the example web app locally using a FastAPI server. 
 
     First navigate to the src/api folder 
     ```
     cd ./src/api
     ```
-    Run the Flask webserver
+    Run the FastAPI webserver
     ```
-    flask --debug --app api.app:app run --port 8080
+    fastapi dev main.py
     ```
+    
+    **Note**: If you are running in Codespaces, you will need to change the visibility of the API's 8000 and 5173 ports to `public` in your VS Code terminal's `PORTS` tab. The ports tab should look like this:
+   
+   <img src="./images/ports.png" alt="Screenshot showing setting port-visibility" width="800px" />
 
-    If you open the server link in a browser, you will see a URL not found error, this is because we haven't created a home url route in flask. We have instead created a `/get_article` route which is used to pass context and instructions directly to the get_article.py file which runs the agent workflow.
+    If you open the server link in a browser, you will see a URL not found error, this is because we haven't created a home url route in FastAPI. We have instead created a `/get_article` route which is used to pass context and instructions directly to the get_article.py file which runs the agent workflow.
 
    We have created a web interface which we will run next, but you can test the API is working as expected by running this in the browser:
     ```
     http://127.0.0.1:8080/get_article?context=Write an article about camping in alaska&instructions=find specifics about what type of gear they would need and explain in detail
     ```
 
-2. Once the flask server is running you can now run the web app. To do this open a new terminal window and navigate to the web folder using this command:
+3. Once the FastAPI server is running you can now run the web app. To do this open a new terminal window and navigate to the web folder using this command:
     ```
     cd src/web
     ```
@@ -209,24 +213,9 @@ To test the sample:
     ```
     npm run dev
     ```
-    
-    **Note**: If you run in Codespaces, you will have to change the visibility of the API's 8080 port to `public` in your VS Code terminal's `PORTS` tab. The ports tab should look like this:
-   <img src="./images/ports.png" alt="Screenshot showing setting port-visibility" width="800px" />
 
     This will launch the app, where you can use example context and instructions to get started. 
     On the 'Creative Team' page you can examine the output of each agent by clicking on it. The app should look like this:
-
-   The getting started tab to send your instructions and context to the prompt:
-   
-    ![getting started](images/get_started_page.png)
-
-    The creative team tab that lets you follow and understand the agent's workflow:
-   
-    ![creative team](images/creative_team_agents.png)
-
-    The document tab that displays the article that was created:
-   
-    ![generated article](images/winter_article.png)
 
     Change the instructions and context to create an article of your choice. 
 

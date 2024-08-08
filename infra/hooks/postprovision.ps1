@@ -40,7 +40,7 @@ azd env get-values > .env
 Write-Host "Script execution completed successfully."
 
 Write-Host 'Installing dependencies from "requirements.txt"'
-python -m pip install -r ./src/requirements.txt > $null
+python -m pip install -r ./requirements.txt > $null
 
 # populate data
 Write-Host "Populating data ...."
