@@ -18,13 +18,13 @@ from azure.core.credentials import AzureKeyCredential
 
 load_dotenv()
 
-# AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
-# AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
-# AZURE_OPENAI_VERSION = "2023-07-01-preview"
-# AZURE_OPENAI_DEPLOYMENT = "text-embedding-ada-002"
-# AZURE_AI_SEARCH_ENDPOINT = os.getenv("AI_SEARCH_ENDPOINT")
+AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
+AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
+AZURE_OPENAI_VERSION = "2023-07-01-preview"
+AZURE_OPENAI_DEPLOYMENT = "text-embedding-ada-002"
+AZURE_AI_SEARCH_ENDPOINT = os.getenv("AI_SEARCH_ENDPOINT")
 # AZURE_AI_SEARCH_KEY = os.getenv("AI_SEARCH_KEY")
-# AZURE_AI_SEARCH_INDEX = "contoso-products"
+AZURE_AI_SEARCH_INDEX = "contoso-products"
 
 
 @trace
@@ -69,9 +69,6 @@ def retrieve_products(items: List[Dict[str, any]], index_name: str) -> str:
             top=2,
         )
 
-        # used to only return products if the results are semantically similar enough to query
-        reranker_score_threshold = 0.5 
-
         docs = [
             {
                 "id": doc["id"],
@@ -80,7 +77,6 @@ def retrieve_products(items: List[Dict[str, any]], index_name: str) -> str:
                 "url": doc["url"],
             }
             for doc in results
-            if ["@search.reranker_score"] >= reranker_score_threshold
         ]
 
         # Remove duplicates

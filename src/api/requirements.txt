@@ -1,4 +1,5 @@
 fastapi
+fastapi[standard]
 requests
 prompty
 pandas
