@@ -19,11 +19,9 @@ from azure.core.credentials import AzureKeyCredential
 load_dotenv()
 
 AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
-AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
 AZURE_OPENAI_VERSION = "2023-07-01-preview"
 AZURE_OPENAI_DEPLOYMENT = "text-embedding-ada-002"
 AZURE_AI_SEARCH_ENDPOINT = os.getenv("AI_SEARCH_ENDPOINT")
-# AZURE_AI_SEARCH_KEY = os.getenv("AI_SEARCH_KEY")
 AZURE_AI_SEARCH_INDEX = "contoso-products"
 
 
