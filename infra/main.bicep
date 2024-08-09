@@ -214,6 +214,7 @@ module webContainerApp 'app/web.bicep' = {
     identityId: managedIdentity.outputs.managedIdentityClientId
     containerAppsEnvironmentName: containerApps.outputs.environmentName
     containerRegistryName: containerApps.outputs.registryName
+    apiEndpoint: apiContainerApp.outputs.SERVICE_ACA_URI
   }
 }
 

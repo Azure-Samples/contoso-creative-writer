@@ -7,6 +7,7 @@ param identityId string
 param containerAppsEnvironmentName string
 param containerRegistryName string
 param serviceName string = 'web'
+param apiEndpoint string
 
 
 module app '../core/host/container-app-upsert.bicep' = {
@@ -23,6 +24,10 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'AZURE_CLIENT_ID'
         value: identityId
+      }
+      {
+        name: 'API_ENDPOINT'
+        value: apiEndpoint
       }
     ]
     targetPort: 80
