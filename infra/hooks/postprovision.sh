@@ -19,7 +19,7 @@ acr_build () {
 
 TAG=$(date +%Y%m%d-%H%M%S)
 acr_build creativeagentapi:${TAG} ${API_SERVICE_ACA_NAME} ./src/api/ 80
-acr_build creativeagentweb:${TAG} ${WEB_SERVICE_ACA_NAME} ./src/web/ 8080
+acr_build creativeagentweb:${TAG} ${WEB_SERVICE_ACA_NAME} ./src/web/ 80
 
 # Retrieve service names, resource group name, and other values from environment variables
 resourceGroupName=$AZURE_RESOURCE_GROUP
