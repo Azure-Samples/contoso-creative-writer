@@ -21,7 +21,8 @@ COPY --from=ui /app/dist/* ./
 COPY --from=ui /app/dist/assets/* ./assets/
 
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/run_nginx.sh /bin/run_nginx.sh
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/bin/run_nginx.sh"]
