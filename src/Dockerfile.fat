@@ -1,5 +1,5 @@
 # Build stage
-FROM node:18-alpine as ui
+FROM node:18-alpine AS ui
 WORKDIR /app
 
 # Copy package files and install dependencies
@@ -15,26 +15,17 @@ RUN npm run build
 # Use an official lightweight Python image.
 FROM python:3.11-slim
 
-# Set the working directory in the container
-WORKDIR /code
-
-# Copy just the requirements.txt file initially
-COPY api/requirements.txt ./
-
-# Install any needed packages specified in requirements.txt, including those in the WHL directory
-RUN pip3 install --no-cache-dir -r requirements.txt --find-links ./whl
-
-# Copy UI static files
-COPY --from=ui /app/dist ./static/
+WORKDIR /app
+COPY api/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
 
 ENV UI_FOLDER=../static
 ENV API_PREFIX=/api
 
-# Copy the rest of your application's source code
-COPY api/ .
+# Copy UI static files
+COPY --from=ui /app/dist ./static/
 
-# Make port 5000 available to the world outside this container
-EXPOSE 5000
+EXPOSE 80
 
-# Define the command to run your app using gunicorn
-ENTRYPOINT ["gunicorn", "-c", "gunicorn.conf.py", "api.app:app"]
+CMD ["fastapi", "run", "main.py", "--port", "80"]
