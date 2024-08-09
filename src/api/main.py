@@ -32,6 +32,7 @@ else:
         o.strip()
         for o in Path(Path(__file__).parent / "origins.txt").read_text().splitlines()
     ]
+    origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
