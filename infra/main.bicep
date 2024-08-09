@@ -157,7 +157,7 @@ module bing 'core/bing/bing-search.bicep' = {
   name: 'bing'
   scope: resourceGroup
   params: {
-    name: !empty(bingSearchName) ? bingSearchName : '${prefix}-bing-search-creative'
+    name: !empty(bingSearchName) ? bingSearchName : '${take(prefix, 64-12)}-bing-search'
     location: 'global'
   }
 }
@@ -170,7 +170,7 @@ module containerApps 'core/host/container-apps.bicep' = {
     name: 'app'
     location: location
     tags: tags
-    containerAppsEnvironmentName: '${prefix}-containerapps-env'
+    containerAppsEnvironmentName: '${take(replace(prefix, '--', '-'), 64-7)}-ca-env'
     containerRegistryName: ai.outputs.containerRegistryName
     logAnalyticsWorkspaceName: ai.outputs.logAnalyticsWorkspaceName
   }
