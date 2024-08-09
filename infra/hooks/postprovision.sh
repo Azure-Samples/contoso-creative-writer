@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Output environment variables to .env file using azd env get-values
 azd env get-values > .env
 
