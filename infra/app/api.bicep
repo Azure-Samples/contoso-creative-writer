@@ -6,8 +6,7 @@ param identityName string
 param identityId string
 param containerAppsEnvironmentName string
 param containerRegistryName string
-param serviceName string = 'aca'
-
+param serviceName string = 'api'
 param openAi_35_turbo_DeploymentName string
 param openAi_4_DeploymentName string
 param openAi_4_eval_DeploymentName string
