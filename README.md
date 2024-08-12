@@ -28,7 +28,7 @@ This sample demonstrates how to create and work with AI agents driven by [Azure 
 
 - [Features](#features)
 - [Azure account requirements](#azure-account-requirements)
-- [Opening the project](#opening-the-project)
+- [Getting Started](#getting-started)
     - [GitHub Codespaces](#github-codespaces)
     - [VS Code Dev Containers](#vs-code-dev-containers)
     - [Local environment](#local-environment)
@@ -39,6 +39,7 @@ This sample demonstrates how to create and work with AI agents driven by [Azure 
     - [Evaluating prompt flow results](#evaluating-prompt-flow-results)
 - [Costs](#costs)
 - [Security Guidelines](#security-guidelines)
+- [Guidance](#guidance)
 - [Resources](#resources)
 - [Code of Conduct](#code-of-conduct)
 
@@ -64,7 +65,7 @@ This project template provides the following features:
 * **Azure subscription with access enabled for [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)**
 * **Azure subscription with access enabled for [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search)**
 
-## Opening the project
+## Getting Started
 
 You have a few options for setting up this project.
 The easiest way to get started is GitHub Codespaces, since it will setup all the tools for you, but you can also [set it up locally](#local-environment).
@@ -321,18 +322,25 @@ If you do want to re-enable access from your development environment, re-run the
 azd provision
 ```
 
-## Costs
+## Guidance
 
-Pricing may vary per region and usage. Exact costs cannot be estimated.
-You may try the [Azure pricing calculator](https://azure.microsoft.com/pricing/calculator/) for the resources below:
+### Region Availability
 
-* Azure Container Apps: Pay-as-you-go tier. Costs are based on vCPU and memory used. [Pricing](https://azure.microsoft.com/pricing/details/container-apps/)
-* Azure OpenAI: Standard tier, GPT, and Ada models. Pricing per 1K tokens used, and at least 1K tokens are used per question. [Pricing](https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/)
-* Azure Monitor: Pay-as-you-go tier. Costs based on data ingested. [Pricing](https://azure.microsoft.com/pricing/details/monitor/)
+This template uses  `gpt-35-turbo-0613`, `gpt-4o` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly
+  * We recommend using [SUGGESTED REGION]
 
-## Security Guidelines
+### Costs
 
-This template uses [Managed Identity](https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview) built in to eliminate the need for developers to manage these credentials. Applications can use managed identities to obtain Microsoft Entra tokens without having to manage any credentials. We also use Key Vault, specifically for Bing Search, since Managed Identity is currently not implemented for it. Additionally, we have added a [GitHub Action tool](https://github.com/microsoft/security-devops-action) that scans the infrastructure-as-code files and generates a report containing any detected issues. To ensure best practices in your repo we recommend anyone creating solutions based on our templates ensure that the [Github secret scanning](https://docs.github.com/code-security/secret-scanning/about-secret-scanning) setting is enabled in your repos.
+You can estimate the cost of this project's architecture with [Azure's pricing calculator](https://azure.microsoft.com/pricing/calculator/)
+
+* [Azure Product] - [plan type] [link to pricing for product](https://azure.microsoft.com/pricing/)
+
+### Security
+
+> [!NOTE]
+> When implementing this template please specify whether the template uses Managed Identity or Key Vault
+
+This template has either [Managed Identity](https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview) or Key Vault built in to eliminate the need for developers to manage these credentials. Applications can use managed identities to obtain Microsoft Entra tokens without having to manage any credentials. Additionally, we have added a [GitHub Action tool](https://github.com/microsoft/security-devops-action) that scans the infrastructure-as-code files and generates a report containing any detected issues. To ensure best practices in your repo we recommend anyone creating solutions based on our templates ensure that the [Github secret scanning](https://docs.github.com/code-security/secret-scanning/about-secret-scanning) setting is enabled in your repos.
 
 ## Resources
 
