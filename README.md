@@ -296,7 +296,7 @@ azd provision
 
 ### Region Availability
 
-This template uses [MODEL 1] and [MODEL 2] which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly
+This template uses  `gpt-35-turbo-0613`, `gpt-4o` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly
   * We recommend using [SUGGESTED REGION]
 
 ### Costs
