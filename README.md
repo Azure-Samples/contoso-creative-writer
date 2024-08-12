@@ -326,14 +326,15 @@ azd provision
 
 ### Region Availability
 
-This template uses  `gpt-35-turbo-0613`, `gpt-4o` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly
-  * We recommend using [SUGGESTED REGION]
+This template uses  `gpt-35-turbo-0613`, `gpt-4o-2024-05-13` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly
+  * We recommend using EAST US 2
 
 ### Costs
 
 You can estimate the cost of this project's architecture with [Azure's pricing calculator](https://azure.microsoft.com/pricing/calculator/)
 
-* [Azure Product] - [plan type] [link to pricing for product](https://azure.microsoft.com/pricing/)
+* **Azure subscription with access enabled for [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)**
+* **Azure subscription with access enabled for [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search)**
 
 ### Security
 
