@@ -1,10 +1,12 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
-import agentReducer from "./agentSlice";
+import chatReducer from "./chatSlice";
+import messageReducer from "./messageSlice";
 import articleReducer from "./articleSlice";
 
 export const store = configureStore({
   reducer: {
-    agent: agentReducer,
+    chat: chatReducer,
+    message: messageReducer,
     article: articleReducer,
   },
 });

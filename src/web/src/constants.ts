@@ -1,13 +1,16 @@
 import { githubDevSubsPort } from "./utils/ghutils";
 
 const hostname = window.location.hostname;
-const apiPort = 8080
+const apiPort = 8000
 
 
-const apiEndpoint = (hostname === 'localhost' || hostname === '127.0.0.1')
-    ? `http://localhost:${apiPort}/get_article`
+const endpoint = 
+    // @ts-expect-error
+    window['endpoint'] ? window['endpoint']
+    : (hostname === 'localhost' || hostname === '127.0.0.1')
+    ? `http://localhost:${apiPort}`
     : hostname.endsWith('github.dev') 
-    ? `${githubDevSubsPort(hostname, apiPort)}/get_article`
-    : "api/get_article";
+    ? `${githubDevSubsPort(hostname, apiPort)}/`
+    : "api/article";
 
-export { apiEndpoint };
+export { endpoint };

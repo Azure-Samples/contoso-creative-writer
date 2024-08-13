@@ -8,7 +8,7 @@ deployments:
       version: "0613"
     sku:
       name: Standard
-      capacity: 20
+      capacity: 10
   - name: text-embedding-ada-002
     model:
       format: OpenAI
@@ -16,13 +16,13 @@ deployments:
       version: "2"
     sku:
       name: "Standard"
-      capacity: 20
+      capacity: 10
   - name: gpt-4
     model:
       format: OpenAI
-      name: gpt-4o
-      version: "2024-05-13"
+      name: gpt-4
+      version: "turbo-2024-04-09"
     sku:
       name: "Standard"
-      capacity: 20
+      capacity: 10
 
