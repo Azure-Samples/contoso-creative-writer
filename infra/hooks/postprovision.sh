@@ -18,16 +18,7 @@ acr_build () {
 }
 
 TAG=$(date +%Y%m%d-%H%M%S)
-echo  "az login in for api..."
-az login --use-device-code
 acr_build creativeagentapi:${TAG} ${API_SERVICE_ACA_NAME} ./src/api/ 80
-# AZ LOGIN CHECK
-EXPIRED_TOKEN=$(az ad signed-in-user show --query 'id' -o tsv 2>/dev/null || true)
-# Check if the user is not logged in and if not login again
-if [[ -z "$EXPIRED_TOKEN" ]]; then
-    echo  "az login in for web..."
-    az login --use-device-code
-fi
 acr_build creativeagentweb:${TAG} ${WEB_SERVICE_ACA_NAME} ./src/web/ 80
 
 # Retrieve service names, resource group name, and other values from environment variables

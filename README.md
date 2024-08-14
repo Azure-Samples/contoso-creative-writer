@@ -77,10 +77,18 @@ The easiest way to get started is GitHub Codespaces, since it will setup all the
     [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/agent-openai-python-prompty)
 
 2. Open a terminal window.
-3. Sign in to your Azure account:
+3. Sign in to your Azure account. You'll need to login to both the Azure Developer CLI and Azure CLI:
+
+    i. First with Azure Developer CLI 
 
     ```shell
     azd auth login
+    ```
+
+    ii. Then sign in with Azure CLI 
+    
+    ```shell
+    az login --use-device-code
     ```
 
 4. Provision the resources and deploy the code:
