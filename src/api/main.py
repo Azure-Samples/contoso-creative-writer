@@ -26,13 +26,13 @@ code_space = os.getenv("CODESPACE_NAME")
 if code_space: 
     origin_8000= f"https://{code_space}-8000.app.github.dev"
     origin_5173 = f"https://{code_space}-5173.app.github.dev"
-    origins = [origin_8000, origin_5173]
+    origins = [origin_8000, origin_5173, os.getenv("API_SERVICE_ACA_URI"), os.getenv("WEB_SERVICE_ACA_URI")]
 else:
     origins = [
         o.strip()
         for o in Path(Path(__file__).parent / "origins.txt").read_text().splitlines()
     ]
-    origins = ["*"]
+    origins = ['*']
 
 app.add_middleware(
     CORSMiddleware,
