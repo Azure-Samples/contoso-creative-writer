@@ -7,8 +7,10 @@ import urllib.parse
 from pathlib import Path
 from dotenv import load_dotenv
 import prompty
+import prompty.azure
+from prompty.azure.processor import ToolCall
 from prompty.tracer import trace
-from prompty.processors import ToolCall
+# from prompty.azure.processors import ToolCall
 
 load_dotenv()
 

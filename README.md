@@ -153,10 +153,18 @@ A related option is VS Code Dev Containers, which will open the project in your 
 
 Once you've opened the project in [Codespaces](#github-codespaces), [Dev Containers](#vs-code-dev-containers), or [locally](#local-environment), you can deploy it to Azure.
 
-1. Sign in to your Azure account:
+1. Sign in to your Azure account. You'll need to login to both the Azure Developer CLI and Azure CLI:
+
+    i. First with Azure Developer CLI 
 
     ```shell
     azd auth login
+    ```
+
+    ii. Then sign in with Azure CLI 
+    
+    ```shell
+    az login --use-device-code
     ```
 
     If you have any issues with that command, you may also want to try `azd auth login --use-device-code`.
