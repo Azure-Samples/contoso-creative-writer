@@ -1,7 +1,10 @@
 fastapi
 fastapi[standard]
+openai
 requests
 prompty
+promptflow
+promptflow-evals
 pandas
 azure-monitor-opentelemetry-exporter
 opentelemetry-instrumentation-fastapi
