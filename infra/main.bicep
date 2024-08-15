@@ -70,7 +70,7 @@ param openAi_4_DeploymentName string = 'gpt-4'
 
 
 @description('The name of the 4 eval OpenAI deployment')
-param openAi_4_eval_DeploymentName string = 'gpt-4'
+param openAi_4_eval_DeploymentName string = 'gpt-4-evals'
 
 @description('The name of the OpenAI embedding deployment')
 param openAiEmbeddingDeploymentName string = 'text-embedding-ada-002'
@@ -189,7 +189,7 @@ module apiContainerApp 'app/api.bicep' = {
     containerRegistryName: containerApps.outputs.registryName
     openAi_35_turbo_DeploymentName: !empty(openAi_35_turbo_DeploymentName) ? openAi_35_turbo_DeploymentName : 'gpt-35-turbo'
     openAi_4_DeploymentName: !empty(openAi_4_DeploymentName) ? openAi_4_DeploymentName : 'gpt-4'
-    openAi_4_eval_DeploymentName: !empty(openAi_4_eval_DeploymentName) ? openAi_4_eval_DeploymentName : 'gpt-4'
+    openAi_4_eval_DeploymentName: !empty(openAi_4_eval_DeploymentName) ? openAi_4_eval_DeploymentName : 'gpt-4-evals'
     openAiEmbeddingDeploymentName: openAiEmbeddingDeploymentName
     openAiEndpoint: ai.outputs.openAiEndpoint
     openAiName: ai.outputs.openAiName
