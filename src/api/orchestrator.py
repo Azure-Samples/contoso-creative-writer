@@ -1,6 +1,7 @@
 from typing import List, Literal, Union
 from prompty.tracer import trace
 from pydantic import BaseModel, Field
+import json
 
 # agents
 from agents.researcher import researcher
@@ -47,10 +48,12 @@ def create(research_context, product_context, assignment_context):
     yield start_message("researcher")
     research_result = researcher.research(research_context)
     yield complete_message("researcher", research_result)
+    yield json.dumps(("researcher", research_result))
 
     yield start_message("marketing")
     product_result = product.find_products(product_context)
     yield complete_message("marketing", product_result)
+    yield json.dumps(("products", product_result))
 
     yield start_message("writer")
     yield complete_message("writer", {"start": True})
@@ -61,10 +64,13 @@ def create(research_context, product_context, assignment_context):
         product_result,
         assignment_context,
     )
-    for item in writer_result:
-        yield complete_message("partial", {"text": item})
 
+    full_result = " "
+    for item in writer_result:
+        full_result = full_result + f'{item}'
+        yield complete_message("partial", {"text": item})
     yield complete_message("writer", {"complete": True})
+    yield json.dumps(("writer", full_result))
 
     #except Exception as e:
     #    yield error_message(e)

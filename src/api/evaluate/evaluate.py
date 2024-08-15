@@ -62,12 +62,14 @@ def run_orchestrator(research_context, product_context, assignment_context):
     response = None
 
     for result in create(research_context, product_context, assignment_context):
-        if result[0] == "researcher":
-            context['research'] = result[1]
-        if result[0] == "products":
-            context['products'] = result[1]
-        if result[0] == "writer":
-            response = result[1]
+        parsed_result = json.loads(result)
+        if type(parsed_result) is list:
+            if parsed_result[0] == "researcher":
+                context['research'] = parsed_result[1]
+            if parsed_result[0] == "products":
+                context['products'] = parsed_result[1]
+            if parsed_result[0] == "writer":
+                response = parsed_result[1]
     
     return {
         "query": json.dumps(query), 
