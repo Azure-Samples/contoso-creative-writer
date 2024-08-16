@@ -52,7 +52,7 @@ This project template provides the following features:
 * [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to research the topic provided
 * [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) for performing semantic similarity search
   
-![Architecture Digram](images/Creative_writing.png)
+![Architecture Digram](images/Creative_writing_aca.png)
 
 ## Azure account requirements
 
