@@ -9,7 +9,7 @@ model:
     type: azure_openai
     azure_deployment: gpt-4
   parameters:
-    max_tokens: 1200
+    max_tokens: 2000
 sample:
   researchContext: Can you find the latest camping trends and what folks are doing in the winter?
   research: ${file:research.json}

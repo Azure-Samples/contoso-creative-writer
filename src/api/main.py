@@ -13,11 +13,9 @@ from orchestrator import Task, create
 
 base = Path(__file__).resolve().parent
 
-
 load_dotenv()
 LOCAL_TRACING = True if os.getenv("LOCAL_TRACING", "false").lower() == "true" else False
 tracer = init_tracing()
-
 
 app = FastAPI()
 
@@ -55,8 +53,9 @@ async def create_article(task: Task):
         PromptyStream(
             "create_article", create(task.research, task.products, task.assignment)
         ),
-        media_type="application/x-ndjson",
+        media_type="text/event-stream",
     )
 
 
-FastAPIInstrumentor.instrument_app(app)
+# TODO: fix open telemetry so it doesn't slow app so much
+# FastAPIInstrumentor.instrument_app(app)

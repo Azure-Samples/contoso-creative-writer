@@ -30,10 +30,10 @@
       "value": "${AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4}"
     },
     "openAi_4_ModelName": {
-      "value": "${AZURE_OPENAI_MODEL_NAME=gpt-4}"
+      "value": "${AZURE_OPENAI_MODEL_NAME=gpt-4o}"
     },
     "openAi_4_ModelVersion": {
-      "value": "${AZURE_OPENAI_MODEL_VERSION=1106-Preview}"
+      "value": "${AZURE_OPENAI_MODEL_VERSION=2024-05-13}"
     },
     "openAi_4_eval_DeploymentName": {
       "value": "${AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME=gpt-4-evals}"

@@ -206,20 +206,21 @@ To test the sample:
     fastapi dev main.py
     ```
     
-    **Note**: If you are running in Codespaces, you will need to change the visibility of the API's 8000 and 5173 ports to `public` in your VS Code terminal's `PORTS` tab. The ports tab should look like this:
+    **Important Note**: If you are running in Codespaces, you will need to change the visibility of the API's 8000 and 5173 ports to `public` in your VS Code terminal's `PORTS` tab. The ports tab should look like this:
    
    <img src="./images/ports.png" alt="Screenshot showing setting port-visibility" width="800px" />
 
+
     If you open the server link in a browser, you will see a URL not found error, this is because we haven't created a home url route in FastAPI. We have instead created a `/get_article` route which is used to pass context and instructions directly to the get_article.py file which runs the agent workflow.
 
-   We have created a web interface which we will run next, but you can test the API is working as expected by running this in the browser:
+   (Optional) We have created a web interface which we will run next, but you can test the API is working as expected by running this in the browser:
     ```
     http://127.0.0.1:8080/get_article?context=Write an article about camping in alaska&instructions=find specifics about what type of gear they would need and explain in detail
     ```
 
 3. Once the FastAPI server is running you can now run the web app. To do this open a new terminal window and navigate to the web folder using this command:
     ```
-    cd src/web
+    cd ./src/web
     ```
     First install node packages:
     ```
@@ -241,8 +242,8 @@ To test the sample:
     To run the sample using just the orchestrator logic use the following command:
 
     ```
-    cd ./src
-    python -m api.agents.orchestrator
+    cd ./src/api
+    python -m orchestrator
 
     ```
 
@@ -257,8 +258,8 @@ export PROMPTFLOW_TRACING_SERVER=true
 Then start the orchestrator:
 
 ```
-cd ./src
-python -m api.agents.orchestrator
+cd ./src/api
+python -m orchestrator
 ```
 
 At the start of the log, you should see something like:

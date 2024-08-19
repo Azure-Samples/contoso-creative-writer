@@ -42,10 +42,12 @@ export const startWritingTask = (
     };
   }
 
+
   const configuration = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Connection": "keep-alive",
     },
     body: JSON.stringify({
       research: research,
@@ -57,30 +59,42 @@ export const startWritingTask = (
   const url = `${
     endpoint.endsWith("/") ? endpoint : endpoint + "/"
   }api/article`;
-  fetch(url, configuration).then(async (response) => {
-    const reader = response.body?.getReader();
-    if (!reader) return;
 
-    const chunks = readChunks(reader);
-    for await (const chunk of chunks) {
-      const text = new TextDecoder().decode(chunk);
-      const parts = text.split("\n");
-      for (let part of parts) {
-        part = part.trim();
-        if (!part || part.length === 0) continue;
-        console.log(part);
-        const message = JSON.parse(part) as IMessage;
-        addMessage(message);
-        if (message.type === "writer") {
-          if (message.data && message.data.start) {
-            createArticle("");
-          }
-        } else if (message.type === "partial") {
-          if (message.data?.text && message.data.text.length > 0) {
-            addToArticle(message.data?.text || "");
+  const callApi = async () => {
+    try {
+      const response = await fetch(url, configuration);
+      const reader = response.body?.getReader();
+      if (!reader) return;
+
+      const chunks = readChunks(reader);
+      for await (const chunk of chunks) {
+        const text = new TextDecoder().decode(chunk);
+        const parts = text.split("\n");
+        for (let part of parts) {
+          part = part.trim();
+          if (!part || part.length === 0) continue;
+          console.log(part);
+          const message = JSON.parse(part) as IMessage;
+          addMessage(message);
+          if (message.type === "writer") {
+            if (message.data && message.data.start) {
+              createArticle("");
+            }
+          } else if (message.type === "partial") {
+            if (message.data?.text && message.data.text.length > 0) {
+              addToArticle(message.data?.text || "");
+            }
+            else {
+              console.log('writing complete');
+            }
           }
         }
       }
+    } catch (e) {
+      console.log('complete');
     }
-  });
+  };
+
+  callApi();
+
 };

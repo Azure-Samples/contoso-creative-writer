@@ -62,12 +62,14 @@ def run_orchestrator(research_context, product_context, assignment_context):
     response = None
 
     for result in create(research_context, product_context, assignment_context):
-        if result[0] == "researcher":
-            context['research'] = result[1]
-        if result[0] == "products":
-            context['products'] = result[1]
-        if result[0] == "writer":
-            response = result[1]
+        parsed_result = json.loads(result)
+        if type(parsed_result) is list:
+            if parsed_result[0] == "researcher":
+                context['research'] = parsed_result[1]
+            if parsed_result[0] == "products":
+                context['products'] = parsed_result[1]
+            if parsed_result[0] == "writer":
+                response = parsed_result[1]
     
     return {
         "query": json.dumps(query), 
@@ -87,7 +89,7 @@ def evaluate_orchestrator(model_config, data_path):
     eval_results = []
 
     results = []
-    futures = []
+    # futures = []
     def evaluate_row(research_context, product_context, assignment_context):
         result = { "research_context": research_context }
         print("Running orchestrator...")
@@ -98,11 +100,13 @@ def evaluate_orchestrator(model_config, data_path):
         print("Evaluation results: ", eval_result)
         eval_results.append(result)
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        for row in data:
-            futures.append(executor.submit(evaluate_row, row["research_context"], row["product_context"], row["assignment_context"]))
-        for future in futures:
-            results.append(future.result())
+    #can not execute concurrently with streamed data because of rate errors 
+    # with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+    for row in data:
+        results.append(evaluate_row(row["research_context"], row["product_context"], row["assignment_context"]))
+        # futures.append(executor.submit(evaluate_row, row["research_context"], row["product_context"], row["assignment_context"]))
+    # for future in futures:
+        # results.append(future.result())
 
     # write out eval data to a file so we can re-run evaluation on it
     with jsonlines.open(folder + '/eval_data.jsonl', 'w') as writer:
