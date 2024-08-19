@@ -30,18 +30,17 @@ export const startWritingTask = (
   addToArticle: { (text: string): void }
 ) => {
   // internal function to read chunks from a stream
-  function readChunks(reader: ReadableStreamDefaultReader<Uint8Array>) {
-    return {
-      async *[Symbol.asyncIterator]() {
-        let readResult = await reader.read();
-        while (!readResult.done) {
-          yield readResult.value;
-          readResult = await reader.read();
-        }
-      },
-    };
+  const readChunks = async (reader: ReadableStreamDefaultReader<Uint8Array>) => {
+      return {
+        async *[Symbol.asyncIterator]() {
+          let readResult = await reader.read();
+          while (!readResult.done) {
+            yield readResult.value;
+            readResult = await reader.read();
+          }
+        },
+    }  
   }
-
 
   const configuration = {
     method: "POST",
@@ -49,6 +48,7 @@ export const startWritingTask = (
       "Content-Type": "application/json",
       "Connection": "keep-alive",
     },
+    signal:AbortSignal.timeout(100), 
     body: JSON.stringify({
       research: research,
       products: products,
@@ -62,11 +62,11 @@ export const startWritingTask = (
 
   const callApi = async () => {
     try {
-      const response = await fetch(url, configuration);
-      const reader = response.body?.getReader();
+      const response = await fetch(url, configuration).catch();
+      const reader = await response.body?.getReader();
       if (!reader) return;
 
-      const chunks = readChunks(reader);
+      const chunks = await readChunks(reader);
       for await (const chunk of chunks) {
         const text = new TextDecoder().decode(chunk);
         const parts = text.split("\n");
@@ -91,7 +91,7 @@ export const startWritingTask = (
         }
       }
     } catch (e) {
-      console.log('complete');
+      console.log(e);
     }
   };
 

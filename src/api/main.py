@@ -3,10 +3,11 @@ from pathlib import Path
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from prompty.tracer import trace
-from prompty.core import PromptyStream
+from prompty.core import PromptyStream, AsyncPromptyStream
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from azure.monitor.opentelemetry import configure_azure_monitor
 
 from tracing import init_tracing
 from orchestrator import Task, create
@@ -20,11 +21,14 @@ tracer = init_tracing()
 app = FastAPI()
 
 code_space = os.getenv("CODESPACE_NAME")
+app_insights = os.getenv("APPINSIGHTS_CONNECTIONSTRING")
 
 if code_space: 
     origin_8000= f"https://{code_space}-8000.app.github.dev"
     origin_5173 = f"https://{code_space}-5173.app.github.dev"
-    origins = [origin_8000, origin_5173, os.getenv("API_SERVICE_ACA_URI"), os.getenv("WEB_SERVICE_ACA_URI")]
+    ingestion_endpoint = app_insights.split(';')[1].split('=')[1]
+    
+    origins = [origin_8000, origin_5173, os.getenv("API_SERVICE_ACA_URI"), os.getenv("WEB_SERVICE_ACA_URI"), ingestion_endpoint]
 else:
     origins = [
         o.strip()
@@ -58,4 +62,4 @@ async def create_article(task: Task):
 
 
 # TODO: fix open telemetry so it doesn't slow app so much
-# FastAPIInstrumentor.instrument_app(app)
+FastAPIInstrumentor.instrument_app(app)
