@@ -22,7 +22,7 @@ export const Task = () => {
     );
     setProducts("Can you use a selection of tents and sleeping bags as context?");
     setWriting(
-      "Write a fun and engaging article that includes the research and product information. The article should be between 800 and 1000 words."
+      "Write a fun and engaging article that includes the research and product information. The article should be between 800 and 1000 words. Make sure to cite sources in the article as you mention the research not at the end."
     );
   };
 

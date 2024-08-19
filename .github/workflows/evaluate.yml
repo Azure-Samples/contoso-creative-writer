@@ -66,13 +66,13 @@ jobs:
       - name: evaluate orchestrator
         working-directory: ./src/api
         run: |
-          python -m api.evaluate.evaluate
+          python -m evaluate.evaluate
       
       - name: Upload eval results as build artifact
         uses: actions/upload-artifact@v4
         with:
           name: eval_result
-          path: ./src/api/api/evaluate/eval_results.jsonl
+          path: ./src/api/evaluate/eval_results.jsonl
 
       - name: GitHub Summary Step
         if: ${{ success() }}
