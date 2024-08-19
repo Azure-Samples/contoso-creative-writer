@@ -7,7 +7,6 @@ promptflow
 promptflow-evals
 pandas
 azure-monitor-opentelemetry-exporter
-azure.monitor.opentelemetry
 opentelemetry-instrumentation-fastapi
 jsonlines
 python-dotenv==1.0.1

@@ -7,7 +7,6 @@ from prompty.core import PromptyStream, AsyncPromptyStream
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from azure.monitor.opentelemetry import configure_azure_monitor
 
 from tracing import init_tracing
 from orchestrator import Task, create
