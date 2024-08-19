@@ -81,5 +81,5 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           echo "📊 Promptflow Evaluation Results" >> $GITHUB_STEP_SUMMARY
-          cat api/evaluate/eval_results.md >> $GITHUB_STEP_SUMMARY
+          cat evaluate/eval_results.md >> $GITHUB_STEP_SUMMARY
         
