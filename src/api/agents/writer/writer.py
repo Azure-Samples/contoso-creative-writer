@@ -7,7 +7,7 @@ from prompty.tracer import trace
 
 
 @trace
-def write(researchContext, research, productContext, products, assignment):
+def write(researchContext, research, productContext, products, assignment, feedback="No Feedback"):
 
     result = prompty.execute(
         "writer.prompty",
@@ -18,9 +18,24 @@ def write(researchContext, research, productContext, products, assignment):
             "productContext": productContext,
             "products": products,
             "assignment": assignment,
+            "feedback": feedback,
         },
     )
     return result
+
+def process(writer):
+    # parse string this chracter --- , article and feedback
+    result = writer.split("---")
+    article = str(result[0]).strip()
+    if len(result) > 1:
+        feedback = str(result[1]).strip()
+    else:
+        feedback = "No Feedback"
+
+    return {
+        "article": article,
+        "feedback": feedback,
+    }
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 import { endpoint } from "../constants";
 export interface IMessage {
-  type: "message" | "researcher" | "marketing" | "writer" | "error" | "partial";
+  type: "message" | "researcher" | "marketing" | "writer" | "editor" | "error" | "partial";
   message: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;

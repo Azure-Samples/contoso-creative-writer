@@ -249,10 +249,10 @@ To test the sample:
 
 ## Tracing
 
-To activate the Promptflow tracing server:
+To activate the Prompty tracing server:
 
 ```
-export PROMPTFLOW_TRACING_SERVER=true
+export LOCAL_TRACING=true
 ```
 
 Then start the orchestrator:
@@ -261,22 +261,6 @@ Then start the orchestrator:
 cd ./src/api
 python -m orchestrator
 ```
-
-At the start of the log, you should see something like:
-
-```
-Starting prompt flow service...
-Start prompt flow service on port 23333, version: 1.11.0.
-You can stop the prompt flow service with the following command:'pf service stop'.
-Alternatively, if no requests are made within 1 hours, it will automatically stop.
-message Starting research agent task...
-You can view the trace detail from the following URL:
-http://127.0.0.1:23333/v1.0/ui/traces/?#collection=api&uiTraceId=0xab25bebd549820e80f39910aef414017
-```
-
-Clicking the URL above will open the Promptflow tracing UI.
-
-**Note**: If you're on Codespaces, the domain will not be localhost. Go to the `PORTS` tab and next to the `23333` port, click on the web icon, this will open the entry page of the Promptflow Tracing UI. Then click on the name of the trace, it will most likely be the first one in the list.
 
 ## Evaluating prompt flow results
 

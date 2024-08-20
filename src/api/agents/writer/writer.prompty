@@ -15,6 +15,7 @@ sample:
   research: ${file:research.json}
   productContext: Can you use a selection of tents and backpacks as context?
   products: ${file:products.json}
+  feedback: The article was great, but it could use more information about camping in the winter.
   assignment: Write a fun and engaging article that includes the research and product information. The article should be between 800 and 1000 words.
 ---
 system:
@@ -108,6 +109,10 @@ Write a fun and engaging article that includes the research and product informat
 be between 800 and 1000 words. The goal is to engage the reader and provide them with a fun and informative
 article.
 
+# Feedback
+Use this feedback to help you refine your response - if there is any feedback:
+
+{{feedback}}
 
 # Final Instructions
 Try to keep your writing short and to the point. The goal is to engage the reader and provide them with
@@ -115,4 +120,6 @@ a fun and informative article. The article should be between 800 and 1200 words.
 
 user:
 {{assignment}}
-Please format the article as markdown but do not include ```markdown``` in the document.
+Please format the article as markdown but do not include ```markdown``` in the document. If you recieved any feedback 
+return the article and the feedback you recieved seperated by this string '---'. Do not return the feedback if the feedback is No Feedback.
+This means you have not received feedback and you should not return that. 

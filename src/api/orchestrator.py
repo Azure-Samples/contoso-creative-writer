@@ -8,9 +8,10 @@ import json
 from agents.researcher import researcher
 from agents.product import product
 from agents.writer import writer
+from agents.editor import editor
 from evaluate.evaluators import evaluate_article_in_background
 
-types = Literal["message", "researcher", "marketing", "writer", "error", "partial"]
+types = Literal["message", "researcher", "marketing", "writer", "editor", "error", "partial", ]
 
 class Message(BaseModel):
     type: types
@@ -25,6 +26,11 @@ class Task(BaseModel):
     research: str
     products: str
     assignment: str
+
+DEFAULT_LOG_LEVEL = 25
+
+def log_output(*args):
+    logging.log(DEFAULT_LOG_LEVEL, *args)
 
 
 def start_message(type: types):
@@ -55,9 +61,11 @@ def send_writer(full_result):
 
 @trace
 def create(research_context, product_context, assignment_context, evaluate=False):
-    #try:
+    
+    feedback = "No Feedback"
+
     yield start_message("researcher")
-    research_result = researcher.research(research_context)
+    research_result = researcher.research(research_context, feedback)
     yield complete_message("researcher", research_result)
 
     yield start_message("marketing")
@@ -72,17 +80,60 @@ def create(research_context, product_context, assignment_context, evaluate=False
         product_context,
         product_result,
         assignment_context,
+        feedback,
     )
 
     full_result = " "
     for item in writer_result:
         full_result = full_result + f'{item}'
         yield complete_message("partial", {"text": item})
+
+    processed_writer_result = writer.process(full_result)
+
+    # Then send it to the editor, to decide if it's good or not
+    yield start_message("editor")
+    editor_response = editor.edit(processed_writer_result['article'], processed_writer_result["feedback"])
+
+    yield complete_message("editor", editor_response)
     yield complete_message("writer", {"complete": True})
 
+    retry_count = 0
+    while(str(editor_response["decision"]).lower().startswith("accept")):
+        yield ("message", f"Sending editor feedback ({retry_count + 1})...")
+
+        # Regenerate with feedback loop
+        researchFeedback = editor_response.get("researchFeedback", "No Feedback")
+        editorFeedback = editor_response.get("editorFeedback", "No Feedback")
+
+        research_result = researcher.research(research_context, researchFeedback)
+        yield complete_message("researcher", research_result)
+
+        yield start_message("writer")
+        yield complete_message("writer", {"start": True})
+        writer_result = writer.write(research_context, research_result, product_context, product_result, assignment_context, editorFeedback)
+
+        full_result = " "
+        for item in writer_result:
+            full_result = full_result + f'{item}'
+            yield complete_message("partial", {"text": item})
+
+        processed_writer_result = writer.process(full_result)
+
+        # Then send it to the editor, to decide if it's good or not
+        yield start_message("editor")
+        editor_response = editor.edit(processed_writer_result['article'], processed_writer_result["feedback"])
+
+        retry_count += 1
+        if retry_count >= 2:
+            break
+
+        yield complete_message("editor", editor_response)
+        yield complete_message("writer", {"complete": True})
+
+    #these need to be yielded for calling evals from evaluate.evaluate
     yield send_research(research_result)
     yield send_products(product_result)
-    yield send_writer(full_result)
+    yield send_writer(full_result) 
 
     if evaluate:
         evaluate_article_in_background(
@@ -102,9 +153,7 @@ def test_create_article():
     The article should be between 800 and 1000 words.
     Make sure to cite sources in the article as you mention the research not at the end.'''
 
-    
-    # TODO: implement logging instead of print
-    for result in create(research_context, product_context, assignment_context, evaluate=True):
+    for result in create(research_context, product_context, assignment_context):
         parsed_result = json.loads(result)
         if type(parsed_result) is dict:
             if parsed_result['type'] == 'researcher':
@@ -115,13 +164,17 @@ def test_create_article():
                 print("Products: ")
                 print(parsed_result['data'])
                 print(" ")
-                print("Creating the article... ")
+                print("Creating the article and getting editor feedback... ")
+                print(" ")
+            if parsed_result['type'] == 'editor':
+                print("Editor Feedback: ")
+                print(parsed_result['data'])
+                print(" ")
         if type(parsed_result) is list:
             if parsed_result[0] == "writer":
                 article = parsed_result[1]
-                print(f'Final Article: {article}')
+                print(f'Article: {article}')
                 print(" ")
-                print("Evaluating Results... ")
     
 if __name__ == "__main__":
     from tracing import init_tracing
