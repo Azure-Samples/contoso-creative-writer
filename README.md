@@ -249,10 +249,10 @@ To test the sample:
 
 ## Tracing
 
-To activate the Promptflow tracing server:
+To activate the Prompty tracing server:
 
 ```
-export PROMPTFLOW_TRACING_SERVER=true
+export LOCAL_TRACING=true
 ```
 
 Then start the orchestrator:
