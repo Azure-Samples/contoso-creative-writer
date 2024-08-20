@@ -6,6 +6,7 @@ import {
   BeakerIcon,
   AcademicCapIcon,
   UserIcon,
+  PencilIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -49,6 +50,8 @@ export const Debug = () => {
         return "bg-green-200 text-zinc-600";
       case "writer":
         return "bg-violet-200 text-zinc-600";
+      case "editor":
+        return "bg-amber-200 text-zinc-600";
       case "error":
         return "bg-red-200 text-zinc-600";
       default:
@@ -66,6 +69,8 @@ export const Debug = () => {
         return <AcademicCapIcon className="w-6 stroke-green-600" />;
       case "writer":
         return <UserIcon className="w-6 stroke-violet-600" />;
+        case "editor":
+          return <PencilIcon className="w-6 stroke-amber-600" />;
       case "error":
         return <BugAntIcon className="w-6 stroke-red-600" />;
       default:
@@ -81,7 +86,7 @@ export const Debug = () => {
       {/* chat section */}
       <div className="grow p-2 overscroll-contain overflow-auto" ref={chatDiv}>
         <div className="flex flex-col gap-4">
-          {messages.map((message, i) => (
+          {messages.filter((message) => message.type !== "partial").map((message, i) => (
             <div className="flex flex-row-reverse gap-1" key={`message_${i}`}>
               <div
                 className={clsx("grow p-2 rounded-md", getColor(message.type))}
