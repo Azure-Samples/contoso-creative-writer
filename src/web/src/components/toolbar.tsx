@@ -4,7 +4,6 @@ import {
   ArrowRightCircleIcon,
   ArrowLeftCircleIcon,
 } from "@heroicons/react/24/outline";
-import Task from "./task";
 import Tool from "./tool";
 import Debug from "./debug";
 import clsx from "clsx";
@@ -52,9 +51,7 @@ export const Toolbar = () => {
             <ArrowRightCircleIcon className="w-6" />
           </div>
         )}
-      <Tool icon={<DocumentTextIcon className="w-6" />} panelClassName="">
-        <Task />
-      </Tool>
+
       <Tool
         icon={<BugAntIcon className="w-6" />}
         panelClassName=" h-[calc(100vh-7rem)]  w-[450px] overflow-auto"
