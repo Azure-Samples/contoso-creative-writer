@@ -4,6 +4,7 @@ from typing import Dict, List
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from prompty.tracer import trace
 import prompty
+import prompty.azure
 from openai import AzureOpenAI
 from dotenv import load_dotenv
 from pathlib import Path
@@ -86,7 +87,7 @@ def retrieve_products(items: List[Dict[str, any]], index_name: str) -> str:
 @trace
 def find_products(context: str) -> Dict[str, any]:
     # Get product queries
-    queries = prompty.execute("product.prompty", inputs={context: context})
+    queries = prompty.execute("product.prompty", inputs={"context":context})
     qs = json.loads(queries)
     # Generate embeddings
     items = generate_embeddings(qs)

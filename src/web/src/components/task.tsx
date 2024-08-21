@@ -149,7 +149,7 @@ export const Task = () => {
         </button>
         <button
           type="button"
-          className="flex flex-row gap-3 items-center rounded-md bg-blue-100 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          className="flex flex-row gap-3 items-center rounded-md bg-indigo-100 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           onClick={startWork}
         >
           <PaperAirplaneIcon className="w-6" />
