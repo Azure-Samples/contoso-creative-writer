@@ -55,7 +55,7 @@ This sample demonstrates how to create and work with AI agents driven by [Azure 
 This project template provides the following features:
 
 * [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/) to drive the various agents
-* [Prompty and Prompt Flow](https://microsoft.github.io/promptflow/how-to-guides/develop-a-prompty/index.html) to create, manage and evaluate the prompt into our code.
+* [Prompty](https://prompty.ai/) to create, manage and evaluate the prompt into our code.
 * [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to research the topic provided
 * [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) for performing semantic similarity search
   
@@ -315,7 +315,7 @@ This template has either [Managed Identity](https://learn.microsoft.com/entra/id
 
 ## Resources
 
-* [Promptflow/Prompty Documentation](https://microsoft.github.io/promptflow/reference/python-library-reference/promptflow-core/promptflow.core.html?highlight=prompty#promptflow.core.Prompty)
+* [Prompty Documentation](https://prompty.ai/)
 * [Develop Python apps that use Azure AI services](https://learn.microsoft.com/azure/developer/python/azure-ai-for-python-developers)
 
 ## Code of Conduct
