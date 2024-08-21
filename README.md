@@ -13,22 +13,20 @@ products:
 - azure-bing-web
 - azure-cognitive-search
 urlFragment: agent-openai-python-prompty
-name: Creative Writing Assistant - Working with Agents using Promptflow (Python Implementation)
+name: Creative Writing Assistant - Working with Agents using Prompty (Python Implementation)
 description: Using Azure OpenAI agent with Python, integrating Bing Search API and Azure AI Search, to create articles based on user topics and instruction.
 ---
 <!-- YAML front-matter schema: https://review.learn.microsoft.com/en-us/help/contribute/samples/process/onboarding?branch=main#supported-metadata-fields-for-readmemd -->
 
-# Creative Writing Assistant: Working with Agents using Promptflow (Python Implementation) 
+# Creative Writing Assistant: Working with Agents using Prompty (Python Implementation) 
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/agent-openai-python-prompty) [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/azure-samples/agent-openai-python-prompty) 
-
-This sample demonstrates how to create and work with AI agents driven by [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/). It includes a Flask app that takes a topic and instruction from a user and then calls a research agent that uses the [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to research the topic, a product agent that uses [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) to do a semantic similarity search for related products from a vector store, a writer agent to combine the research and product information into a helpful article, and an editor agent to refine the article that's finally presented to the user.
 
 ## Table of Contents
 
 - [Features](#features)
 - [Azure account requirements](#azure-account-requirements)
-- [Opening the project](#opening-the-project)
+- [Getting Started](#getting-started)
     - [GitHub Codespaces](#github-codespaces)
     - [VS Code Dev Containers](#vs-code-dev-containers)
     - [Local environment](#local-environment)
@@ -39,19 +37,29 @@ This sample demonstrates how to create and work with AI agents driven by [Azure 
     - [Evaluating prompt flow results](#evaluating-prompt-flow-results)
 - [Costs](#costs)
 - [Security Guidelines](#security-guidelines)
+- [Guidance](#guidance)
 - [Resources](#resources)
 - [Code of Conduct](#code-of-conduct)
+
+
+![App preview](images/app_preview.png)
+
+![Agent workflow preview](images/agent.png)
+
+Contoso Creative Writer is an app that will help you write well researched, product specific articles. Enter the required information and then click "Start Work". To watch the steps in the agent workflow select the debug button in the bottom right corner of the screen. The result will begin writing once the agents complete the tasks to write the article.
+
+This sample demonstrates how to create and work with AI agents driven by [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/). It includes a FastAPI app that takes a topic and instruction from a user and then calls a research agent that uses the [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to research the topic, a product agent that uses [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) to do a semantic similarity search for related products from a vector store, a writer agent to combine the research and product information into a helpful article, and an editor agent to refine the article that's finally presented to the user.
 
 ## Features
 
 This project template provides the following features:
 
 * [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/) to drive the various agents
-* [Prompty and Prompt Flow](https://microsoft.github.io/promptflow/how-to-guides/develop-a-prompty/index.html) to create, manage and evaluate the prompt into our code.
+* [Prompty](https://prompty.ai/) to create, manage and evaluate the prompt into our code.
 * [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to research the topic provided
 * [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search) for performing semantic similarity search
   
-![Architecture Digram](images/Creative_writing.png)
+![Architecture Digram](images/Creative_writing_aca.png)
 
 ## Azure account requirements
 
@@ -59,12 +67,12 @@ This project template provides the following features:
 
 * **Azure account**. If you're new to Azure, [get an Azure account for free](https://azure.microsoft.com/free/cognitive-search/) and you'll get some free Azure credits to get started. See [guide to deploying with the free trial](docs/deploy_lowcost.md).
 * **Azure subscription with access enabled for the Azure OpenAI Service**. You can request access with [this form](https://aka.ms/oaiapply). If your access request to Azure OpenAI Service doesn't match the [acceptance criteria](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access?context=%2Fazure%2Fcognitive-services%2Fopenai%2Fcontext%2Fcontext), you can use [OpenAI public API](https://platform.openai.com/docs/api-reference/introduction) instead.
-    - Ability to deploy `gpt-35-turbo-0613`, `gpt-4-1106-Preview`, and `gpt-4-0613`.
-    - We recommend using France Central, as this region has access to all models and services required. 
+    - Ability to deploy `gpt-35-turbo-0613`,`gpt-4-1106-Preview` and `gpt-4o-2024-05-13`.
+    - We recommend using EAST US 2, as this region has access to all models and services required. 
 * **Azure subscription with access enabled for [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)**
 * **Azure subscription with access enabled for [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search)**
 
-## Opening the project
+## Getting Started
 
 You have a few options for setting up this project.
 The easiest way to get started is GitHub Codespaces, since it will setup all the tools for you, but you can also [set it up locally](#local-environment).
@@ -76,10 +84,18 @@ The easiest way to get started is GitHub Codespaces, since it will setup all the
     [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/agent-openai-python-prompty)
 
 2. Open a terminal window.
-3. Sign in to your Azure account:
+3. Sign in to your Azure account. You'll need to login to both the Azure Developer CLI and Azure CLI:
+
+    i. First with Azure Developer CLI 
 
     ```shell
     azd auth login
+    ```
+
+    ii. Then sign in with Azure CLI 
+    
+    ```shell
+    az login --use-device-code
     ```
 
 4. Provision the resources and deploy the code:
@@ -88,16 +104,11 @@ The easiest way to get started is GitHub Codespaces, since it will setup all the
     azd up
     ```
 
-    This project uses `gpt-35-turbo-0613`, `gpt-4-1106-Preview` and `gpt-4-0613`which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. For this project we recommend France Central.
+    You will be prompted to select some details about your deployed resources, including location. As a reminder we recommend EAST US 2 as the region for this project.
+    Once the deployment is complete you should be able to scroll up in your terminal and see the url that the app has been deployed to. It should look similar to this 
+    `Ingress Updated. Access your app at https://env-name.codespacesname.eastus2.azurecontainerapps.io/`. Navigate to the link to try out the app straight away! 
 
-5. Install the necessary Python packages:
-
-    ```
-    src/api
-    pip install -r requirements.txt
-    ```
-
-Once the above steps are completed you can jump straight to [testing the sample](#testing-the-sample). 
+5. Once the above steps are completed you can [test the sample](#testing-the-sample). 
 
 ### VS Code Dev Containers
 
@@ -149,10 +160,18 @@ A related option is VS Code Dev Containers, which will open the project in your 
 
 Once you've opened the project in [Codespaces](#github-codespaces), [Dev Containers](#vs-code-dev-containers), or [locally](#local-environment), you can deploy it to Azure.
 
-1. Sign in to your Azure account:
+1. Sign in to your Azure account. You'll need to login to both the Azure Developer CLI and Azure CLI:
+
+    i. First with Azure Developer CLI 
 
     ```shell
     azd auth login
+    ```
+
+    ii. Then sign in with Azure CLI 
+    
+    ```shell
+    az login --use-device-code
     ```
 
     If you have any issues with that command, you may also want to try `azd auth login --use-device-code`.
@@ -165,7 +184,7 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
     azd up
     ```
 
-    This project uses `gpt-35-turbo-0613` and `gpt-4-1106-Preview` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. We recommend using East US 2 for this project.
+    This project uses `gpt-35-turbo-0613`,`gpt-4-1106-Preview` and `gpt-4o-2024-05-13` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. We recommend using East US 2 for this project.
 
    After running azd up, you may be asked the following question during `Github Setup`:
 
@@ -183,27 +202,32 @@ This sample repository contains an agents folder that includes subfolders for ea
 
 To test the sample: 
 
-1. Run the example web app locally using a Flask server. 
+1. Run the example web app locally using a FastAPI server. 
 
     First navigate to the src/api folder 
     ```
     cd ./src/api
     ```
-    Run the Flask webserver
+    Run the FastAPI webserver
     ```
-    flask --debug --app api.app:app run --port 8080
+    fastapi dev main.py
     ```
+    
+    **Important Note**: If you are running in Codespaces, you will need to change the visibility of the API's 8000 and 5173 ports to `public` in your VS Code terminal's `PORTS` tab. The ports tab should look like this:
+   
+   <img src="./images/ports.png" alt="Screenshot showing setting port-visibility" width="800px" />
 
-    If you open the server link in a browser, you will see a URL not found error, this is because we haven't created a home url route in flask. We have instead created a `/get_article` route which is used to pass context and instructions directly to the get_article.py file which runs the agent workflow.
 
-   We have created a web interface which we will run next, but you can test the API is working as expected by running this in the browser:
+    If you open the server link in a browser, you will see a URL not found error, this is because we haven't created a home url route in FastAPI. We have instead created a `/get_article` route which is used to pass context and instructions directly to the get_article.py file which runs the agent workflow.
+
+   (Optional) We have created a web interface which we will run next, but you can test the API is working as expected by running this in the browser:
     ```
     http://127.0.0.1:8080/get_article?context=Write an article about camping in alaska&instructions=find specifics about what type of gear they would need and explain in detail
     ```
 
-2. Once the flask server is running you can now run the web app. To do this open a new terminal window and navigate to the web folder using this command:
+3. Once the FastAPI server is running you can now run the web app. To do this open a new terminal window and navigate to the web folder using this command:
     ```
-    cd src/web
+    cd ./src/web
     ```
     First install node packages:
     ```
@@ -218,29 +242,32 @@ To test the sample:
     This will launch the app, where you can use example context and instructions to get started. 
     On the 'Creative Team' page you can examine the output of each agent by clicking on it. The app should look like this:
 
-   The getting started tab to send your instructions and context to the prompt:
-   
-    ![getting started](images/get_started_page.png)
-
-    The creative team tab that lets you follow and understand the agent's workflow:
-   
-    ![creative team](images/creative_team_agents.png)
-
-    The document tab that displays the article that was created:
-   
-    ![generated article](images/winter_article.png)
-
     Change the instructions and context to create an article of your choice. 
 
-3. For debugging purposes you may want to test in Python using the orchestrator Logic
+4. For debugging purposes you may want to test in Python using the orchestrator Logic
 
     To run the sample using just the orchestrator logic use the following command:
 
     ```
     cd ./src/api
-    python -m api.agents.orchestrator
+    python -m orchestrator
 
     ```
+
+## Tracing
+
+To activate the Prompty tracing server:
+
+```
+export LOCAL_TRACING=true
+```
+
+Then start the orchestrator:
+
+```
+cd ./src/api
+python -m orchestrator
+```
 
 ## Evaluating prompt flow results
 
@@ -252,7 +279,8 @@ You can also view the evaluation metrics by running the following command from t
 
 Run evaluation:
 ```
-python -m api.evaluate.evaluate
+cd ./src/api
+python -m evaluate.evaluate
 ```
 
 ## Setting up CI/CD with GitHub actions
@@ -264,49 +292,30 @@ To set up CI/CD with GitHub actions on your repository, run the following comman
 azd pipeline config
 ```
 
-**Workaround to enable CI/CD:** in the output, look for the "Creating service principal" line and **Copy** the name of the service principal (looks like az-dev-<letters and numbers>), an example is  shown below:
-```
-...
-(✓) Done: Creating service principal az-dev-05-19-2024-02-02-02 (62c51d5e-17f7-4b06-bfab-fza2a4e1e6d8)
-...
-```
+## Guidance
 
-This will create a service principal in your Azure subscription for your GitHub actions to use when running azd and evaluations.
+### Region Availability
 
-You will need to add a role assignment of this service principal on your tfstate storage account. Open the Azure portal, and take the following steps:
-  1. In the search box at the top of the screen, search for _ENVIRONMENT_NAME-tfstate_
-  1. Select the resource group that appears
-  1. Click to open the storage account in that resource group
-  1. Select the **Access control (IAM)** on the left nav
-  1. Then click **Add** > **Role Assignment**
-  1. Search for the **Storage Blob Data Contributor** role, and select **Next**
-  1. Click **+ Select Members**, and add the **az-dev-** role that you copied earlier
-  1. Click **Review + Assign** twice
+This template uses `gpt-35-turbo-0613`,`gpt-4-1106-Preview` and `gpt-4o-2024-05-13` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly
+  * We recommend using EAST US 2
 
-Currently, when your GitHub action runs, **it will remove your access** to call the OpenAI and AI Search resources from your development environment with your user identity. It essentially takes over this azd environment for CI/CD purposes, and if you want to continue working on this repo you should create a new development environment.
+### Costs
 
-If you do want to re-enable access from your development environment, re-run the provision command:
+You can estimate the cost of this project's architecture with [Azure's pricing calculator](https://azure.microsoft.com/pricing/calculator/)
 
-```
-azd provision
-```
+* **Azure subscription with access enabled for [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)**
+* **Azure subscription with access enabled for [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search)**
 
-## Costs
+### Security
 
-Pricing may vary per region and usage. Exact costs cannot be estimated.
-You may try the [Azure pricing calculator](https://azure.microsoft.com/pricing/calculator/) for the resources below:
+> [!NOTE]
+> When implementing this template please specify whether the template uses Managed Identity or Key Vault
 
-* Azure Container Apps: Pay-as-you-go tier. Costs are based on vCPU and memory used. [Pricing](https://azure.microsoft.com/pricing/details/container-apps/)
-* Azure OpenAI: Standard tier, GPT, and Ada models. Pricing per 1K tokens used, and at least 1K tokens are used per question. [Pricing](https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/)
-* Azure Monitor: Pay-as-you-go tier. Costs based on data ingested. [Pricing](https://azure.microsoft.com/pricing/details/monitor/)
-
-## Security Guidelines
-
-This template uses [Managed Identity](https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview) built in to eliminate the need for developers to manage these credentials. Applications can use managed identities to obtain Microsoft Entra tokens without having to manage any credentials. We also use Key Vault, specifically for Bing Search, since Managed Identity is currently not implemented for it. Additionally, we have added a [GitHub Action tool](https://github.com/microsoft/security-devops-action) that scans the infrastructure-as-code files and generates a report containing any detected issues. To ensure best practices in your repo we recommend anyone creating solutions based on our templates ensure that the [Github secret scanning](https://docs.github.com/code-security/secret-scanning/about-secret-scanning) setting is enabled in your repos.
+This template has either [Managed Identity](https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview) or Key Vault built in to eliminate the need for developers to manage these credentials. Applications can use managed identities to obtain Microsoft Entra tokens without having to manage any credentials. Additionally, we have added a [GitHub Action tool](https://github.com/microsoft/security-devops-action) that scans the infrastructure-as-code files and generates a report containing any detected issues. To ensure best practices in your repo we recommend anyone creating solutions based on our templates ensure that the [Github secret scanning](https://docs.github.com/code-security/secret-scanning/about-secret-scanning) setting is enabled in your repos.
 
 ## Resources
 
-* [Promptflow/Prompty Documentation](https://microsoft.github.io/promptflow/reference/python-library-reference/promptflow-core/promptflow.core.html?highlight=prompty#promptflow.core.Prompty)
+* [Prompty Documentation](https://prompty.ai/)
 * [Develop Python apps that use Azure AI services](https://learn.microsoft.com/azure/developer/python/azure-ai-for-python-developers)
 
 ## Code of Conduct

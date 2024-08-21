@@ -1,11 +1,11 @@
 name: Validate AZD template
 on:
   push:
-    branches: [ main ]
+    branches: [ aca-openai-agent ]
     paths:
       - "infra/**"
   pull_request:
-    branches: [ main ]
+    branches: [ aca-openai-agent ]
     paths:
       - "infra/**"
 

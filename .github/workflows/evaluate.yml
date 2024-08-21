@@ -6,7 +6,7 @@ on:
     # Run when commits are pushed to mainline branch (main or master)
     # Set this to the mainline branch you are using
     branches:
-      - main
+      - aca-openai-agent
 
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
@@ -24,17 +24,21 @@ jobs:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
       AZURE_OPENAI_API_VERSION: ${{ vars.AZURE_OPENAI_API_VERSION }}
-      AZURE_OPENAI_GPT4_EVAL_DEPLOYMENT: ${{ vars.AZURE_OPENAI_GPT4_EVAL_DEPLOYMENT }}
+      AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME }}
       AZURE_OPENAI_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_DEPLOYMENT_NAME }}
       AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME }}
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
       AZURE_SEARCH_ENDPOINT: ${{ vars.AZURE_SEARCH_ENDPOINT }}
-      AZURE_SEARCH_INDEX_NAME: ${{ vars.AZURE_SEARCH_INDEX_NAME }}      
+      AZURE_OPENAI_NAME: ${{ vars.AZURE_OPENAI_NAME }}
       BING_SEARCH_ENDPOINT: ${{ vars.BING_SEARCH_ENDPOINT }}
       BING_SEARCH_KEY: ${{ secrets.BING_SEARCH_KEY }}
 
     steps:
       - name: checkout repo content
         uses: actions/checkout@v4 # checkout the repository content
+
+      - name: Install azd
+        uses: Azure/setup-azd@v1.0.0
 
       - name: setup python
         uses: actions/setup-python@v5
@@ -49,13 +53,10 @@ jobs:
       - name: Azure login
         uses: azure/login@v2
         with:
-          creds: ${{ env.AZURE_CREDENTIALS }}
-          # WAS:
-          #client-id: ${{ env.AZURE_CLIENT_ID }}
-          #tenant-id: ${{ env.AZURE_TENANT_ID }}
-          #subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
-
-
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+  
       - name: Set az account
         uses: azure/CLI@v2
         with:
@@ -65,13 +66,13 @@ jobs:
       - name: evaluate orchestrator
         working-directory: ./src/api
         run: |
-          python -m api.evaluate.evaluate
+          python -m evaluate.evaluate
       
       - name: Upload eval results as build artifact
         uses: actions/upload-artifact@v4
         with:
           name: eval_result
-          path: ./src/api/api/evaluate/eval_results.jsonl
+          path: ./src/api/evaluate/eval_results.jsonl
 
       - name: GitHub Summary Step
         if: ${{ success() }}
@@ -80,5 +81,5 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           echo "📊 Promptflow Evaluation Results" >> $GITHUB_STEP_SUMMARY
-          cat api/evaluate/eval_results.md >> $GITHUB_STEP_SUMMARY
+          cat evaluate/eval_results.md >> $GITHUB_STEP_SUMMARY
         
