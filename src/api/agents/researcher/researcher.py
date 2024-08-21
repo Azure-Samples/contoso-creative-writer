@@ -87,7 +87,7 @@ def execute(instructions: str, feedback: str = "No feedback"):
     }
 
     fns: List[ToolCall] = prompty.execute(
-        "researcher.prompty", inputs={instructions: instructions, feedback: feedback}
+        "researcher.prompty", inputs={"instructions": instructions, "feedback": feedback}
     )
 
     research = []

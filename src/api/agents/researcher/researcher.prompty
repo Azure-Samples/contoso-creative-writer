@@ -10,6 +10,7 @@ model:
   configuration: 
     type: azure_openai
     azure_deployment: gpt-35-turbo
+    api_version: 2023-07-01-preview
   parameters:
     tools: ${file:functions.json}
 sample:
