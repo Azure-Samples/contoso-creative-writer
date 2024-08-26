@@ -1,5 +1,5 @@
 # Build stage
-FROM node:20-alpine AS ui
+FROM node:20.11.1-alpine3.19 AS ui
 WORKDIR /app
 
 # Copy package files and install dependencies
