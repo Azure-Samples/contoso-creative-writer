@@ -170,7 +170,7 @@ module containerApps 'core/host/container-apps.bicep' = {
     name: 'app'
     location: location
     tags: tags
-    containerAppsEnvironmentName: '${take(replace(prefix, '--', '-'), 64-7)}-ca-env'
+    containerAppsEnvironmentName: '${take(replace(prefix, '--', '-'), 60-7)}-ca-env'
     containerRegistryName: ai.outputs.containerRegistryName
     logAnalyticsWorkspaceName: ai.outputs.logAnalyticsWorkspaceName
   }
