@@ -1,0 +1,31 @@
+# Build stage
+FROM node:18-alpine AS ui
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY web/package*.json ./
+RUN npm ci
+
+# Copy the rest of your application's source code
+COPY ./web .
+
+# Build the project
+RUN npm run build
+
+# Use an official lightweight Python image.
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY api/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+
+ENV UI_FOLDER=../static
+ENV API_PREFIX=/api
+
+# Copy UI static files
+COPY --from=ui /app/dist ./static/
+
+EXPOSE 80
+
+CMD ["fastapi", "run", "main.py", "--port", "80"]

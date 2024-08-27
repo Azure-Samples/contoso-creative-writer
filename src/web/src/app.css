@@ -1,31 +1,27 @@
-#root{
-  height: 100vh;
-  width: 100vw;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+p {
+  text-align: left;
 }
 
-.left {
-  width: 400px;
-  padding: 10px;
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
 }
 
-.right {
-  width: calc(100% - 400px);
-  padding: 10px;
+main {
+  background-color: #f9fafb;
 }
 
-.section {
-  border: solid 1px;
-  border-color: var(--borderColor-default, var(--color-border-default, #d0d7de));
-  border-radius: 15px;
-  padding: 5px;
+header, footer {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-.content {
-  border-left: solid 1px var(--borderColor-default, var(--color-border-default, #d0d7de));
-  border-right: solid 1px var(--borderColor-default, var(--color-border-default, #d0d7de));
-  border-bottom: solid 1px var(--borderColor-default, var(--color-border-default, #d0d7de));
-  height: calc(100vh - 150px);
-  border-radius: 0 0 15px 15px;
-  padding: 10px;
-  overflow-y: auto;
+section {
+  max-width: 800px;
+  margin: 0 auto;
 }
