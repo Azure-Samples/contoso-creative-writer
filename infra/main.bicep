@@ -5,6 +5,15 @@ targetScope = 'subscription'
 @description('Name which is used to generate a short unique hash for each resource')
 param environmentName string
 
+@allowed([
+  'eastus'
+  'eastus2'
+  'northcentralus'
+  'southcentralus'
+  'swedencentral'
+  'westus'
+  'westus3'
+])
 @minLength(1)
 @description('Primary location for all resources')
 @metadata({
