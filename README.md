@@ -12,7 +12,7 @@ products:
 - azure-openai
 - azure-bing-web
 - azure-cognitive-search
-urlFragment: agent-openai-python-prompty
+urlFragment: contoso-creative-writer
 name: Creative Writing Assistant - Working with Agents using Prompty (Python Implementation)
 description: Using Azure OpenAI agent with Python, integrating Bing Search API and Azure AI Search, to create articles based on user topics and instruction.
 ---
