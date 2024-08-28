@@ -18,7 +18,7 @@ We will focus on 4 learning outcomes:
 3. Building and running Contoso Creative 
 4. Setting up automated evaluations with Github Actions 
 
-## Part 1: Getting Started
+## Part 1: Setting Up
 
 If you are participating in the insructor led AI Tour session you should have already completed the instructions in the Skillable manual. Once these steps are completed you are ready to get started understaning and building Contoso Creative Writer!
 
