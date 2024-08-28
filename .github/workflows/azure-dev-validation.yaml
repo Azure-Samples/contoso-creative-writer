@@ -5,7 +5,7 @@ on:
     paths:
       - "infra/**"
   pull_request:
-    branches: [ aca-openai-agent ]
+    branches: [ main ]
     paths:
       - "infra/**"
   workflow_dispatch:
