@@ -6,7 +6,7 @@ on:
     # Run when commits are pushed to mainline branch (main or master)
     # Set this to the mainline branch you are using
     branches:
-      - aca-openai-agent
+      - main
 
 # GitHub Actions workflow to deploy to Azure using azd
 # To configure required secrets for connecting to Azure, simply run `azd pipeline config`
@@ -58,20 +58,6 @@ jobs:
             --federated-credential-provider "github" `
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
-
-      # - name: Log in with Azure (Client Credentials)
-      #   if: ${{ env.AZURE_CREDENTIALS != '' }}
-      #   run: |
-      #     $info = $Env:AZURE_CREDENTIALS | ConvertFrom-Json -AsHashtable;
-      #     Write-Host "::add-mask::$($info.clientSecret)"
-
-      #     azd auth login `
-      #       --client-id "$($info.clientId)" `
-      #       --client-secret "$($info.clientSecret)" `
-      #       --tenant-id "$($info.tenantId)"
-      #   shell: pwsh
-      #   env:
-      #     AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Provision Infrastructure
         run: azd provision --no-prompt
