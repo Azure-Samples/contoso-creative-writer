@@ -148,20 +148,6 @@ module ai 'core/host/ai-environment.bicep' = {
   }
 }
 
-// module machineLearningEndpoint './core/host/ml-online-endpoint.bicep' = {
-//   name: 'endpoint'
-//   scope: resourceGroup
-//   params: {
-//     name: !empty(endpointName) ? endpointName : 'mloe-${resourceToken}'
-//     location: location
-//     tags: tags
-//     serviceName: endpointServiceName
-//     aiHubName: ai.outputs.hubName
-//     aiProjectName: ai.outputs.projectName
-//     keyVaultName: ai.outputs.keyVaultName
-//   }
-// }
-
 module bing 'core/bing/bing-search.bicep' = {
   name: 'bing'
   scope: resourceGroup
