@@ -24,5 +24,5 @@ COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY ./nginx/run_nginx.sh /bin/run_nginx.sh
 
 EXPOSE 80
-
+RUN ["chmod", "+x", "/bin/run_nginx.sh"]
 CMD ["/bin/run_nginx.sh"]
