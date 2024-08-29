@@ -55,9 +55,8 @@ export const startWritingTask = (
     }),
   };
 
-  const url = `${
-    endpoint.endsWith("/") ? endpoint : endpoint + "/"
-  }api/article`;
+  const url = endpoint;
+  console.log('url', url);
 
   const callApi = async () => {
     try {
