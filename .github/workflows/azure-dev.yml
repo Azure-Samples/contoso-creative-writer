@@ -34,7 +34,13 @@ jobs:
       AZURE_OPENAI_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_DEPLOYMENT_NAME }}
       AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME }}
       AZURE_OPENAI_NAME: ${{ vars.AZURE_OPENAI_NAME }}
-      AZURE_SEARCH_ENDPOINT: ${{ vars.AZURE_SEARCH_ENDPOINT }}    
+      AZURE_CONTAINER_REGISTRY_NAME: ${{ vars.AZURE_CONTAINER_REGISTRY_NAME }}    
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }} 
+      API_SERVICE_ACA_NAME: ${{ vars.API_SERVICE_ACA_NAME }} 
+      WEB_SERVICE_ACA_NAME: ${{ vars.WEB_SERVICE_ACA_NAME }} 
+      AZURE_SEARCH_NAME: ${{ vars.AZURE_SEARCH_NAME }} 
+      WEB_SERVICE_ACA_URI: ${{ vars.WEB_SERVICE_ACA_URI }} 
+      AZURE_SEARCH_ENDPOINT: ${{ vars.AZURE_SEARCH_ENDPOINT }} 
       BING_SEARCH_ENDPOINT: ${{ vars.BING_SEARCH_ENDPOINT }}
       BING_SEARCH_KEY: ${{ secrets.BING_SEARCH_KEY }}
 
@@ -68,3 +74,15 @@ jobs:
 
       - name: Deploy Application
         run: azd deploy --no-prompt
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Post-provision
+        shell: sh
+        working-directory: ./
+        run: infra/hooks/postprovision.sh
