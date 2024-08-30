@@ -59,13 +59,6 @@ jobs:
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
 
-      - name: Azure CLI Login
-        uses: azure/login@v2
-        with:
-          client-id: "$Env:AZURE_CLIENT_ID" 
-          tenant-id: "$Env:AZURE_TENANT_ID"
-          subscription-id: "$Env:AZURE_SUBSCRIPTION_ID"
-
       - name: Provision Infrastructure
         run: azd provision --no-prompt
         env:
