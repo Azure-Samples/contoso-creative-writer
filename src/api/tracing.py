@@ -14,14 +14,17 @@ from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
 
 _tracer = "prompty"
 
-
 @contextlib.contextmanager
-def trace_span(name: str):
-    tracer = oteltrace.get_tracer(_tracer)
-    with tracer.start_as_current_span(name) as span:
-        yield lambda key, value: span.set_attribute(
-            key, json.dumps(value).replace("\n", "") 
-        )
+def trace_span(name: str):    
+    tracer = oteltrace.get_tracer(_tracer)    
+    with tracer.start_as_current_span(name) as span:        
+        def verbose_trace(key, value):            
+            if isinstance(value, dict):                
+                for k, v in value.items():                  
+                    verbose_trace(f"{key}.{k}", v)            
+            else:                
+                span.set_attribute(f"{key}", value)        
+        yield verbose_trace
 
 
 def init_tracing(local_tracing: bool = False):
