@@ -63,7 +63,6 @@ jobs:
         if: ${{ env.AZURE_CREDENTIALS != '' }}
         run: |
           $info = $Env:AZURE_CREDENTIALS | ConvertFrom-Json -AsHashtable;
-          Write-Host "::add-mask::$($info.clientSecret)"
 
           az login --service-principal -u "$($info.clientId)" -p "$($info.clientSecret)" --tenant "$($info.tenantId)"
         shell: pwsh
