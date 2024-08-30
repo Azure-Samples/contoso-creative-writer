@@ -157,24 +157,15 @@ def test_create_article():
         parsed_result = json.loads(result)
         if type(parsed_result) is dict:
             if parsed_result['type'] == 'researcher':
-                print(f"Research: ")
                 print(parsed_result['data'])
-                print(" ")
             if parsed_result['type'] == 'marketing':
-                print("Products: ")
                 print(parsed_result['data'])
-                print(" ")
-                print("Creating the article and getting editor feedback... ")
-                print(" ")
             if parsed_result['type'] == 'editor':
-                print("Editor Feedback: ")
                 print(parsed_result['data'])
-                print(" ")
         if type(parsed_result) is list:
             if parsed_result[0] == "writer":
                 article = parsed_result[1]
                 print(f'Article: {article}')
-                print(" ")
     
 if __name__ == "__main__":
     from tracing import init_tracing
