@@ -50,7 +50,7 @@ jobs:
         with:
           node-version: 18
 
-      - name: Log in with Azure (Federated Credentials)
+      - name: Log in with Azure Developer CLI (Federated Credentials)
         if: ${{ env.AZURE_CLIENT_ID != '' }}
         run: |
           azd auth login `
@@ -58,6 +58,21 @@ jobs:
             --federated-credential-provider "github" `
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
+
+      - name: Log in with Azure CLI (Client Credentials)
+        if: ${{ env.AZURE_CREDENTIALS != '' }}
+        run: |
+          $info = $Env:AZURE_CREDENTIALS | ConvertFrom-Json -AsHashtable;
+          Write-Host "::add-mask::$($info.clientSecret)"
+
+          az login `
+            --service-principal`
+            --username "$($info.clientId)" `
+            --password "$($info.clientSecret)" `
+            --tenant "$($info.tenantId)"
+        shell: pwsh
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Provision Infrastructure
         run: azd provision --no-prompt
