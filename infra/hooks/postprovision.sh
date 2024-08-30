@@ -66,4 +66,4 @@ jupyter nbconvert --execute --to python --ExecutePreprocessor.timeout=-1 data/cr
 
 echo "--- ✅ | 3. Post-provisioning - populated data ---"
 
-echo "--- 🎉 | 4. Access your ACA deployed web app here: $WEB_SERVICE_ACA_URI
+echo "--- 🎉 | 4. Access your ACA deployed web app here: ${WEB_SERVICE_ACA_URI}"
