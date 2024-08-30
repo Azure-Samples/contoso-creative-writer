@@ -65,3 +65,5 @@ echo "Populating data ...."
 jupyter nbconvert --execute --to python --ExecutePreprocessor.timeout=-1 data/create-azure-search.ipynb > /dev/null
 
 echo "--- ✅ | 3. Post-provisioning - populated data ---"
+
+echo "--- 🎉 | 4. Access your ACA deployed web app here: $WEB_SERVICE_ACA_URI
