@@ -1,0 +1,23 @@
+dependencies
+| where name == "run_evaluators"
+| project timestamp, results = parse_json(tostring(customDimensions["output"]))
+| evaluate bag_unpack(results)
+| summarize avg_groundedness=avg(gpt_groundedness), avg_coherence=avg(gpt_coherence), avg_fluency=avg(gpt_fluency), avg_relevance=avg(gpt_relevance) by bin(timestamp, 2h)
+| render timechart  
+ 
+ 
+dependencies
+| where name == "run_evaluators"
+| project timestamp, results = parse_json(tostring(customDimensions["output"]))
+| evaluate bag_unpack(results)
+| summarize avg_groundedness=avg(gpt_groundedness), avg_coherence=avg(gpt_coherence), avg_fluency=avg(gpt_fluency), avg_relevance=avg(gpt_relevance)
+| render barchart   
+ 
+ 
+dependencies
+| extend
+    total_tokens = toint(customDimensions["inputs.data.usage.total_tokens"]),
+    prompt_tokens = toint(customDimensions["inputs.data.usage.prompt_tokens"]),
+    completion_tokens = toint(customDimensions["inputs.data.usage.completion_tokens"])
+| summarize sum(total_tokens), sum(prompt_tokens), sum(completion_tokens) by bin(timestamp, 5m) 
+| render timechart

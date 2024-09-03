@@ -60,7 +60,7 @@ def send_writer(full_result):
     return json.dumps(("writer", full_result))
 
 @trace
-def create(research_context, product_context, assignment_context, evaluate=False):
+def create(research_context, product_context, assignment_context, evaluate=True):
     
     feedback = "No Feedback"
 
@@ -136,6 +136,7 @@ def create(research_context, product_context, assignment_context, evaluate=False
     yield send_writer(full_result) 
 
     if evaluate:
+        print("Evaluating article...")
         evaluate_article_in_background(
             research_context=research_context,
             product_context=product_context,
