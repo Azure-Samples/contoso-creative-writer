@@ -11,7 +11,7 @@ def write(researchContext, research, productContext, products, assignment, feedb
 
     result = prompty.execute(
         "writer.prompty",
-        parameters={"stream": True, "max_tokens": 2000},
+        parameters={"stream": True},
         inputs={
             "researchContext": researchContext,
             "research": research,
