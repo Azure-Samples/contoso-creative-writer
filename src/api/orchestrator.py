@@ -171,5 +171,5 @@ def test_create_article():
 if __name__ == "__main__":
     from tracing import init_tracing
 
-    tracer = init_tracing(local_tracing=True)
+    tracer = init_tracing(remote_tracing=True, local_tracing=True)
     test_create_article()

@@ -22,7 +22,7 @@ search index return the most relevant information for a writer to use when
 writing marketing articles.
 
 # Context
-Use the follow contex to provide a set of specialized queries to the search index:
+Use the follow context to provide a set of specialized queries to the search index:
 
 {{context}}
 
