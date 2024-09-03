@@ -6,6 +6,7 @@ targetScope = 'subscription'
 param environmentName string
 
 @allowed([
+  'canadaeast'
   'eastus'
   'eastus2'
   'northcentralus'
