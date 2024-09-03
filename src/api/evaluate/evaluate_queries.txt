@@ -16,27 +16,8 @@ dependencies
  
 dependencies
 | extend
-    total_tokens = toint(customDimensions["llm.usage.total_tokens"]),
-    prompt_tokens = toint(customDimensions["llm.usage.prompt_tokens"]),
-    completion_tokens = toint(customDimensions["llm.usage.completion_tokens"])
+    total_tokens = toint(customDimensions["inputs.data.usage.total_tokens"]),
+    prompt_tokens = toint(customDimensions["inputs.data.usage.prompt_tokens"]),
+    completion_tokens = toint(customDimensions["inputs.data.usage.completion_tokens"])
 | summarize sum(total_tokens), sum(prompt_tokens), sum(completion_tokens) by bin(timestamp, 5m) 
 | render timechart
- 
-dependencies
-| where name == "openai_chat"
-| extend inputs = tostring(customDimensions["inputs"])
-| extend model=extract('"model":\\s*"([^"]+)"', 1, inputs)
-| project model, duration_sec=duration/1000
-| summarize avg(duration_sec) by tostring(model)
-| render columnchart
- 
-dependencies
-| where name == "openai_chat" or name == "openai_chat_async" or name == "Iterated(openai_chat)"
-| extend inputs = parse_json(todynamic(tostring(customDimensions["inputs"])))
-| extend
-    total_tokens = toint(customDimensions["llm.usage.total_tokens"]),
-    prompt_tokens = toint(customDimensions["llm.usage.prompt_tokens"]),
-    completion_tokens = toint(customDimensions["llm.usage.completion_tokens"]),
-    model = extract('"model":\\s*"([^"]+)"', 1, tostring(inputs))
-| summarize prompt = sum(prompt_tokens), completion = sum(completion_tokens) by model
-| render columnchart 
