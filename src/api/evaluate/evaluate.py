@@ -9,6 +9,8 @@ from promptflow.core import AzureOpenAIModelConfiguration
 from promptflow.evals.evaluate import evaluate
 from evaluate.evaluators import ArticleEvaluator
 from orchestrator import create
+from prompty.tracer import trace
+from tracing import init_tracing
 
 from dotenv import load_dotenv
 
@@ -78,6 +80,7 @@ def run_orchestrator(research_context, product_context, assignment_context):
         "response": json.dumps(response),
     }
 
+@trace
 def evaluate_orchestrator(model_config, data_path):
     writer_evaluator = ArticleEvaluator(model_config)
 
@@ -149,6 +152,12 @@ if __name__ == "__main__":
     print(f"Starting evaluate...")
     print(os.environ["BING_SEARCH_ENDPOINT"])
     print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
+
+    # Use LOCAL_TRACING to determine if we should use the PromptyTracer locally
+    # Never use remote_tracing for evaluation, it's not really relevant
+    LOCAL_TRACING = True if os.getenv("LOCAL_TRACING", "false").lower() == "true" else False
+    tracer = init_tracing(local_tracing=LOCAL_TRACING, remote_tracing=False)
+
     eval_result = evaluate_orchestrator(model_config, data_path=folder +"/eval_inputs.jsonl")
 
     end=time.time()
