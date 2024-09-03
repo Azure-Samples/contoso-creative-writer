@@ -295,6 +295,7 @@ output AZURE_OPENAI_API_VERSION string = openAiApiVersion
 output AZURE_OPENAI_ENDPOINT string = ai.outputs.openAiEndpoint
 output AZURE_OPENAI_NAME string = ai.outputs.openAiName
 output AZURE_OPENAI_RESOURCE_GROUP string = resourceGroup.name
+output AZURE_AI_PROJECT_NAME string = ai.outputs.projectName
 output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = resourceGroup.location
 
 output API_SERVICE_ACA_NAME string = apiContainerApp.outputs.SERVICE_ACA_NAME
