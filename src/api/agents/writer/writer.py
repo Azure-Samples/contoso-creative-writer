@@ -8,19 +8,24 @@ from prompty.tracer import trace
 
 @trace
 def write(researchContext, research, productContext, products, assignment, feedback="No Feedback"):
-
-    result = prompty.execute(
-        "writer.prompty",
-        parameters={"stream": True},
-        inputs={
-            "researchContext": researchContext,
-            "research": research,
-            "productContext": productContext,
-            "products": products,
-            "assignment": assignment,
-            "feedback": feedback,
-        },
-    )
+    # TODO: Update this once we have the logic to parse http error codes
+    try:
+        result = prompty.execute(
+            "writer.prompty",
+            parameters={"stream": True},
+            inputs={
+                "researchContext": researchContext,
+                "research": research,
+                "productContext": productContext,
+                "products": products,
+                "assignment": assignment,
+                "feedback": feedback,
+            },
+        )
+    except Exception as e:
+        result = {
+            f"An exception occured: {str(e)}"
+        }
     return result
 
 def process(writer):
