@@ -170,6 +170,8 @@ def test_create_article():
     
 if __name__ == "__main__":
     from tracing import init_tracing
+    import os
 
-    tracer = init_tracing(remote_tracing=True, local_tracing=True)
+    LOCAL_TRACING = True if os.getenv("LOCAL_TRACING", "false").lower() == "true" else False
+    tracer = init_tracing(local_tracing=LOCAL_TRACING)
     test_create_article()
