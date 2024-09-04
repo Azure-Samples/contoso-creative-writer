@@ -156,7 +156,7 @@ if __name__ == "__main__":
     # Use LOCAL_TRACING to determine if we should use the PromptyTracer locally
     # Never use remote_tracing for evaluation, it's not really relevant
     LOCAL_TRACING = True if os.getenv("LOCAL_TRACING", "false").lower() == "true" else False
-    tracer = init_tracing(local_tracing=LOCAL_TRACING, remote_tracing=False)
+    tracer = init_tracing(local_tracing=LOCAL_TRACING, remote_tracing=False, app_insights=False)
 
     eval_result = evaluate_orchestrator(model_config, data_path=folder +"/eval_inputs.jsonl")
 
