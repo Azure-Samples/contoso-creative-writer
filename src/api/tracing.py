@@ -27,7 +27,7 @@ def trace_span(name: str):
         yield verbose_trace
 
 
-def init_tracing(remote_tracing: bool, local_tracing: bool = False):
+def init_tracing(local_tracing: bool = False, remote_tracing: bool = None, app_insights: bool = True):
     """
     Initialize tracing for the application
     If local_tracing is True, use the PromptyTracer
@@ -45,21 +45,21 @@ def init_tracing(remote_tracing: bool, local_tracing: bool = False):
     elif remote_tracing:
         Tracer.add("OpenTelemetry", trace_span)
 
-    azmon_logger = logging.getLogger("azure")
-    azmon_logger.setLevel(logging.INFO)
+    if app_insights:
+        azmon_logger = logging.getLogger("azure")
+        azmon_logger.setLevel(logging.INFO)
 
-    # oteltrace.set_tracer_provider(TracerProvider())
+        # oteltrace.set_tracer_provider(TracerProvider())
 
-    # Configure Azure Monitor as the Exporter
-    app_insights = os.getenv("APPINSIGHTS_CONNECTIONSTRING")
+        # Configure Azure Monitor as the Exporter
+        app_insights = os.getenv("APPINSIGHTS_CONNECTIONSTRING")
 
-    # Add the Azure exporter to the tracer provider
+        # Add the Azure exporter to the tracer provider
 
-    oteltrace.set_tracer_provider(TracerProvider(sampler=ParentBasedTraceIdRatio(1.0)))
-    oteltrace.get_tracer_provider().add_span_processor(BatchSpanProcessor(AzureMonitorTraceExporter(connection_string=app_insights)))
-    # oteltrace.get_tracer_provider().add_span_processor(
-    #     SimpleSpanProcessor(trace_exporter)
-    # )
+        oteltrace.set_tracer_provider(TracerProvider(sampler=ParentBasedTraceIdRatio(1.0)))
+        oteltrace.get_tracer_provider().add_span_processor(BatchSpanProcessor(AzureMonitorTraceExporter(connection_string=app_insights)))
+        # oteltrace.get_tracer_provider().add_span_processor(
+        #     SimpleSpanProcessor(trace_exporter)
+        # )
 
-    return oteltrace.get_tracer(_tracer)
-
+        return oteltrace.get_tracer(_tracer)
