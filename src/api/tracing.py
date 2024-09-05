@@ -27,7 +27,7 @@ def trace_span(name: str):
         yield verbose_trace
 
 
-def init_tracing(local_tracing: bool = True, remote_tracing: bool = True, app_insights: bool = True):
+def init_tracing(local_tracing: bool = True):
     """
     Initialize tracing for the application
     If local_tracing is True, use the PromptyTracer
@@ -35,17 +35,13 @@ def init_tracing(local_tracing: bool = True, remote_tracing: bool = True, app_in
     If remote_tracing is not specified, defaults to using the OpenTelemetry tracer only if local_tracing is False
     """
 
-    if remote_tracing is None:
-        remote_tracing = not local_tracing
-
     if local_tracing:
         local_trace = PromptyTracer()
         Tracer.add("PromptyTracer", local_trace.tracer)
         # Tracer.add("ConsoleTracer", console_tracer)
-    elif remote_tracing:
+    else:
         Tracer.add("OpenTelemetry", trace_span)
 
-    if app_insights:
         azmon_logger = logging.getLogger("azure")
         azmon_logger.setLevel(logging.INFO)
 

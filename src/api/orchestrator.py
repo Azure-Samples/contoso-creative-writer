@@ -176,6 +176,5 @@ if __name__ == "__main__":
     from tracing import init_tracing
     import os
 
-    LOCAL_TRACING = True if os.getenv("LOCAL_TRACING", "false").lower() == "true" else False
-    tracer = init_tracing(local_tracing=LOCAL_TRACING)
+    tracer = init_tracing(local_tracing=True)
     test_create_article()
