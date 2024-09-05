@@ -153,10 +153,8 @@ if __name__ == "__main__":
     print(os.environ["BING_SEARCH_ENDPOINT"])
     print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
 
-    # Use LOCAL_TRACING to determine if we should use the PromptyTracer locally
-    # Never use remote_tracing for evaluation, it's not really relevant
-    LOCAL_TRACING = True if os.getenv("LOCAL_TRACING", "false").lower() == "true" else False
-    tracer = init_tracing(local_tracing=LOCAL_TRACING, remote_tracing=True, app_insights=True)
+
+    tracer = init_tracing()
 
     eval_result = evaluate_orchestrator(model_config, data_path=folder +"/eval_inputs.jsonl")
 
