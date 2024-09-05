@@ -1,0 +1,36 @@
+TITLE: Average Evaluation Score Over Time
+dependencies
+| where name == "run_evaluators"
+| project timestamp, results = parse_json(tostring(customDimensions["output"]))
+| evaluate bag_unpack(results)
+| summarize avg_groundedness=avg(gpt_groundedness), avg_coherence=avg(gpt_coherence), avg_fluency=avg(gpt_fluency), avg_relevance=avg(gpt_relevance) by bin(timestamp, 2h)
+| render timechart  
+
+TITLE: Tokens Used Over Time
+dependencies
+| extend
+    total_tokens = toint(customDimensions["inputs.data.usage.total_tokens"]),
+    prompt_tokens = toint(customDimensions["inputs.data.usage.prompt_tokens"]),
+    completion_tokens = toint(customDimensions["inputs.data.usage.completion_tokens"])
+| summarize sum(total_tokens), sum(prompt_tokens), sum(completion_tokens) by bin(timestamp, 5m) 
+| render timechart
+
+TITLE: Tokens Used by Model
+dependencies
+| where name == "AzureOpenAIExecutor"
+| extend inputs = tostring(customDimensions["result.model"])
+| extend
+    total_tokens = toint(customDimensions["result.usage.total_tokens"]),
+    prompt_tokens = toint(customDimensions["result.usage.prompt_tokens"]),
+    completion_tokens = toint(customDimensions["result.usage.completion_tokens"]),
+    model = tostring(inputs)
+| summarize prompt = sum(prompt_tokens), completion = sum(completion_tokens), total = sum(total_tokens) by model
+| render columnchart 
+
+TITLE: Average Model Duration
+dependencies
+| where name == "AzureOpenAIExecutor"
+| extend inputs = tostring(customDimensions["result.model"])
+| project inputs, duration_sec=duration/1000
+| summarize avg(duration_sec) by tostring(inputs)
+| render columnchart
