@@ -154,7 +154,7 @@ if __name__ == "__main__":
     print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
 
 
-    tracer = init_tracing()
+    tracer = init_tracing(local_tracing=True)
 
     eval_result = evaluate_orchestrator(model_config, data_path=folder +"/eval_inputs.jsonl")
 
