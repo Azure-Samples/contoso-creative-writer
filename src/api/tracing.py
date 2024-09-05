@@ -27,7 +27,7 @@ def trace_span(name: str):
         yield verbose_trace
 
 
-def init_tracing(local_tracing: bool = True):
+def init_tracing(local_tracing: bool = False):
     """
     Initialize tracing for the application
     If local_tracing is True, use the PromptyTracer
