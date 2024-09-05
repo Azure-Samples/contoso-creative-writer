@@ -14,8 +14,7 @@ from orchestrator import Task, create
 base = Path(__file__).resolve().parent
 
 load_dotenv()
-LOCAL_TRACING = True if os.getenv("LOCAL_TRACING", "false").lower() == "true" else False
-tracer = init_tracing(local_tracing=LOCAL_TRACING)
+tracer = init_tracing()
 
 app = FastAPI()
 
