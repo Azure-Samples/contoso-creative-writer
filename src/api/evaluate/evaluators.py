@@ -31,8 +31,6 @@ class ArticleEvaluator:
         return output
 
 def evaluate_article(data, trace_context):
-    print("starting offline evals")
-
     tracer = trace.get_tracer(__name__)
     with tracer.start_as_current_span("run_evaluators", context=trace_context) as span:
         span.set_attribute("inputs", json.dumps(data))
