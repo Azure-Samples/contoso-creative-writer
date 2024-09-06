@@ -6,8 +6,6 @@ import random
 from threading import Thread
 from opentelemetry import trace
 from opentelemetry.trace import set_span_in_context
-from promptflow.core import AzureOpenAIModelConfiguration
-from promptflow.evals.evaluators import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator
 
 
 class ArticleEvaluator:
