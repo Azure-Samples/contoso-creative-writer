@@ -1,6 +1,8 @@
 from typing import List, Literal, Union
-from prompty.tracer import trace
+
 from pydantic import BaseModel, Field
+from promptflow.tracing import trace
+
 import logging
 import json
 
@@ -146,7 +148,7 @@ def create(research_context, product_context, assignment_context, evaluate=True)
             article=full_result,
         )
 
-@trace  
+@trace
 def test_create_article():
     research_context = "Can you find the latest camping trends and what folks are doing in the winter?"
     product_context = "Can you use a selection of tents and sleeping bags as context?"

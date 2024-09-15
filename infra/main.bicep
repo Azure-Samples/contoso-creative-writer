@@ -11,7 +11,7 @@ param environmentName string
   'eastus2'
   'northcentralus'
   'southcentralus'
-  'swedencentral'
+  'francecentral'
   'westus'
   'westus3'
 ])

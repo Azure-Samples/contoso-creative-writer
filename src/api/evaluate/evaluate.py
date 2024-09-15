@@ -20,44 +20,6 @@ folder = Path(__file__).parent.absolute().as_posix()
 # # Add the api directory to the sys.path
 # sys.path.append(os.path.abspath('../src/api'))
 
-def evaluate_aistudio(model_config, data_path):
-    # create unique id for each run with date and time
-    run_prefix = datetime.now().strftime("%Y%m%d%H%M%S")
-    run_id = f"{run_prefix}_chat_evaluation_sdk"    
-    print(run_id)
-
-    result = evaluate(
-        evaluation_name=run_id,
-        data=data_path,
-        evaluators={
-            "article": ArticleEvaluator(model_config),
-        },
-        evaluator_config={
-            "defaults": {
-                "query": "${data.query}",
-                "response": "${data.response}",
-                "context": "${data.context}",
-            },
-        },
-    )
-    return result
-
-def evaluate_data(model_config, data_path):
-    writer_evaluator = ArticleEvaluator(model_config)
-
-    data = []
-    with open(data_path) as f:
-        for line in f:
-            data.append(json.loads(line))
-
-    results = []
-    for row in data:
-        result = writer_evaluator(query=row["query"], context=row["context"], response=row["response"])
-        print("Evaluation results: ", result)
-        results.append(result)
-
-    return results
-
 def run_orchestrator(research_context, product_context, assignment_context):
     query = {"research_context": research_context, "product_context": product_context, "assignment_context": assignment_context}
     context = {}
@@ -79,6 +41,52 @@ def run_orchestrator(research_context, product_context, assignment_context):
         "context": json.dumps(context), 
         "response": json.dumps(response),
     }
+
+def evaluate_aistudio(model_config, data_path):
+    # create unique id for each run with date and time
+    run_prefix = datetime.now().strftime("%Y%m%d%H%M%S")
+    run_id = f"{run_prefix}_chat_evaluation_sdk"    
+    print(run_id)
+
+    result = evaluate(
+        target=run_orchestrator,
+        evaluation_name=run_id,
+        data=data_path,
+        evaluators={
+            "article": ArticleEvaluator(model_config),
+        },
+        evaluator_config={
+            "defaults": {
+                "query": "${target.query}",
+                "response": "${target.response}",
+                "context": "${target.context}",
+            },
+        },
+        azure_ai_project = {
+            "subscription_id": os.environ['AZURE_SUBSCRIPTION_ID'],
+            "resource_group_name": 'rg-hubragprototype',
+            "project_name": 'rag_prototype',
+        },
+    )
+    return result
+
+def evaluate_data(model_config, data_path):
+    writer_evaluator = ArticleEvaluator(model_config)
+
+    data = []
+    with open(data_path) as f:
+        for line in f:
+            data.append(json.loads(line))
+
+    results = []
+    for row in data:
+        result = writer_evaluator(query=row["query"], context=row["context"], response=row["response"])
+        print("Evaluation results: ", result)
+        results.append(result)
+
+    return results
+
+
 
 @trace
 def evaluate_orchestrator(model_config, data_path):
@@ -151,12 +159,11 @@ if __name__ == "__main__":
     start=time.time()
     print(f"Starting evaluate...")
     print(os.environ["BING_SEARCH_ENDPOINT"])
-    print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
 
 
-    tracer = init_tracing(local_tracing=True)
+    #tracer = init_tracing(local_tracing=True)
 
-    eval_result = evaluate_orchestrator(model_config, data_path=folder +"/eval_inputs.jsonl")
+    eval_result = evaluate_aistudio(model_config, data_path=folder +"/eval_inputs.jsonl")
 
     end=time.time()
     print(f"Finished evaluate in {end - start}s")

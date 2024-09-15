@@ -3,6 +3,8 @@ import json
 import logging
 import contextlib
 from typing import AsyncIterator, List
+
+from promptflow.tracing import start_trace
 from prompty.tracer import Tracer, PromptyTracer
 from opentelemetry import trace as oteltrace
 from opentelemetry import trace
@@ -36,8 +38,9 @@ def init_tracing(local_tracing: bool = False):
     """
 
     if local_tracing:
-        local_trace = PromptyTracer()
-        Tracer.add("PromptyTracer", local_trace.tracer)
+        start_trace()
+        #local_trace = PromptyTracer()
+        #Tracer.add("PromptyTracer", local_trace.tracer)
         # Tracer.add("ConsoleTracer", console_tracer)
     else:
         Tracer.add("OpenTelemetry", trace_span)
