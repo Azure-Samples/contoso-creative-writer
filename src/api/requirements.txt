@@ -2,7 +2,7 @@ fastapi
 fastapi[standard]
 openai
 requests
-prompty==0.1.19
+prompty[azure]==0.1.24
 promptflow
 promptflow-evals
 pandas
