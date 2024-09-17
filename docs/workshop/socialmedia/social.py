@@ -77,7 +77,7 @@ def find_news(query, market="en-US"):
 
 
 
-def execute(instructions: str, feedback: str = "No feedback"):
+def execute_researcher_prompty(instructions: str, feedback: str = "No feedback"):
     """Assign a research task to a researcher"""
     functions = {
         "find_information": find_information,
@@ -102,13 +102,13 @@ def execute(instructions: str, feedback: str = "No feedback"):
 
 
 
-def process(research):
-    """Process the research results"""
-    # process web searches
+def extract_findings(research):
+    """Extract the research results"""
+    # extract web findings
     web = filter(lambda r: r["function"] == "find_information", research)
     web_items = [page for web_item in web for page in web_item["result"]["pages"]]
 
-    # process entity searches
+    # extract entity findings
     entities = filter(lambda r: r["function"] == "find_entities", research)
     entity_items = [
         {"url": "None Available", "name": it["name"], "description": it["description"]}
@@ -116,7 +116,7 @@ def process(research):
         for it in e["result"]
     ]
 
-    # process news searches
+    # extract news findings
     news = filter(lambda r: r["function"] == "find_news", research)
     news_items = [
         {
@@ -135,12 +135,18 @@ def process(research):
 
 
 def research(instructions: str, feedback: str = "No feedback"):
-    r = execute(instructions=instructions)
-    p = process(r)
+    """
+    Run the research process
+
+    Execute the researcher prompty to find information, entities, and news
+    Then extract the findings
+    """
+    r = execute_researcher_prompty(instructions=instructions)
+    p = extract_findings(r)
     return p
 
 
-def execute_social_prompty(research_context: str, research, social_media_instructions: str):
+def execute_social_media_writer_prompty(research_context: str, research, social_media_instructions: str):
     """Create the twitter thread"""
     
     reseponse = prompty.execute(
@@ -150,21 +156,14 @@ def execute_social_prompty(research_context: str, research, social_media_instruc
     return reseponse
 
 def run_social_media_agent(instructions: str, social_media_instructions: str):
-    r = execute(instructions=instructions)
-    processed = process(r)
-    thread = execute_social_prompty(research_context= instructions, research=processed, social_media_instructions = social_media_instructions)
+    """
+    Run the social media agent
+
+    Execute the researcher prompty to find information, entities, and news
+    Then extract the findings
+    And finally execute the social media writer prompty to create the twitter thread
+    """
+    r = execute_researcher_prompty(instructions=instructions)
+    processed = extract_findings(r)
+    thread = execute_social_media_writer_prompty(research_context= instructions, research=processed, social_media_instructions = social_media_instructions)
     print(thread)
-
-
-if __name__ == "__main__":
-    # Get command line arguments
-    if len(sys.argv) < 2:
-        instructions = "Can you find the latest camping trends and what folks are doing in the winter?"
-    else:
-        instructions = sys.argv[1]
-
-    r = execute(instructions=instructions)
-    processed = process(r)
-    thread = execute_social_prompty(research_context=instructions, research=processed)
-    print(thread)
-    print(json.dumps(processed, indent=2))
