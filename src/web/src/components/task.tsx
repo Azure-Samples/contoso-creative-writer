@@ -133,7 +133,7 @@ export const Task = () => {
       <div className="flex justify-end gap-2 mt-10">
         <button
           type="button"
-          className="flex flex-row gap-3 items-center rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          className="flex flex-row gap-1 items-center rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           onClick={reset}
         >
           <ArrowPathIcon className="w-6" />
@@ -141,7 +141,7 @@ export const Task = () => {
         </button>
         <button
           type="button"
-          className="flex flex-row gap-3 items-center rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          className="flex flex-row gap-1 items-center rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           onClick={setExample}
         >
           <ClipboardDocumentIcon className="w-6" />
@@ -149,11 +149,11 @@ export const Task = () => {
         </button>
         <button
           type="button"
-          className="flex flex-row gap-3 items-center rounded-md bg-indigo-100 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          className="flex flex-row gap-1 items-center rounded-md bg-indigo-100 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           onClick={startWork}
         >
           <PaperAirplaneIcon className="w-6" />
-          <span>Start Work</span>
+          <span>Start</span>
         </button>
       </div>
     </div>

@@ -14,7 +14,7 @@ export const Toolbar = () => {
   const articles = useAppSelector((state) => state.article);
 
   return (
-    <div className="fixed right-0 bottom-0 mr-12 mb-10 flex gap-3">
+    <div className="fixed right-0 bottom-0 mr-4 mb-4 flex gap-3">
       {articles.articles.length > 0 && (
         <div
           className={clsx(
