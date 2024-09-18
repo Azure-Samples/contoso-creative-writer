@@ -1,0 +1,71 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "find_information",
+      "description": "Finds information on the web given a query. This function uses the Bing Search API to find information on the web given a query. The response includes the most relevant information from the web and should be used if you're not looking for news or people, places, or things.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "An optimal search query to find information on the web using the Bing Search API"
+          },
+          "market": {
+            "type": "string",
+            "description": "The market to search in, e.g. en-US - it should match the language of the query"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "find_entities",
+      "description": "Finds entities on the web given a query. This function uses the Bing Search API to find entities on the web given a query. This should be used to find people, places, or things but not news or general information.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "An optimal search query to find people, places or things on the web using the Bing Search API"
+          },
+          "market": {
+            "type": "string",
+            "description": "The market to search in, e.g. en-US - it should match the language of the query"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "find_news",
+      "description": "Finds news on the web given a query. This function uses the Bing Search API to find news on the web given a query. The response includes the most relevant news articles from the web and should be used if you're looking for news.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "An optimal search query to find news on the web using the Bing Search API"
+          },
+          "market": {
+            "type": "string",
+            "description": "The market to search in, e.g. en-US - it should match the language of the query"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  }
+]

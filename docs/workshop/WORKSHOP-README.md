@@ -2,8 +2,6 @@
 
 ## Welcome to workshop WRK551!
 
-(**Note:** If you can see hashtags (like this ##) on this page right click on the WORKSHOP-README.md tab above and select `open preview`!)
-
 Building Large Language Model (LLM) applications​ is hard! Companies want to build AI solutions but how can they do this in a reliable, reproducible and observable way?​
 
 Challenges with AI:  ​
@@ -67,4 +65,4 @@ You are now ready to start understanding and building Contoso Creative Writer!
  
 ## Part 2: Understanding and Building Contoso Creative Writer
 
-Once you've succesfully run the commands above, navigate to the file explorer on the left of the codepsace and open the [workshop.ipynb](workshop.ipynb) file to continue the workshop! 
+Once you've succesfully run the commands above, open the [workshop.ipynb](workshop.ipynb) file to continue the workshop! 
