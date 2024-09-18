@@ -86,17 +86,19 @@ The easiest way to get started is GitHub Codespaces, since it will setup all the
 2. Open a terminal window.
 3. Sign in to your Azure account. You'll need to login to both the Azure Developer CLI and Azure CLI:
 
-    i. First with Azure Developer CLI 
+    i. First sign in with Azure CLI 
 
-    ```shell
-    azd auth login
-    ```
-
-    ii. Then sign in with Azure CLI 
-    
-    ```shell
+   ```shell
     az login --use-device-code
     ```
+   
+
+    ii. Then sign with  with Azure Developer CLI
+
+     ```shell
+    azd auth login --use-device-code
+    ```
+
 
 4. Provision the resources and deploy the code:
 
