@@ -2,13 +2,17 @@ import os
 import sys
 import prompty
 import prompty.azure
-
+from prompty.tracer import trace, Tracer, PromptyTracer
 
 # Import the researcher agent to use here
-sys.path.append(os.path.abspath('../../docs/workshop/researcher'))
-from researcher import research
+sys.path.append(os.path.abspath('../../docs/workshop/researcher/'))
+from researcher3 import research
 
+#initiate local prompty tracing
+local_trace = PromptyTracer()
+Tracer.add("PromptyTracer", local_trace.tracer)
 
+@trace
 def execute_social_media_writer_prompty(research_context: str, research, social_media_instructions: str):
     """Create the twitter thread using Prompty"""
     
