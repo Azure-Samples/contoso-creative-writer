@@ -78,7 +78,7 @@ def find_news(query, market="en-US"):
 
 
 @trace
-def execute(instructions: str, feedback: str = "No feedback"):
+def run(instructions: str):
     """Assign a research task to a researcher"""
     functions = {
         "find_information": find_information,
@@ -87,7 +87,7 @@ def execute(instructions: str, feedback: str = "No feedback"):
     }
 
     fns: List[ToolCall] = prompty.execute(
-        "researcher.prompty", inputs={"instructions": instructions, "feedback": feedback}
+        "researcher.prompty", inputs={"instructions": instructions}
     )
 
     research = []
@@ -136,8 +136,8 @@ def process(research):
 
 
 @trace
-def research(instructions: str, feedback: str = "No feedback"):
-    r = execute(instructions=instructions)
+def research(instructions: str):
+    r = run(instructions=instructions)
     p = process(r)
     return p
 
@@ -149,6 +149,6 @@ if __name__ == "__main__":
     else:
         instructions = sys.argv[1]
 
-    r = execute(instructions=instructions)
+    r = run(instructions=instructions)
     processed = process(r)
     print(json.dumps(processed, indent=2))

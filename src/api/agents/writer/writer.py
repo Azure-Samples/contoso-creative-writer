@@ -5,9 +5,8 @@ import prompty
 from prompty.tracer import trace
 
 
-
 @trace
-def write(researchContext, research, productContext, products, assignment, feedback="No Feedback"):
+def write(researchContext, research, productContext, products, assignment):
     # TODO: Update this once we have the logic to parse http error codes
     try:
         result = prompty.execute(
@@ -19,14 +18,12 @@ def write(researchContext, research, productContext, products, assignment, feedb
                 "productContext": productContext,
                 "products": products,
                 "assignment": assignment,
-                "feedback": feedback,
             },
         )
     except Exception as e:
-        result = {
-            f"An exception occured: {str(e)}"
-        }
+        result = {f"An exception occured: {str(e)}"}
     return result
+
 
 def process(writer):
     # parse string this chracter --- , article and feedback
@@ -47,7 +44,7 @@ if __name__ == "__main__":
     from dotenv import load_dotenv
 
     load_dotenv()
-    
+
     base = Path(__file__).parent
 
     researchContext = (

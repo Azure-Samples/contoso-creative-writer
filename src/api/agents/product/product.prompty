@@ -45,7 +45,9 @@ to generate the queries.
 
 # Output format
 Only output the full array of specialized queries to make to the search index. Limit
-yoursef to 5 queries.
+yoursef to 5 queries. 
 
 user:
 {{context}}
+Please only provide the specialized queries to make to the search index in a json array. Do not include any other information.
+Just the array of specialized queries.

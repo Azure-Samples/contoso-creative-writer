@@ -15,7 +15,6 @@ model:
     tools: ${file:functions.json}
 sample:
   instructions: Can you find the latest camping trends and what folks are doing in the winter?
-  feedback: Can you dig find some information about the latest camping trends and what folks are doing in the winter?
 ---
 system:
 # Researcher Agent
@@ -24,11 +23,6 @@ is putting together an article. You have access to a variety of tools that can h
 Given some context and writer feedback, you can use these tools to help the writer
 by formulating expert queries and providing the writer with the information they need.
 Your queries should be descriptive and match the provided instructions.
-
-# Feedback
-Use this feedback to help you refine your queries and responses - if there is any feedback:
-
-{{feedback}}
 
 # Market Codes
 The following are the market codes for the countries and regions that are supported by 
