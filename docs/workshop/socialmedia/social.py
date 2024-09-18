@@ -5,7 +5,7 @@ import prompty.azure
 
 
 # Import the researcher agent to use here
-sys.path.append(os.path.abspath('../../src/api/agents/researcher'))
+sys.path.append(os.path.abspath('../../docs/workshop/researcher'))
 from researcher import research
 
 
