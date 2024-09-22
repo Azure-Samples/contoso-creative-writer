@@ -15,14 +15,14 @@ BING_SEARCH_KEY = os.getenv("BING_SEARCH_KEY")
 BING_HEADERS = {"Ocp-Apim-Subscription-Key": BING_SEARCH_KEY}
 
 
-def _make_endpoint(endpoint, path):
-    """Make an endpoint URL"""
+def _make_bing_endpoint(endpoint, path):
+    """Make a Bing endpoint URL"""
     return f"{endpoint}{'' if endpoint.endswith('/') else '/'}{path}"
 
 
-def _make_request(path, params=None):
-    """Make a request to the API"""
-    endpoint = _make_endpoint(BING_SEARCH_ENDPOINT, path)
+def _make_bing_request(path, params=None):
+    """Make a request to the Bing API"""
+    endpoint = _make_bing_endpoint(BING_SEARCH_ENDPOINT, path)
     response = requests.get(endpoint, headers=BING_HEADERS, params=params)
     items = response.json()
     return items
@@ -31,7 +31,7 @@ def _make_request(path, params=None):
 def find_information(query, market="en-US"):
     """Find information using the Bing Search API"""
     params = {"q": query, "mkt": market, "count": 5}
-    items = _make_request("v7.0/search", params)
+    items = _make_bing_request("v7.0/search", params)
     pages = [
         {"url": a["url"], "name": a["name"], "description": a["snippet"]}
         for a in items["webPages"]["value"]
@@ -44,7 +44,7 @@ def find_information(query, market="en-US"):
 def find_entities(query, market="en-US"):
     """Find entities using the Bing Entity Search API"""
     params = "?mkt=" + market + "&q=" + urllib.parse.quote(query)
-    items = _make_request(f"v7.0/entities{params}")
+    items = _make_bing_request(f"v7.0/entities{params}")
     entities = []
     if "entities" in items:
         entities = [
@@ -58,7 +58,7 @@ def find_entities(query, market="en-US"):
 def find_news(query, market="en-US"):
     """Find news using the Bing News Search API"""
     params = {"q": query, "mkt": market, "count": 5}
-    items = _make_request("v7.0/news/search", params)
+    items = _make_bing_request("v7.0/news/search", params)
     articles = [
         {
             "name": a["name"],
@@ -78,23 +78,33 @@ def execute_researcher_prompty(instructions: str):
     and runs the selected function given the query and returns the results
     """
 
+    # Define the registry of functions that can be called
     functions = {
         "find_information": find_information,
         "find_entities": find_entities,
         "find_news": find_news,
     }
 
-    fns: List[ToolCall] = prompty.execute(
+    # Execute the researcher prompty
+    function_calls: List[ToolCall] = prompty.execute(
         "researcher-1.prompty", inputs={"instructions": instructions}
     )
 
     research = []
-    for f in fns:
-        fn = functions[f.name]
-        args = json.loads(f.arguments)
-        r = fn(**args)
+    for function_call in function_calls:
+
+        # Resolve function by its name
+        function = functions[function_call.name]
+
+        # Parse the arguments
+        args = json.loads(function_call.arguments)
+
+        # Execute the function call
+        r = function(**args)
+
+        # Append the results to the research list
         research.append(
-            {"id": f.id, "function": f.name, "arguments": args, "result": r}
+            {"id": function_call.id, "function": function_call.name, "arguments": args, "result": r}
         )
 
     return research
