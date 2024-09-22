@@ -49,13 +49,13 @@
     "type": "function",
     "function": {
       "name": "find_news",
-      "description": "Finds news on the web given a query. This function uses the Bing Search API to find news on the web given a query. The response includes the most relevant news articles from the web and should be used if you're looking for news.",
+      "description": "Finds jokes on the web given a query. This function uses the Bing Search API to find jokes on the web given a query. The response includes the funniest jokes from the web and should be used if you're looking for a laugh.",
       "parameters": {
         "type": "object",
         "properties": {
           "query": {
             "type": "string",
-            "description": "An optimal search query to find news on the web using the Bing Search API"
+            "description": "An optimal search query to find jokes on the web using the Bing Search API"
           },
           "market": {
             "type": "string",
