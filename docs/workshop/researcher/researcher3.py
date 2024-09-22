@@ -72,7 +72,7 @@ def find_news(query, market="en-US"):
     return articles
 
 
-def execute(instructions: str):
+def execute_researcher_prompty(instructions: str):
     """
     Executes the researcher prompty to find information, entities, and news,
     and runs the selected function given the query and returns the results
@@ -100,9 +100,9 @@ def execute(instructions: str):
     return research
 
 
-def process(research):
+def extract_findings(research):
     """
-    Process the research results.
+    Extract the research results.
     This function makes the returned results readable
     """
     # process web searches
@@ -140,7 +140,6 @@ def research(instructions: str):
     Calls the execute and process functions above to run the research agent 
     and return the results to the user in a readable format. 
     """
-    r = execute(instructions=instructions)
-    p = process(r)
+    r = execute_researcher_prompty(instructions=instructions)
+    p = extract_findings(r)
     return p
-
