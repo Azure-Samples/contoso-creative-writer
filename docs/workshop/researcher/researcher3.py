@@ -78,17 +78,24 @@ def execute_researcher_prompty(instructions: str):
     and runs the selected function given the query and returns the results
     """
 
+    # Execute the researcher prompty
+    function_calls: List[ToolCall] = prompty.execute(
+        "researcher-1.prompty", inputs={"instructions": instructions}
+    )
+
+    return function_calls
+
+def execute_function_calls(function_calls):
+    """
+    Executes the function calls and returns the results
+    """
+
     # Define the registry of functions that can be called
     functions = {
         "find_information": find_information,
         "find_entities": find_entities,
         "find_news": find_news,
     }
-
-    # Execute the researcher prompty
-    function_calls: List[ToolCall] = prompty.execute(
-        "researcher-1.prompty", inputs={"instructions": instructions}
-    )
 
     research = []
     for function_call in function_calls:
@@ -150,6 +157,8 @@ def research(instructions: str):
     Calls the execute and process functions above to run the research agent 
     and return the results to the user in a readable format. 
     """
-    r = execute_researcher_prompty(instructions=instructions)
-    p = extract_findings(r)
-    return p
+
+    function_calls = execute_researcher_prompty(instructions=instructions)
+    research = execute_function_calls(function_calls)
+    findings = extract_findings(research)
+    return findings

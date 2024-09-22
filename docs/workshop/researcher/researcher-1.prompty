@@ -14,7 +14,7 @@ model:
   parameters:
     tools: ${file:functions.json}
 sample:
-  instructions: Can you find the latest camping trends and what folks are doing in the winter?
+  instructions: Can you find the best educational material for learning Python programming
 ---
 system:
 # Researcher Agent
