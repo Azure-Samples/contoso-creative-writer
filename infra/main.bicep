@@ -103,8 +103,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-var prefix = toLower('${environmentName}-${resourceToken}')
-
 // USER ROLES
 var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
 module managedIdentity 'core/security/managed-identity.bicep' = {
@@ -153,7 +151,7 @@ module bing 'core/bing/bing-search.bicep' = {
   name: 'bing'
   scope: resourceGroup
   params: {
-    name: !empty(bingSearchName) ? bingSearchName : '${take(prefix, 64-12)}-bing-search'
+    name: 'agent-bing-search'
     location: 'global'
   }
 }
@@ -166,7 +164,7 @@ module containerApps 'core/host/container-apps.bicep' = {
     name: 'app'
     location: location
     tags: tags
-    containerAppsEnvironmentName: '${take(replace(prefix, '--', '-'), 60-7)}-ca-env'
+    containerAppsEnvironmentName: 'agent-ca-env'
     containerRegistryName: ai.outputs.containerRegistryName
     logAnalyticsWorkspaceName: ai.outputs.logAnalyticsWorkspaceName
   }
@@ -176,7 +174,7 @@ module apiContainerApp 'app/api.bicep' = {
   name: 'api'
   scope: resourceGroup
   params: {
-    name: replace('${take(prefix, 18)}-api', '--', '-')
+    name: 'agent-api'
     location: location
     tags: tags
     identityName: managedIdentity.outputs.managedIdentityName
@@ -203,7 +201,7 @@ module webContainerApp 'app/web.bicep' = {
   name: 'web'
   scope: resourceGroup
   params: {
-    name: replace('${take(prefix, 18)}-web', '--', '-')
+    name: 'agent-web'
     location: location
     tags: tags
     identityName: managedIdentity.outputs.managedIdentityName
