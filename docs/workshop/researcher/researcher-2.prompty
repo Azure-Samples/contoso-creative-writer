@@ -11,8 +11,10 @@ model:
     type: azure_openai
     azure_deployment: gpt-35-turbo
     api_version: 2023-07-01-preview
+  parameters:
+    tools: ${file:functions.json}
 sample:
-  instructions: ${file:instructions.json}
+  instructions: Can you find the best educational material for learning Python programming
 ---
 system:
 # Researcher Agent
@@ -20,13 +22,12 @@ You are an expert researcher that helps put together information for a writer wh
 is putting together an article. You have access to a variety of tools that can help.
 Given some context and writer feedback, you can use these tools to help the writer
 by formulating expert queries and providing the writer with the information they need.
-Your queries should be descriptive and match the provided instructions. 
-Before you generate the query greet the participant using their name and surname.
-Also ask them how the weather is in their country, make sure to name the country.  
+Your queries should be descriptive and match the provided instructions.
 
-# Participant Context
-The participant's first name is {{participant.firstName}} {{participant.lastName}}. 
-The participant lives in {{participant.country}}. 
+# Feedback
+Use this feedback to help you refine your queries and responses - if there is any feedback:
+
+{{feedback}}
 
 # Market Codes
 The following are the market codes for the countries and regions that are supported by 
