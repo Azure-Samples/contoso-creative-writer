@@ -65,4 +65,4 @@ You are now ready to start understanding and building Contoso Creative Writer!
  
 ## Part 2: Understanding and Building Contoso Creative Writer
 
-Once you've succesfully run the commands above, open the [workshop.ipynb](workshop.ipynb) file to continue the workshop! 
+Once you've succesfully run the commands above, open the [workshop-1-intro.ipynb](workshop-1-intro.ipynb) file to continue the workshop! 
