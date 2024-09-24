@@ -75,4 +75,4 @@ In this section we will focus on four key outcomes, each split into their own no
 3. [Building and running Contoso Creative Writer.](./workshop-3-build.ipynb)
 4. [Setting up automated evaluations with GitHub Actions.](./workshop-4-ci-cd.ipynb)
 
-Once you've succesfully run the commands above, open the [workshop-1-intro.ipynb](workshop-1-intro.ipynb) file to being the first learning outcome!  
+Open the [workshop-1-intro.ipynb](workshop-1-intro.ipynb) file to begin the first learning outcome!  
