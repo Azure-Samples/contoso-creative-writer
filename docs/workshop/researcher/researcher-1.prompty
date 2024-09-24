@@ -11,8 +11,12 @@ model:
     type: azure_openai
     azure_deployment: gpt-35-turbo
     api_version: 2023-07-01-preview
-sample:
-  instructions: ${file:instructions.json}
+inputs:
+  participant:
+    type: object
+  instructions:
+    type: string
+sample: ${file:instructions.json}
 ---
 system:
 # Researcher Agent

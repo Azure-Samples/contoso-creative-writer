@@ -2,10 +2,10 @@
 
 ## Welcome to workshop WRK551!
 
-Building Large Language Model (LLM) applications​ is hard! Companies want to build AI solutions but how can they do this in a reliable, reproducible and observable way?​
+Building Large Language Model (LLM) applications​ is hard! Companies want to build AI solutions, but how can they do this in a reliable, reproducible and observable way?​
 
-Challenges with AI:  ​
-- Getting LLM app to work with various real world inputs ​
+### Challenges with AI:  ​
+- Getting LLM apps to work with various real world inputs ​
 - Debugging (local and production)​ to understand failures
 - Setting up and managing production infrastructure automation
 
@@ -26,14 +26,16 @@ We'll begin by logging in to Azure Developer CLI (azd) and Azure CLI (az).
     azd auth login
     ```
 
-3.  Then sign in with Azure CLI. Again, use the `username` and `password` from the lab manual. 
+3.  Then sign in with Azure CLI. 
+    - Again, use the `username` and `password` from the lab manual. 
     - Press enter to select the default subscription when prompted.
     
     ```shell
     az login --use-device-code
     ```
 
-4.  Get the environment variables for your resource group by running the below command and **Replace `AzureEnvName`** with the value given for it in the lab manual.  
+4.  Get the environment variables for your resource group.
+    - Run the below command, **replacing `AzureEnvName`** with the value given for it in the lab manual. (It should look something like AITOUR12345678)
     - When prompted select `Y` to create the environment
     - Press enter to select the default subscription. 
     - Finally choose the location **Canada East**
@@ -53,7 +55,7 @@ We'll begin by logging in to Azure Developer CLI (azd) and Azure CLI (az).
     bash infra/hooks/roles.sh
     ```
 
-7. Run the postprovision script that will install the needed packages and deploy your app resources.
+7. Run the postprovision script 
     - Make sure to **Replace `AzureEnvName`** with the value given for it in the lab manual. 
     - This might take a while but should not take more than 5mins.  
 

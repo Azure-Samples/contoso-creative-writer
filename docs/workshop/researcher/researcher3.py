@@ -80,7 +80,7 @@ def execute_researcher_prompty(instructions: str):
 
     # Execute the researcher prompty
     function_calls: List[ToolCall] = prompty.execute(
-        "researcher-1.prompty", inputs={"instructions": instructions}
+        "researcher-2.prompty", inputs={"instructions": instructions}
     )
 
     return function_calls
