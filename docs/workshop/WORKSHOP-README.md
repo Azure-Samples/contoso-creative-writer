@@ -67,4 +67,12 @@ You are now ready to start understanding and building Contoso Creative Writer!
  
 ## Part 2: Understanding and Building Contoso Creative Writer
 
-Once you've succesfully run the commands above, open the [workshop-1-intro.ipynb](workshop-1-intro.ipynb) file to continue the workshop! 
+### Learning Outcomes
+In this section we will focus on four key outcomes, each split into their own notebook:
+
+1. [Understanding agents and prompt engineering with Prompty.](./workshop-1-intro.ipynb)
+2. [Utilizing Prompty tracing for debugging and observability.](./workshop-2-tracing.ipynb)
+3. [Building and running Contoso Creative Writer.](./workshop-3-build.ipynb)
+4. [Setting up automated evaluations with GitHub Actions.](./workshop-4-ci-cd.ipynb)
+
+Once you've succesfully run the commands above, open the [workshop-1-intro.ipynb](workshop-1-intro.ipynb) file to being the first learning outcome!  
