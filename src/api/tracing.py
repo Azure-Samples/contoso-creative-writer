@@ -15,19 +15,18 @@ from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
 _tracer = "prompty"
 
 @contextlib.contextmanager
-def trace_span(name: str):    
-    tracer = oteltrace.get_tracer(_tracer)    
-    with tracer.start_as_current_span(name) as span:        
-        def verbose_trace(key, value):            
-            if isinstance(value, dict):                
-                for k, v in value.items():                  
-                    verbose_trace(f"{key}.{k}", v)            
-            else:                
-                span.set_attribute(f"{key}", value)        
+def trace_span(name: str):
+    tracer = oteltrace.get_tracer(_tracer)
+    with tracer.start_as_current_span(name) as span:
+        def verbose_trace(key, value):
+            if isinstance(value, dict):
+                for k, v in value.items():
+                    verbose_trace(f"{key}.{k}", v)
+            else:
+                span.set_attribute(f"{key}", json.dumps(value, default=str))
         yield verbose_trace
 
-
-def init_tracing(local_tracing: bool = True):
+def init_tracing(local_tracing: bool = False):
     """
     Initialize tracing for the application
     If local_tracing is True, use the PromptyTracer
