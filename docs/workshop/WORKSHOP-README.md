@@ -57,7 +57,8 @@ We'll begin by logging in to Azure Developer CLI (azd) and Azure CLI (az).
 
 7. Run the postprovision script 
     - Make sure to **Replace `AzureEnvName`** with the value given for it in the lab manual. 
-    - This might take a while but should not take more than 5mins.  
+    - This might take a while but should not take more than 5mins.
+    - While you wait move on to **part 2** and get started with Notebook 1! 
 
     ```shell
     azd hooks run postprovision -e AZDEnvName
