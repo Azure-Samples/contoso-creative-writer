@@ -1,5 +1,3 @@
-@lab.Title
-
 ## Azure Credentials:
 
 **Username/email:** ++@lab.CloudPortalCredential(User1).Username++
@@ -10,7 +8,10 @@
 
 **Subscription:** ++@lab.CloudSubscription.Id++
 
-(**If you are viewing this from Github:** Note the above are not your credentials. Your actual credentials can be seen on the Skillable lab page!)
+
+**If you are viewing this from the Skillable lab page** the above are your unique azure credentials.
+
+**If you are viewing this from Github:** The above are not your credentials. They are placeholders. Your actual credentials can be seen on the Skillable lab page.
 
 ***
 
@@ -37,12 +38,22 @@ To participate in this workshop, you will need:
 
 ### To begin this lab follow these steps:
 
-1. Confirm that you can see your **Azure Credentials** at the top of the page. You will use these to login to Azure Developer CLI and Azure CLI once Github Codespaces is set up. 
+1. Confirm that you can see your **Azure Credentials** at the top of the page. 
+    * You will use these to login to Azure Developer CLI (AZD) and Azure CLI (AZ) later. 
 
-2. Open the Github Codespace by clicking this link: [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/contoso-creative-writer/).You may need to login using **your own** GitHub account credentials, if you are not logged in already. 
+2.  Click on this link [https://aka.ms/aitour/wrk551](https://aka.ms/aitour/wrk551). This will take you to the project Github repository.
+    * If you are not logged into Github already you will need to login using **your own** GitHub account credentials. 
+
+3. Click the green **<> Code** button in the top-right part of the page.
+    * Click the Codespaces tab
+    * Then click **Create codespace on main**
+    * This will open a pre-built Codespace on main. 
 
 
-4. Navigate to [docs/workshop/WORKSHOP-README.md](WORKSHOP-README.md) and follow the instructions to get going!
-    * When following the steps in Part 1 of the workshop Readme, use the [azure credentials](#azure-credentials) at the top of this manual to login and run the commands mentioned.
+4. Once your Codespace is ready:
+    * In the file explorer look for the **docs** folder and in it open the **workshop** folder. 
+    * Open the **WORKSHOP-README.md** file. (There are other Readme files in the folder,specifically open the workshop one.)
+    * Follow the instructions to get going!
+    * When following the steps to login to AZD and AZ in Part 1 of this file, use the [azure credentials](#azure-credentials) at the top of the Skillable manual to login.
 
 Have fun building!🎉
