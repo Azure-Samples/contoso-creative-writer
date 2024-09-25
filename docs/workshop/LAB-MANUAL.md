@@ -10,7 +10,7 @@ Subscription = "++@lab.CloudSubscription.Id++"
 
 **If you are viewing this from the Skillable lab page** the above are your unique azure credentials.
 
-> **Note**: You will be asked to copy the above block in the lab later so keep this information opened.
+> **Note**: You will be asked to copy the above block in the lab later so keep this information readily available.
 
 **If you are viewing this from Github:** The above are not your credentials. They are placeholders. Your actual credentials can be seen on the Skillable lab page.
 
