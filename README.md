@@ -217,8 +217,7 @@ To test the sample:
     
     **Important Note**: If you are running in Codespaces, you will need to change the visibility of the API's 8000 and 5173 ports to `public` in your VS Code terminal's `PORTS` tab. The ports tab should look like this:
 
-    ![Screenshot showing setting port-visibility](images/ports-narrow.png)
-   <img src="./images/ports.png" alt="Screenshot showing setting port-visibility" width="800px" />
+    ![Screenshot showing setting port-visibility](images/ports-resized.png)
 
 
     If you open the server link in a browser, you will see a URL not found error, this is because we haven't created a home url route in FastAPI. We have instead created a `/get_article` route which is used to pass context and instructions directly to the get_article.py file which runs the agent workflow.
