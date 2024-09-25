@@ -15,7 +15,7 @@ This workshop will introduce new tooling that provides practical solutions to th
 
 These are instructions for the insructor led AI Tour session, you should have the Skillable Lab Manual open in a different tab.
 
-1. Open a terminal window.
+1. Open a terminal window (this is likely already done for you.)
 
 2. We'll begin by logging into the Github CLI so we can fork the repository and make changes to the code comfortably.
 
@@ -25,12 +25,20 @@ These are instructions for the insructor led AI Tour session, you should have th
     unset GITHUB_TOKEN
     ```
 
+    ii. A notification should come up at the bottom right of your screen, that looks like the one in the image below. 
+    - If it dissapears click the bell🔔 icon and you should see it again. 
+    - Select **Sign into Github**
+    - Then select **Allow**
+
+    <img src="./actions_allow.png" alt="Actions pop up" width="500" height="200">
+
+
     ii. Login to Github CLI with the following command and complete through the login workflow. 
     - When you have run the command answer the questions as follows:  
-        - What account do you want to log into? **GitHub.com**
-        - What is your preferred protocol for Git operations on this host? **HTTPS**
-        - Authenticate Git with your GitHub credentials? **Yes**
-        - How would you like to authenticate GitHub CLI? **Login with a web browser**
+    - What account do you want to log into? **GitHub.com**
+    - What is your preferred protocol for Git operations on this host? **HTTPS**
+    - Authenticate Git with your GitHub credentials? **Y**
+    - How would you like to authenticate GitHub CLI? **Login with a web browser**
 
     ```shell
     gh auth login
@@ -44,6 +52,7 @@ These are instructions for the insructor led AI Tour session, you should have th
     ```
 
 Next we will login to Azure Developer CLI (azd) and Azure CLI (az).
+<br>**Note:** If you get an error trying to sign in to either, rerun the command to try again. 
 
 3. Sign in to Azure Developer CLI. 
     - Use the `username` and `password` from the lab manual when prompted to sign in with an email and password.
@@ -84,13 +93,12 @@ Next we will login to Azure Developer CLI (azd) and Azure CLI (az).
 8. Run the postprovision script 
     - Make sure to **Replace `AzureEnvName`** with the value given for it in the lab manual. 
     - This might take a while but should not take more than 5mins.
-    - While you wait move on to **part 2** and get started with Notebook 1! 
 
     ```shell
     azd hooks run postprovision -e AZDEnvName
     ```
 
-You are now ready to start understanding and building Contoso Creative Writer! 
+➡️ **While you wait move on to part 2 and get started with [workshop-1-intro.ipynb](workshop-1-intro.ipynb)!** 
  
 ## Part 2: Understanding and Building Contoso Creative Writer
 
