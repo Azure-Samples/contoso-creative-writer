@@ -49,6 +49,7 @@ To participate in this workshop, you will need:
     * Then click **Create codespace on main**
     * This will open a pre-built Codespace on main. 
 
+    > **🚧 IMPORTANT**: Do not open the GitHub Codespace on a fork of the repository, this would prevent you from using the prebuilt Codespace container image. Don't worry, you'll have the possibility to fork the repository later.
 
 4. Once your Codespace is ready:
     * In the file explorer look for the **docs** folder and in it open the **workshop** folder. 
