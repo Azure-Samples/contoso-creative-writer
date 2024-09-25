@@ -35,9 +35,10 @@ description: Using Azure OpenAI agent with Python, integrating Bing Search API a
 - [Deployment](#deployment)
 - [Testing the sample](#testing-the-sample)
     - [Evaluating prompt flow results](#evaluating-prompt-flow-results)
-- [Costs](#costs)
-- [Security Guidelines](#security-guidelines)
 - [Guidance](#guidance)
+    - [Region Availability](#region-availability)
+    - [Costs](#costs)
+    - [Security Guidelines](#security)
 - [Resources](#resources)
 - [Code of Conduct](#code-of-conduct)
 
@@ -215,7 +216,8 @@ To test the sample:
     ```
     
     **Important Note**: If you are running in Codespaces, you will need to change the visibility of the API's 8000 and 5173 ports to `public` in your VS Code terminal's `PORTS` tab. The ports tab should look like this:
-   
+
+    ![Screenshot showing setting port-visibility](images/ports-narrow.png)
    <img src="./images/ports.png" alt="Screenshot showing setting port-visibility" width="800px" />
 
 
