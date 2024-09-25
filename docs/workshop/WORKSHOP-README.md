@@ -16,7 +16,6 @@ This workshop will introduce new tooling that provides practical solutions to th
 Open the [LAB-SETUP.ipynb](./LAB-SETUP.ipynb) notebook to go through authentication and refreshing your azd environment.
 
 ## Learning Outcomes
-
 In this section we will focus on four key outcomes, each split into their own notebook:
 
 1. [Understanding agents and prompt engineering with Prompty.](./workshop-1-intro.ipynb)
