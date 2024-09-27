@@ -1,15 +1,11 @@
 ## Azure Credentials:
 
-**Username/email:** ++@lab.CloudPortalCredential(User1).Username++
-
-**Password:** ++@lab.CloudPortalCredential(User1).Password++
-
-**AzureEnvName:** ++AITOUR@lab.LabInstance.Id++
-
-**Subscription:** ++@lab.CloudSubscription.Id++
+# CREDENTIALS
 
 
 **If you are viewing this from the Skillable lab page** the above are your unique azure credentials.
+
+> **Note**: You will be asked to copy the above block in the lab later so keep this information readily available.
 
 **If you are viewing this from Github:** The above are not your credentials. They are placeholders. Your actual credentials can be seen on the Skillable lab page.
 
