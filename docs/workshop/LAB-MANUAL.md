@@ -1,12 +1,7 @@
 ## Azure Credentials:
 
-```
 # CREDENTIALS
-Username     = "++@lab.CloudPortalCredential(User1).Username++"
-Password     = "++@lab.CloudPortalCredential(User1).Password++"
-AzureEnvName = "++AITOUR@lab.LabInstance.Id++"
-Subscription = "++@lab.CloudSubscription.Id++"
-```
+
 
 **If you are viewing this from the Skillable lab page** the above are your unique azure credentials.
 
