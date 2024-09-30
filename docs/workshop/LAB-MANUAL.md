@@ -1,8 +1,8 @@
 ## Azure Credentials:
 
-```
 # CREDENTIALS
 
+```
 Username     = "++@lab.CloudPortalCredential(User1).Username++"
 
 Password     = "++@lab.CloudPortalCredential(User1).Password++"
