@@ -6,7 +6,7 @@ import concurrent.futures
 from pathlib import Path
 from datetime import datetime
 from promptflow.core import AzureOpenAIModelConfiguration
-from promptflow.evals.evaluate import evaluate
+from azure.ai.evaluation import evaluate
 from evaluate.evaluators import ArticleEvaluator
 from orchestrator import create
 from prompty.tracer import trace

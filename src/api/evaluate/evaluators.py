@@ -7,7 +7,7 @@ from threading import Thread
 from opentelemetry import trace
 from opentelemetry.trace import set_span_in_context
 from promptflow.core import AzureOpenAIModelConfiguration
-from promptflow.evals.evaluators import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator
+from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator, ContentSafetyEvaluator
 
 
 class ArticleEvaluator:
@@ -17,15 +17,16 @@ class ArticleEvaluator:
             FluencyEvaluator(model_config),
             CoherenceEvaluator(model_config),
             GroundednessEvaluator(model_config),
+            ContentSafetyEvaluator(model_config)
         ]
 
     def __call__(self, *, query: str, context: str, response: str, **kwargs):
         output = {}
         for evaluator in self.evaluators:
             result = evaluator(
-                question=query,
+                query=query,
                 context=context,
-                answer=response,
+                response=response,
             )
             output.update(result)
         return output

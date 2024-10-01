@@ -4,7 +4,7 @@ openai
 requests
 prompty[azure]==0.1.24
 promptflow
-promptflow-evals
+azure-ai-evaluation
 pandas
 azure-monitor-opentelemetry-exporter
 opentelemetry-instrumentation-fastapi
