@@ -6,7 +6,6 @@ import random
 from threading import Thread
 from opentelemetry import trace
 from opentelemetry.trace import set_span_in_context
-from promptflow.core import AzureOpenAIModelConfiguration
 from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator, ContentSafetyEvaluator
 
 
@@ -35,11 +34,11 @@ def evaluate_article(data, trace_context):
     tracer = trace.get_tracer(__name__)
     with tracer.start_as_current_span("run_evaluators", context=trace_context) as span:
         span.set_attribute("inputs", json.dumps(data))
-        configuration = AzureOpenAIModelConfiguration(
-            azure_deployment=os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],
-            api_version=os.environ["AZURE_OPENAI_API_VERSION"],
-            azure_endpoint=f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
-        )
+        configuration = {
+            "azure_deployment": os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],
+            "api_version": os.environ["AZURE_OPENAI_API_VERSION"],
+            "azure_endpoint": f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
+    }
         evaluator = ArticleEvaluator(configuration)
         results = evaluator(query=data['query'], context=data['context'], response=data['response'])
         resultsJson = json.dumps(results)
