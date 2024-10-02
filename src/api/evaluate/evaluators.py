@@ -35,9 +35,9 @@ def evaluate_article(data, trace_context):
     with tracer.start_as_current_span("run_evaluators", context=trace_context) as span:
         span.set_attribute("inputs", json.dumps(data))
         configuration = {
-            "azure_deployment": os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],
-            "api_version": os.environ["AZURE_OPENAI_API_VERSION"],
-            "azure_endpoint": f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
+        "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
+        "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
+        "project_name": os.environ["AZURE_PROJECT_NAME"],
     }
         evaluator = ArticleEvaluator(configuration)
         results = evaluator(query=data['query'], context=data['context'], response=data['response'])
