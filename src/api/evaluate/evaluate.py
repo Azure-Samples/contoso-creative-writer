@@ -142,9 +142,9 @@ if __name__ == "__main__":
     
     # Initialize Azure OpenAI Connection
     model_config = {
-        "azure_deployment": os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],   
-        "api_version": os.environ["AZURE_OPENAI_API_VERSION"],
-        "azure_endpoint": f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/",
+        "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
+        "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
+        "project_name": os.environ["AZURE_PROJECT_NAME"],
     }
 
     start=time.time()
