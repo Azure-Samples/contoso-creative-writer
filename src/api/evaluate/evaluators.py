@@ -6,8 +6,7 @@ import random
 from threading import Thread
 from opentelemetry import trace
 from opentelemetry.trace import set_span_in_context
-from promptflow.core import AzureOpenAIModelConfiguration
-from promptflow.evals.evaluators import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator
+from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator, ContentSafetyEvaluator
 
 
 class ArticleEvaluator:
@@ -17,15 +16,16 @@ class ArticleEvaluator:
             FluencyEvaluator(model_config),
             CoherenceEvaluator(model_config),
             GroundednessEvaluator(model_config),
+            ContentSafetyEvaluator(model_config)
         ]
 
     def __call__(self, *, query: str, context: str, response: str, **kwargs):
         output = {}
         for evaluator in self.evaluators:
             result = evaluator(
-                question=query,
+                query=query,
                 context=context,
-                answer=response,
+                response=response,
             )
             output.update(result)
         return output
@@ -34,11 +34,11 @@ def evaluate_article(data, trace_context):
     tracer = trace.get_tracer(__name__)
     with tracer.start_as_current_span("run_evaluators", context=trace_context) as span:
         span.set_attribute("inputs", json.dumps(data))
-        configuration = AzureOpenAIModelConfiguration(
-            azure_deployment=os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],
-            api_version=os.environ["AZURE_OPENAI_API_VERSION"],
-            azure_endpoint=f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
-        )
+        configuration = {
+        "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
+        "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
+        "project_name": os.environ["AZURE_PROJECT_NAME"],
+    }
         evaluator = ArticleEvaluator(configuration)
         results = evaluator(query=data['query'], context=data['context'], response=data['response'])
         resultsJson = json.dumps(results)

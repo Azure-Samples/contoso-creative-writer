@@ -5,8 +5,7 @@ import json
 import concurrent.futures
 from pathlib import Path
 from datetime import datetime
-from promptflow.core import AzureOpenAIModelConfiguration
-from promptflow.evals.evaluate import evaluate
+from azure.ai.evaluation import evaluate
 from evaluate.evaluators import ArticleEvaluator
 from orchestrator import create
 from prompty.tracer import trace
@@ -142,11 +141,11 @@ if __name__ == "__main__":
     import jsonlines
     
     # Initialize Azure OpenAI Connection
-    model_config = AzureOpenAIModelConfiguration(
-        azure_deployment=os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],   
-        api_version=os.environ["AZURE_OPENAI_API_VERSION"],
-        azure_endpoint=f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
-    )
+    model_config = {
+        "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
+        "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
+        "project_name": os.environ["AZURE_PROJECT_NAME"],
+    }
 
     start=time.time()
     print(f"Starting evaluate...")
