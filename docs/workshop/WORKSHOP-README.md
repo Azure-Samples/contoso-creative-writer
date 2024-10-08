@@ -14,6 +14,9 @@ This workshop will introduce new tooling that provides practical solutions to th
 ## Setting Up
 
 Open the [LAB-SETUP.ipynb](./LAB-SETUP.ipynb) notebook to go through authentication and refreshing your azd environment.
+After completing the setup stage, you can get started with the rest of the workshop. 
+
+## Getting Started
 
 In this section we will focus on four key outcomes, each split into their own notebook:
 
