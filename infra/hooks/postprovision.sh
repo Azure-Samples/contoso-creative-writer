@@ -4,7 +4,6 @@ set -e
 
 # Output environment variables to .env file using azd env get-values
 azd env get-values > .env
-az login --service-principal -u ${AZURE_CLIENT_ID} -p ${AZURE_CLIENT_SECRET} --tenant ${AZURE_TENANT_ID} --no-prompt
 
 acr_build () {
     image_name=$1
