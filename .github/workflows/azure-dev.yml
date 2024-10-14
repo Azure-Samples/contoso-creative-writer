@@ -73,7 +73,7 @@ jobs:
           AZURE_CLIENT_APP_SECRET: ${{ secrets.AZURE_CLIENT_APP_SECRET }}
 
       - name: Deploy Application
-        run: azd deploy --no-prompt
+        run: azd up --no-prompt
 
       - name: Azure login
         uses: azure/login@v2
