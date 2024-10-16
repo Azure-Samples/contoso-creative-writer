@@ -1,6 +1,19 @@
 name: creativeagent
 metadata:
   template: creativeagent@0.0.1-beta
+services:
+  api:
+    project: ./src/api
+    language: python
+    host: containerapp
+    docker:
+      remoteBuild: true
+  web:
+    project: ./src/web
+    language: js
+    host: containerapp
+    docker:
+      remoteBuild: true
 hooks:
   postprovision:
     posix:

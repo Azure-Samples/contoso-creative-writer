@@ -6,28 +6,6 @@ $ErrorActionPreference = 'Stop'
 Write-Output "Outputting environment variables to .env file..."
 azd env get-values > .env
 
-function acr_build {
-    param (
-        [string]$image_name,
-        [string]$aca_name,
-        [string]$src_dir,
-        [int]$target_port
-    )
-
-    $image_fqn = "$env:AZURE_CONTAINER_REGISTRY_NAME.azurecr.io/$image_name"
-    Write-Output "Building $image_name using $src_dir ..."
-    az acr build --subscription $env:AZURE_SUBSCRIPTION_ID --registry $env:AZURE_CONTAINER_REGISTRY_NAME --image $image_name $src_dir
-    az containerapp update --subscription $env:AZURE_SUBSCRIPTION_ID --name $aca_name --resource-group $env:AZURE_RESOURCE_GROUP --image $image_fqn
-    az containerapp ingress update --subscription $env:AZURE_SUBSCRIPTION_ID --name $aca_name --resource-group $env:AZURE_RESOURCE_GROUP --target-port $target_port
-}
-
-# Generate a tag with current date and time
-$TAG = (Get-Date).ToString("yyyyMMdd-HHmmss")
-
-# Build images and update container apps
-acr_build "creativeagentapi:$TAG" $env:API_SERVICE_ACA_NAME "./src/api/" 80
-acr_build "creativeagentweb:$TAG" $env:WEB_SERVICE_ACA_NAME "./src/web/" 80
-
 # Retrieve service names, resource group name, and other values from environment variables
 $resourceGroupName = $env:AZURE_RESOURCE_GROUP
 $searchService = $env:AZURE_SEARCH_NAME
