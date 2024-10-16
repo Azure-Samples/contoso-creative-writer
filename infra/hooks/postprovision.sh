@@ -5,22 +5,6 @@ set -e
 # Output environment variables to .env file using azd env get-values
 azd env get-values > .env
 
-acr_build () {
-    image_name=$1
-    aca_name=$2
-    src_dir=$3
-    target_port=$4
-    image_fqn="${AZURE_CONTAINER_REGISTRY_NAME}.azurecr.io/${image_name}"
-    echo  "Building ${image_name} using ${src_dir} ..."
-    az acr build --subscription ${AZURE_SUBSCRIPTION_ID} --registry ${AZURE_CONTAINER_REGISTRY_NAME} --image ${image_name} ${src_dir}
-    az containerapp update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${aca_name} --resource-group ${AZURE_RESOURCE_GROUP} --image ${image_fqn}
-    az containerapp ingress update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${aca_name} --resource-group ${AZURE_RESOURCE_GROUP} --target-port ${target_port}
-}
-
-TAG=$(date +%Y%m%d-%H%M%S)
-acr_build creativeagentapi:${TAG} ${API_SERVICE_ACA_NAME} ./src/api/ 80
-acr_build creativeagentweb:${TAG} ${WEB_SERVICE_ACA_NAME} ./src/web/ 80
-
 # Retrieve service names, resource group name, and other values from environment variables
 resourceGroupName=$AZURE_RESOURCE_GROUP
 searchService=$AZURE_SEARCH_NAME
