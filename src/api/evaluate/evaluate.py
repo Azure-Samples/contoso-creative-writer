@@ -141,12 +141,12 @@ if __name__ == "__main__":
     import time
     import jsonlines
     
-    # Initialize Azure OpenAI Connection
-    model_config = AzureOpenAIModelConfiguration(
-        azure_deployment=os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],   
-        api_version=os.environ["AZURE_OPENAI_API_VERSION"],
-        azure_endpoint=f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
-    )
+
+    model_config = {
+        "azure_deployment":os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],   
+        "api_version":os.environ["AZURE_OPENAI_API_VERSION"],
+        "azure_endpoint":f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
+    }
     project_scope = {
         "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
         "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
