@@ -26,13 +26,6 @@ hooks:
       continueOnError: false
       interactive: true
       run: infra/hooks/postprovision.ps1
-  postdeploy:
-  #    windows:
-  #      shell: pwsh
-  #      run: azd env set VITE_API_BASE_URL $env:"https://${CODESPACE_NAME}-8000.app.github.dev"
-  #    posix:
-  #      shell: sh
-  #      run: azd env set VITE_API_BASE_URL ${"https://${CODESPACE_NAME}-8000.app.github.dev"}
 infra:
     provider: "bicep"
 
