@@ -12,7 +12,7 @@ model:
     azure_deployment: gpt-35-turbo
     api_version: 2023-07-01-preview
 sample:
-  instructions: Can you generate queries to find the latest camping trends and what folks are doing in the winter? Use 'en-US' as the market code. 
+  instructions: Can you generate queries to find the latest winter camping trends? Use 'en-US' as the market code. 
 ---
 system:
 # Researcher Agent
