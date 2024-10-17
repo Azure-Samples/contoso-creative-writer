@@ -150,9 +150,9 @@ if __name__ == "__main__":
     project_scope = {
         "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
         "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
-        "project_name": os.environ["AZURE_PROJECT_NAME"],        
+        "project_name": os.environ["AZURE_AI_PROJECT_NAME"],        
     }
-
+    
     start=time.time()
     print(f"Starting evaluate...")
     print(os.environ["BING_SEARCH_ENDPOINT"])

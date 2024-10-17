@@ -7,7 +7,7 @@ from threading import Thread
 from opentelemetry import trace
 from opentelemetry.trace import set_span_in_context
 from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator, ContentSafetyEvaluator
-
+from azure.identity import DefaultAzureCredential
 
 class ArticleEvaluator:
     def __init__(self, model_config, project_scope):
@@ -16,7 +16,7 @@ class ArticleEvaluator:
             FluencyEvaluator(model_config),
             CoherenceEvaluator(model_config),
             GroundednessEvaluator(model_config),
-            ContentSafetyEvaluator(project_scope)
+            ContentSafetyEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential())
         ]
 
     def __call__(self, *, query: str, context: str, response: str, **kwargs):
@@ -42,7 +42,7 @@ def evaluate_article(data, trace_context):
         project_scope = {
             "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
             "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
-            "project_name": os.environ["AZURE_PROJECT_NAME"],        
+            "project_name": os.environ["AZURE_AI_PROJECT_NAME"],        
         }
         evaluator = ArticleEvaluator(configuration, project_scope)
         results = evaluator(query=data['query'], context=data['context'], response=data['response'])
