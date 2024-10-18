@@ -121,11 +121,17 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
 
     print("Evaluation summary:\n")
     results_df = pd.DataFrame.from_dict(eval_results)
-    print(results_df)
+    results_df_gpt_evals = results_df[['gpt_relevance', 'gpt_fluency', 'gpt_coherence','gpt_groundedness']]
+    results_df_content_safety = results_df[['violence_score', 'self_harm_score', 'hate_unfairness_score','sexual_score']]
 
-    mean_df = results_df.drop("research_context", axis=1).mean()
+    # mean_df = results_df.drop("research_context", axis=1).mean()
+    mean_df = results_df_gpt_evals.mean()
     print("\nAverage scores:")
     print(mean_df)
+
+    content_safety_mean_df = results_df_content_safety.mean()
+    print("\nContent safety average scores:")
+    print(content_safety_mean_df)
 
     results_df.to_markdown(folder + '/eval_results.md')
     with open(folder + '/eval_results.md', 'a') as file:
@@ -150,7 +156,7 @@ if __name__ == "__main__":
     project_scope = {
         "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
         "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
-        "project_name": os.environ["AZURE_PROJECT_NAME"],        
+        "project_name": os.environ["AZURE_AI_PROJECT_NAME"],        
     }
 
     start=time.time()
