@@ -158,7 +158,7 @@ if __name__ == "__main__":
         "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
         "project_name": os.environ["AZURE_AI_PROJECT_NAME"],        
     }
-
+    
     start=time.time()
     print(f"Starting evaluate...")
     print(os.environ["BING_SEARCH_ENDPOINT"])
