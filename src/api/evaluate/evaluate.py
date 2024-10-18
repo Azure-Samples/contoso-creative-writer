@@ -6,7 +6,7 @@ import concurrent.futures
 from pathlib import Path
 from datetime import datetime
 from promptflow.core import AzureOpenAIModelConfiguration
-from promptflow.evals.evaluate import evaluate
+from azure.ai.evaluation import evaluate
 from evaluate.evaluators import ArticleEvaluator
 from orchestrator import create
 from prompty.tracer import trace
@@ -20,7 +20,7 @@ folder = Path(__file__).parent.absolute().as_posix()
 # # Add the api directory to the sys.path
 # sys.path.append(os.path.abspath('../src/api'))
 
-def evaluate_aistudio(model_config, data_path):
+def evaluate_aistudio(model_config, project_scope, data_path):
     # create unique id for each run with date and time
     run_prefix = datetime.now().strftime("%Y%m%d%H%M%S")
     run_id = f"{run_prefix}_chat_evaluation_sdk"    
@@ -30,7 +30,7 @@ def evaluate_aistudio(model_config, data_path):
         evaluation_name=run_id,
         data=data_path,
         evaluators={
-            "article": ArticleEvaluator(model_config),
+            "article": ArticleEvaluator(model_config, project_scope),
         },
         evaluator_config={
             "defaults": {
@@ -42,8 +42,8 @@ def evaluate_aistudio(model_config, data_path):
     )
     return result
 
-def evaluate_data(model_config, data_path):
-    writer_evaluator = ArticleEvaluator(model_config)
+def evaluate_data(model_config, project_scope, data_path):
+    writer_evaluator = ArticleEvaluator(model_config,project_scope)
 
     data = []
     with open(data_path) as f:
@@ -81,8 +81,8 @@ def run_orchestrator(research_context, product_context, assignment_context):
     }
 
 @trace
-def evaluate_orchestrator(model_config, data_path):
-    writer_evaluator = ArticleEvaluator(model_config)
+def evaluate_orchestrator(model_config, project_scope,  data_path):
+    writer_evaluator = ArticleEvaluator(model_config, project_scope)
 
     data = []
     with open(data_path) as f:
@@ -121,11 +121,17 @@ def evaluate_orchestrator(model_config, data_path):
 
     print("Evaluation summary:\n")
     results_df = pd.DataFrame.from_dict(eval_results)
-    print(results_df)
+    results_df_gpt_evals = results_df[['gpt_relevance', 'gpt_fluency', 'gpt_coherence','gpt_groundedness']]
+    results_df_content_safety = results_df[['violence_score', 'self_harm_score', 'hate_unfairness_score','sexual_score']]
 
-    mean_df = results_df.drop("research_context", axis=1).mean()
+    # mean_df = results_df.drop("research_context", axis=1).mean()
+    mean_df = results_df_gpt_evals.mean()
     print("\nAverage scores:")
     print(mean_df)
+
+    content_safety_mean_df = results_df_content_safety.mean()
+    print("\nContent safety average scores:")
+    print(content_safety_mean_df)
 
     results_df.to_markdown(folder + '/eval_results.md')
     with open(folder + '/eval_results.md', 'a') as file:
@@ -141,13 +147,18 @@ if __name__ == "__main__":
     import time
     import jsonlines
     
-    # Initialize Azure OpenAI Connection
-    model_config = AzureOpenAIModelConfiguration(
-        azure_deployment=os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],   
-        api_version=os.environ["AZURE_OPENAI_API_VERSION"],
-        azure_endpoint=f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
-    )
 
+    model_config = {
+        "azure_deployment":os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],   
+        "api_version":os.environ["AZURE_OPENAI_API_VERSION"],
+        "azure_endpoint":f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
+    }
+    project_scope = {
+        "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
+        "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
+        "project_name": os.environ["AZURE_AI_PROJECT_NAME"],        
+    }
+    
     start=time.time()
     print(f"Starting evaluate...")
     print(os.environ["BING_SEARCH_ENDPOINT"])
@@ -156,7 +167,7 @@ if __name__ == "__main__":
 
     tracer = init_tracing(local_tracing=True)
 
-    eval_result = evaluate_orchestrator(model_config, data_path=folder +"/eval_inputs.jsonl")
+    eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
 
     end=time.time()
     print(f"Finished evaluate in {end - start}s")
