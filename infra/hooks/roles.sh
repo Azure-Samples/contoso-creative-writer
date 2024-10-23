@@ -26,12 +26,6 @@ az role assignment create \
         --assignee-principal-type 'User'
 
 az role assignment create \
-        --role "8ebe5a00-799e-43f5-93ac-243d3dce84a7" \
-        --assignee-object-id "${PRINCIPAL_ID}" \
-        --scope /subscriptions/"${AZURE_SUBSCRIPTION_ID}"/resourceGroups/"${AZURE_OPENAI_RESOURCE_GROUP}" \
-        --assignee-principal-type 'User'
-
-az role assignment create \
         --role "5e0bd9bd-7b93-4f28-af87-19fc36ad61bd" \
         --assignee-object-id "${PRINCIPAL_ID}" \
         --scope /subscriptions/"${AZURE_SUBSCRIPTION_ID}"/resourceGroups/"${AZURE_OPENAI_RESOURCE_GROUP}" \
