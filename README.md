@@ -34,7 +34,7 @@ description: Using Azure OpenAI agent with Python, integrating Bing Search API a
       - [Initializing the project](#initializing-the-project)
 - [Deployment](#deployment)
 - [Testing the sample](#testing-the-sample)
-    - [Evaluating prompt flow results](#evaluating-prompt-flow-results)
+    - [Evaluating results](#evaluating-results)
 - [Guidance](#guidance)
     - [Region Availability](#region-availability)
     - [Costs](#costs)
@@ -275,20 +275,25 @@ python -m orchestrator
 Once you can see the article has been generated, a `.runs` folder should appear in the `./src/api` . Select this folder and click the `.tracy` file in it. 
 This shows you all the Python functions that were called in order to generate the article. Explore each section and see what helpful information you can find.
 
-## Evaluating prompt flow results
+## Evaluating results
 
-To understand how well our prompt flow performs using defined metrics like **groundedness**, **coherence** etc we can evaluate the results. To evaluate the prompt flow, we need to be able to compare it to what we see as "good results" in order to understand how well it aligns with our expectations. 
+Contoso Creative Writer uses evaluators to assess application response quality. The 4 metrics the evaluators in this project assess are Coherence, Fluency, Relevance and Groundedness. A custom `evaluate.py` script has been written to run all evaulations for you.
 
-We may be able to evaluate the flow manually (e.g., using Azure AI Studio) but for now, we'll evaluate this by running the prompt flow using **gpt-4** and comparing our performance to the results obtained there. To do this, follow the instructions and steps in the notebook `evaluate-chat-prompt-flow.ipynb` under the `eval` folder.
-
-You can also view the evaluation metrics by running the following command from the src/api folder. 
-
-Run evaluation:
+1. To run the script run the following commands:
 
 ```shell
 cd ./src/api
 python -m evaluate.evaluate
 ```
+
+- Check: You see scores for Coherence, Fluency, Relevance and Groundedness.
+- Check: The scores are between 1 and 5
+  
+
+2. To understand what is being evaluated open the `src/api/evaluate/eval_inputs.jsonl` file.
+   - Observe that 3 examples of research, product and assignment context are stored in this file. This data will be sent to the orchestrator so that each example will have:
+   - each example will have the evaluations run and will incoperate all of the context, research, products, and final article when grading the response.
+        
 
 ## Setting up CI/CD with GitHub actions
 
