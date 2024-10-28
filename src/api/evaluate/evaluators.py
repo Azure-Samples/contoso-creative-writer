@@ -1,13 +1,13 @@
 import os
 import json
-from openai import OpenAIError
-import time
-import random
-from threading import Thread
+import logging
+
 from opentelemetry import trace
 from opentelemetry.trace import set_span_in_context
 from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator, ContentSafetyEvaluator
 from azure.identity import DefaultAzureCredential
+
+logging.getLogger('promptflow.core._prompty_utils').setLevel(logging.CRITICAL)
 
 
 class ArticleEvaluator:
@@ -29,6 +29,12 @@ class ArticleEvaluator:
                 response=response,
             )
             output.update(result)
+
+            if not isinstance(evaluator, ContentSafetyEvaluator):
+                print(f"{evaluator.RESULT_KEY} evaluation done!")
+            else:
+                print(f"Content saftey evaluation in done!")
+                
         return output
 
 def evaluate_article(data, trace_context):

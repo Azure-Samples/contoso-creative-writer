@@ -17,7 +17,7 @@ deployments:
     sku:
       name: "Standard"
       capacity: 8
-  - name: gpt-4
+  - name: gpt-4-evals
     model:
       format: OpenAI
       name: gpt-4o
@@ -25,11 +25,11 @@ deployments:
     sku:
       name: "GlobalStandard"
       capacity: 8
-  - name: gpt-4-evals
+  - name: gpt-4
     model:
       format: OpenAI
       name: gpt-4
-      version: "1106-Preview"
+      version: "turbo-2024-04-09"
     sku:
-      name: "Standard"
+      name: "GlobalStandard"
       capacity: 8
