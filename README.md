@@ -277,7 +277,7 @@ This shows you all the Python functions that were called in order to generate th
 
 ## Evaluating results
 
-Contoso Creative Writer uses evaluators to assess application response quality. The 4 metrics the evaluators in this project assess are Coherence, Fluency, Relevance and Groundedness. A custom `evaluate.py` script has been written to run all evaulations for you.
+Contoso Creative Writer uses evaluators to assess application response quality. The 5 metrics the evaluators in this project assess are Coherence, Fluency, Relevance, Groundedness and Content Safety. A custom `evaluate.py` script has been written to run all evaulations for you.
 
 1. To run the script run the following commands:
 
@@ -286,7 +286,7 @@ cd ./src/api
 python -m evaluate.evaluate
 ```
 
-- Check: You see scores for Coherence, Fluency, Relevance and Groundedness.
+- Check: You see scores for Coherence, Fluency, Relevance, Groundedness and Content Safety.
 - Check: The scores are between 1 and 5
   
 
