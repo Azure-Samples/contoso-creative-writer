@@ -85,6 +85,9 @@ param openAi_4_eval_DeploymentName string = 'gpt-4-evals'
 @description('The name of the OpenAI embedding deployment')
 param openAiEmbeddingDeploymentName string = 'text-embedding-ada-002'
 
+@description('The name of the OpenAI dalle deployment')
+param openAiDalleDeploymentName string = 'dall-e-3'
+
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
@@ -185,6 +188,7 @@ module apiContainerApp 'app/api.bicep' = {
     openAi_4_DeploymentName: !empty(openAi_4_DeploymentName) ? openAi_4_DeploymentName : 'gpt-4'
     openAi_4_eval_DeploymentName: !empty(openAi_4_eval_DeploymentName) ? openAi_4_eval_DeploymentName : 'gpt-4-evals'
     openAiEmbeddingDeploymentName: openAiEmbeddingDeploymentName
+    openAiDalleDeploymentName: openAiDalleDeploymentName
     openAiEndpoint: ai.outputs.openAiEndpoint
     openAiName: ai.outputs.openAiName
     openAiType: openAiType
@@ -312,6 +316,7 @@ output APPINSIGHTS_CONNECTIONSTRING string = ai.outputs.applicationInsightsConne
 
 output OPENAI_TYPE string = 'azure'
 output AZURE_EMBEDDING_NAME string = openAiEmbeddingDeploymentName
+output AZURE_DALLE_NAME string = openAiDalleDeploymentName
 
 output AZURE_SEARCH_ENDPOINT string = ai.outputs.searchServiceEndpoint
 output AZURE_SEARCH_NAME string = ai.outputs.searchServiceName
