@@ -63,7 +63,7 @@ def run_orchestrator(research_context, product_context, assignment_context):
     context = {}
     response = None
 
-    for result in create(research_context, product_context, assignment_context):
+    for result in create(research_context, product_context, assignment_context,evaluate=False):
         if not type(result) == tuple:
             parsed_result = json.loads(result)
         if type(parsed_result) is list:
@@ -98,6 +98,7 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
         result = { "research_context": research_context }
         print("Running orchestrator...")
         eval_data = run_orchestrator(research_context, product_context, assignment_context)
+        print('')
         print("Evaluating results...")
         eval_result = writer_evaluator(query=eval_data["query"], context=eval_data["context"], response=eval_data["response"])
         result.update(eval_result)
