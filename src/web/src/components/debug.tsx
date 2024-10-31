@@ -5,6 +5,7 @@ import {
   BuildingStorefrontIcon,
   BeakerIcon,
   AcademicCapIcon,
+  PaintBrushIcon,
   UserIcon,
   PencilIcon,
   InformationCircleIcon,
@@ -50,6 +51,8 @@ export const Debug = () => {
         return "bg-green-200 text-zinc-600";
       case "writer":
         return "bg-violet-200 text-zinc-600";
+        case "designer":
+          return "bg-pink-300 text-purple-600";
       case "editor":
         return "bg-amber-200 text-zinc-600";
       case "error":
@@ -69,6 +72,8 @@ export const Debug = () => {
         return <AcademicCapIcon className="w-6 stroke-green-600" />;
       case "writer":
         return <UserIcon className="w-6 stroke-violet-600" />;
+        case "designer":
+          return <PaintBrushIcon className="w-6 stroke-purple-600" />;
         case "editor":
           return <PencilIcon className="w-6 stroke-amber-600" />;
       case "error":

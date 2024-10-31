@@ -2,6 +2,7 @@ import './app.css';
 import { version } from "./version";
 import Toolbar from "./components/toolbar";
 import Article from "./components/article";
+import Images from "./components/images";
 import Task from './components/task';
 
 function App() {
@@ -34,8 +35,13 @@ function App() {
             <h2 className="text-3xl text-gray-800 mb-4">Your Article</h2>
             <Article />
           </div>
+          <div>
+          <h2 className="text-3xl text-gray-800 mb-4">Your Image</h2>
+          <Images />
+          </div>
         </section>
       </div>
+
 
       {/* Version Number */}
       <div className="fixed right-0 bottom-0 mr-6 mb-2 text-gray-400">

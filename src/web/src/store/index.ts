@@ -1,6 +1,6 @@
 import { endpoint } from "../constants";
 export interface IMessage {
-  type: "message" | "researcher" | "marketing" | "writer" | "editor" | "error" | "partial";
+  type: "message" | "researcher" | "marketing" | "writer" | "designer" | "editor" | "error" | "partial";
   message: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
@@ -72,9 +72,9 @@ export const startWritingTask = (
         for (let part of parts) {
           part = part.trim();
           if (!part || part.length === 0) continue;
-          console.log(part);
-          const message = JSON.parse(part) as IMessage;
-          addMessage(message);
+          // console.log(part.toString());
+            const message = JSON.parse(part) as IMessage;
+            addMessage(message);
           if (message.type === "writer") {
             if (message.data && message.data.start) {
               createArticle("");
