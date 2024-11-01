@@ -30,10 +30,10 @@ class ArticleEvaluator:
             )
             output.update(result)
 
-            # if not isinstance(evaluator, ContentSafetyEvaluator):
-            #     print(f"{evaluator.RESULT_KEY} evaluation done!")
-            # else:
-            #     print(f"Content saftey evaluation in done!")
+            if not isinstance(evaluator, ContentSafetyEvaluator):
+                print(f"{evaluator.RESULT_KEY} evaluation done!")
+            else:
+                print(f"Content saftey evaluation in done!")
                 
         return output
 
