@@ -5,6 +5,8 @@ import logging
 from opentelemetry import trace
 from opentelemetry.trace import set_span_in_context
 from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator, ContentSafetyEvaluator
+from azure.ai.evaluation import ViolenceEvaluator, HateUnfairnessEvaluator, SelfHarmEvaluator, SexualEvaluator
+
 from azure.identity import DefaultAzureCredential
 
 logging.getLogger('promptflow.core._prompty_utils').setLevel(logging.CRITICAL)
@@ -17,7 +19,10 @@ class ArticleEvaluator:
             FluencyEvaluator(model_config),
             CoherenceEvaluator(model_config),
             GroundednessEvaluator(model_config),
-            ContentSafetyEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential())
+            ViolenceEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential()),
+            HateUnfairnessEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential()),
+            SelfHarmEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential()),
+            SexualEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential())
         ]
 
     def __call__(self, *, query: str, context: str, response: str, **kwargs):
@@ -31,7 +36,7 @@ class ArticleEvaluator:
             output.update(result)
 
             if not isinstance(evaluator, ContentSafetyEvaluator):
-                print(f"{evaluator.RESULT_KEY} evaluation done!")
+                print(f"{evaluator._RESULT_KEY} evaluation done!")
             else:
                 print(f"Content saftey evaluation in done!")
                 

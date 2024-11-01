@@ -107,7 +107,7 @@ The easiest way to get started is GitHub Codespaces, since it will setup all the
 
     You will be prompted to select some details about your deployed resources, including location. As a reminder we recommend Canada East as the region for this project.
     Once the deployment is complete you should be able to scroll up in your terminal and see the url that the app has been deployed to. It should look similar to this 
-    `Ingress Updated. Access your app at https://env-name.codespacesname.eastus2.azurecontainerapps.io/`. Navigate to the link to try out the app straight away! 
+    `Ingress Updated. Access your app at https://env-name.codespacesname.swedencentral.azurecontainerapps.io/`. Navigate to the link to try out the app straight away! 
 
 5. Once the above steps are completed you can [test the sample](#testing-the-sample). 
 
@@ -185,7 +185,7 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
     azd up
     ```
 
-    This project uses `gpt-35-turbo-0613`,`gpt-4-1106-Preview` and `gpt-4o-2024-05-13` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. We recommend using Canada East for this project.
+    This project uses `gpt-35-turbo-0613`,`gpt-4-1106-Preview` and `gpt-4o-2024-05-13` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. We recommend using `Sweden Central` for this project.
 
    After running azd up, you may be asked the following question during `Github Setup`:
 
@@ -309,7 +309,7 @@ azd pipeline config
 ### Region Availability
 
 This template uses `gpt-35-turbo-0613`,`gpt-4-1106-Preview` and `gpt-4o-2024-05-13` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly
-  * We recommend using Canada East
+  * We recommend using `Sweden Central`
 
 ### Costs
 

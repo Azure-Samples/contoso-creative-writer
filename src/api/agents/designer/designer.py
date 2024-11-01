@@ -14,11 +14,10 @@ def image_gen(image_prompt):
     )
 
     client = AzureOpenAI(
-        azure_endpoint = f"https://mmhan-m2xchnk3-australiaeast.openai.azure.com/openai/deployments/dall-e-3/images/generations?api-version=2024-02-01", 
+        azure_endpoint = f"{os.getenv('AZURE_OPENAI_ENDPOINT')}", 
         api_version="2024-02-01",
         azure_ad_token_provider=token_provider
     )
-
 
     result = client.images.generate(
         model="dall-e-3", # the name of your DALL-E 3 deployment
