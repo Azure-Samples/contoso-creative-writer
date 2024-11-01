@@ -29,14 +29,7 @@ deployments:
     model:
       format: OpenAI
       name: gpt-4
-      version: "0125-Preview"
+      version: "turbo-2024-04-09"
     sku:
-      name: "Standard"
+      name: "GlobalStandard"
       capacity: 8
-  - name: dall-e-3
-    model:
-      format: OpenAI
-      name: dall-e-3
-    sku:
-      name: "Standard"
-      capacity: 1
