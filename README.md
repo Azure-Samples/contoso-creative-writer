@@ -45,7 +45,7 @@ description: Using Azure OpenAI agent with Python, integrating Bing Search API a
 
 ![App preview](images/app_preview.png)
 
-![Agent workflow preview](images/agent.png)
+![Agent workflow preview](images/updated_app_image.png)
 
 Contoso Creative Writer is an app that will help you write well researched, product specific articles. Enter the required information and then click "Start Work". To watch the steps in the agent workflow select the debug button in the bottom right corner of the screen. The result will begin writing once the agents complete the tasks to write the article.
 
