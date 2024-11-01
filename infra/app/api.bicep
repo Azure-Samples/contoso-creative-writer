@@ -14,7 +14,6 @@ param openAiEndpoint string
 param openAiName string
 param openAiApiVersion string
 param openAiEmbeddingDeploymentName string
-param openAiDalleDeploymentName string
 param openAiType string
 param aiSearchEndpoint string
 param aiSearchIndexName string
@@ -82,10 +81,6 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'AZURE_EMBEDDING_NAME'
         value: openAiEmbeddingDeploymentName
-      }
-      {
-        name: 'AZURE_DALLE_NAME'
-        value: openAiDalleDeploymentName
       }
       {
         name: 'APPINSIGHTS_CONNECTIONSTRING'

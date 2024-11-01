@@ -47,9 +47,6 @@
     "openAiEmbeddingDeploymentName": {
       "value": "${AZURE_EMBEDDING_NAME=text-embedding-ada-002}"
     },
-    "openAiDalleDeploymentName": {
-      "value": "${AZURE_DALLE_NAME=dall-e-3}"
-    },
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"
     },
