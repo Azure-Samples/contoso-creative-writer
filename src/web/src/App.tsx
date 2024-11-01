@@ -33,11 +33,10 @@ function App() {
         <section className="lg:w-2/3 flex-grow mt-8 lg:mt-0">
           <div className="bg-white shadow-md rounded p-6">
             <h2 className="text-3xl text-gray-800 mb-4">Your Article</h2>
+            <Images />
             <Article />
           </div>
           <div>
-          <h2 className="text-3xl text-gray-800 mb-4">Your Image</h2>
-          <Images />
           </div>
         </section>
       </div>
