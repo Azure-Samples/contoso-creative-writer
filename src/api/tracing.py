@@ -19,13 +19,16 @@ def trace_span(name: str):
     tracer = oteltrace.get_tracer(_tracer)    
     with tracer.start_as_current_span(name) as span:        
         def verbose_trace(key, value):            
-            if isinstance(value, dict):                
+            if isinstance(value, dict):             
                 for k, v in value.items():                  
-                    verbose_trace(f"{key}.{k}", v)            
-            else:                
-                span.set_attribute(f"{key}", value)        
-        yield verbose_trace
+                    verbose_trace(f"{key}.{k}", v)        
+            elif isinstance(value, (list, tuple)):
+                for index, item in enumerate(value):
+                    span.set_attribute(f"{index}", str(item))  
+            else:    
+                span.set_attribute(f"{key}", value)    
 
+        yield verbose_trace
 
 def init_tracing(local_tracing: bool = False):
     """
@@ -51,7 +54,6 @@ def init_tracing(local_tracing: bool = False):
         app_insights = os.getenv("APPINSIGHTS_CONNECTIONSTRING")
 
         # Add the Azure exporter to the tracer provider
-
         oteltrace.set_tracer_provider(TracerProvider(sampler=ParentBasedTraceIdRatio(1.0)))
         oteltrace.get_tracer_provider().add_span_processor(BatchSpanProcessor(AzureMonitorTraceExporter(connection_string=app_insights)))
         # oteltrace.get_tracer_provider().add_span_processor(

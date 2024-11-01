@@ -150,7 +150,7 @@ if __name__ == "__main__":
     
 
     model_config = {
-        "azure_deployment":os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],   
+        "azure_deployment":os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],   
         "api_version":os.environ["AZURE_OPENAI_API_VERSION"],
         "azure_endpoint":f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
     }
@@ -162,8 +162,8 @@ if __name__ == "__main__":
     
     start=time.time()
     print(f"Starting evaluate...")
-    print(os.environ["BING_SEARCH_ENDPOINT"])
-    print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
+    # print(os.environ["BING_SEARCH_ENDPOINT"])
+    # print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
 
 
     tracer = init_tracing(local_tracing=True)

@@ -75,6 +75,6 @@ def evaluate_article_in_background(research_context, product_context, assignment
     # propagate trace context to the new thread
     span = trace.get_current_span()
     trace_context = set_span_in_context(span)
-    # thread = Thread(target=evaluate_article, args=(eval_data, trace_context,))
+   
     evaluate_article(eval_data, trace_context)
-    # thread.start()
+   

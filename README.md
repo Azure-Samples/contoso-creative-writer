@@ -45,7 +45,7 @@ description: Using Azure OpenAI agent with Python, integrating Bing Search API a
 
 ![App preview](images/app_preview.png)
 
-![Agent workflow preview](images/agent.png)
+![Agent workflow preview](images/updated_app_image.png)
 
 Contoso Creative Writer is an app that will help you write well researched, product specific articles. Enter the required information and then click "Start Work". To watch the steps in the agent workflow select the debug button in the bottom right corner of the screen. The result will begin writing once the agents complete the tasks to write the article.
 
@@ -146,7 +146,7 @@ A related option is VS Code Dev Containers, which will open the project in your 
 1. Create a new folder and switch to it in the terminal, then run this command to download the project code:
 
     ```shell
-    azd init -t agent-openai-python-prompty
+    azd init -t contoso-creative-writer
     ```
     Note that this command will initialize a git repository, so you do not need to clone this repository.
 

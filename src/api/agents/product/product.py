@@ -46,7 +46,7 @@ def generate_embeddings(queries: List[str]) -> str:
 
 
 @trace
-def retrieve_products(items: List[Dict[str, any]], index_name: str) -> str:
+def retrieve_products(items, index_name):
     search_client = SearchClient(
         endpoint=os.environ["AZURE_SEARCH_ENDPOINT"],
         index_name=index_name,

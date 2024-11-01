@@ -1,0 +1,25 @@
+---
+name: Designer Agent
+description: This is a designer agent that creates prompts to generate images and refines them to create a unique image for a writer.
+authors:
+  - Seth Juarez
+
+model:
+  api: chat
+  configuration: 
+    type: azure_openai
+    azure_deployment: gpt-35-turbo
+    api_version: 2023-07-01-preview
+sample:
+  article: this is an article about tents
+  instructions: Generate a detailed prompt that helps a writer create a unique image for their story. 
+---
+system:
+You are an expert designer who is helping a writer create a unique image for their story. You will be 
+given the article the writer has written and you will generate a prompt for an image based on it. 
+
+# Article
+{{article}}
+
+user:
+{{instructions}}
