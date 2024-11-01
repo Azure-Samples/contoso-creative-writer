@@ -5,6 +5,12 @@ targetScope = 'subscription'
 @description('Name which is used to generate a short unique hash for each resource')
 param environmentName string
 
+@minLength(1)
+@description('Primary location for all resources')
+param location string
+
+@minLength(1)
+@description('Location for the OpenAI resource')
 @allowed([
   'canadaeast'
   'eastus'
@@ -15,14 +21,12 @@ param environmentName string
   'westus'
   'westus3'
 ])
-@minLength(1)
-@description('Primary location for all resources')
 @metadata({
   azd: {
     type: 'location'
   }
 })
-param location string
+param openAILocation string = 'swedencentral'
 
 param containerRegistryName string = ''
 param aiHubName string = ''
@@ -82,6 +86,9 @@ param openAi_4_DeploymentName string = 'gpt-4'
 @description('The name of the 4 eval OpenAI deployment')
 param openAi_4_eval_DeploymentName string = 'gpt-4-evals'
 
+@description('The name of the OpenAI dalle deployment')
+param openAiDalleDeploymentName string = 'dall-e-3'
+
 @description('The name of the OpenAI embedding deployment')
 param openAiEmbeddingDeploymentName string = 'text-embedding-ada-002'
 
@@ -119,7 +126,7 @@ module ai 'core/host/ai-environment.bicep' = {
   name: 'ai'
   scope: resourceGroup
   params: {
-    location: location
+    location: openAILocation
     tags: tags
     hubName: !empty(aiHubName) ? aiHubName : 'ai-hub-${resourceToken}'
     projectName: !empty(aiProjectName) ? aiProjectName : 'ai-project-${resourceToken}'
@@ -185,6 +192,7 @@ module apiContainerApp 'app/api.bicep' = {
     openAi_4_DeploymentName: !empty(openAi_4_DeploymentName) ? openAi_4_DeploymentName : 'gpt-4'
     openAi_4_eval_DeploymentName: !empty(openAi_4_eval_DeploymentName) ? openAi_4_eval_DeploymentName : 'gpt-4-evals'
     openAiEmbeddingDeploymentName: openAiEmbeddingDeploymentName
+    openAiDalleDeploymentName: openAiDalleDeploymentName
     openAiEndpoint: ai.outputs.openAiEndpoint
     openAiName: ai.outputs.openAiName
     openAiType: openAiType
@@ -312,6 +320,7 @@ output APPINSIGHTS_CONNECTIONSTRING string = ai.outputs.applicationInsightsConne
 
 output OPENAI_TYPE string = 'azure'
 output AZURE_EMBEDDING_NAME string = openAiEmbeddingDeploymentName
+output AZURE_DALLE_NAME string = openAiDalleDeploymentName
 
 output AZURE_SEARCH_ENDPOINT string = ai.outputs.searchServiceEndpoint
 output AZURE_SEARCH_NAME string = ai.outputs.searchServiceName

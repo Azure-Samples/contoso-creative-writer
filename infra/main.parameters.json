@@ -29,6 +29,9 @@
     "openAi_4_DeploymentName": {
       "value": "${AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4}"
     },
+    "openAILocation": {
+        "value": "${AZURE_OPENAI_LOCATION}"
+      },
     "openAi_4_ModelName": {
       "value": "${AZURE_OPENAI_MODEL_NAME=gpt-4o}"
     },
@@ -46,6 +49,9 @@
     },
     "openAiEmbeddingDeploymentName": {
       "value": "${AZURE_EMBEDDING_NAME=text-embedding-ada-002}"
+    },
+    "openAiDalleDeploymentName": {
+      "value": "${AZURE_DALLE_NAME=dall-e-3}"
     },
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"
