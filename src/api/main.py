@@ -8,14 +8,12 @@ from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
-from tracing import init_tracing
 from orchestrator import Task, create
+from telemetry import setup_telemetry
 
 base = Path(__file__).resolve().parent
 
 load_dotenv()
-tracer = init_tracing()
-
 app = FastAPI()
 
 code_space = os.getenv("CODESPACE_NAME")
@@ -42,6 +40,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+setup_telemetry(app)
 
 @app.get("/")
 async def root():
