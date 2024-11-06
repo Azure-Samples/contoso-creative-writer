@@ -92,9 +92,9 @@ def create(research_context, product_context, assignment_context, evaluate=False
     processed_writer_result = writer.process(full_result)
 
     # send article to the designer, to generate an image for the blog
-    yield start_message("designer")
-    designer_response = designer.design(processed_writer_result['article'])
-    yield complete_message("designer", [f"Image stored in {designer_response}"])
+    # yield start_message("designer")
+    # designer_response = designer.design(processed_writer_result['article'])
+    # yield complete_message("designer", [f"Image stored in {designer_response}"])
 
     # Then send it to the editor, to decide if it's good or not
     yield start_message("editor")
