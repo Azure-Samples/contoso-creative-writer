@@ -170,10 +170,6 @@ def test_create_article(research_context, product_context, assignment_context):
     
 if __name__ == "__main__":
 
-    from tracing import init_tracing
-
-    tracer = init_tracing(local_tracing=True)
-
     research_context = "Can you find the latest camping trends and what folks are doing in the winter?"
     product_context = "Can you use a selection of tents and sleeping bags as context?"
     assignment_context = '''Write a fun and engaging article that includes the research and product information. 
