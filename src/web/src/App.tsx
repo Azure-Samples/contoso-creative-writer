@@ -3,6 +3,7 @@ import { version } from "./version";
 import Toolbar from "./components/toolbar";
 import Article from "./components/article";
 import Task from './components/task';
+import Images from './components/images';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <section className="lg:w-2/3 flex-grow mt-8 lg:mt-0">
           <div className="bg-white shadow-md rounded p-6">
             <h2 className="text-3xl text-gray-800 mb-4">Your Article</h2>
+            <Images />
             <Article />
           </div>
           <div>

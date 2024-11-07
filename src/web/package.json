@@ -18,7 +18,8 @@
     "react-dom": "^18.2.0",
     "react-redux": "^9.1.2",
     "react-remark": "^2.1.0",
-    "remark-gemoji": "^8.0.0"
+    "remark-gemoji": "^8.0.0",
+    "axios": "^1.7.7"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

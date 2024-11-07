@@ -4,9 +4,11 @@ from fastapi import FastAPI
 from dotenv import load_dotenv
 from prompty.tracer import trace
 from prompty.core import PromptyStream, AsyncPromptyStream
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from fastapi import FastAPI, File, UploadFile
+from evaluate.evaluators import evaluate_image
 
 from orchestrator import Task, create
 from telemetry import setup_telemetry
@@ -56,6 +58,37 @@ async def create_article(task: Task):
         ),
         media_type="text/event-stream",
     )
+
+@app.post("/api/upload-image")
+async def upload_image(file: UploadFile = File(...)):
+
+    base = Path(__file__).resolve().parent
+
+    # Set the directory for the stored image
+    image_dir = os.path.join(base, 'images')
+
+    # Initialize the image path (note the filetype should be png)
+    file_path  = os.path.join(image_dir, file.filename)
+    # UPLOAD_DIRECTORY = Path(base / "images")
+
+    # Construct the file path where the image will be saved
+    # file_path = os.path.join(UPLOAD_DIRECTORY, file.filename)
+    
+    # Save the image to the specified path
+    with open(file_path, "wb") as image:
+        content = await file.read()
+        image.write(content)
+
+    from evaluate.evaluators import evaluate_image
+
+    result = evaluate_image(file_path)
+
+    if result != "Image is safe to upload":
+        # Return the filename and location
+        return JSONResponse({"location": result})
+    else:
+        # Return the filename and location
+        return JSONResponse({"filename": file.filename, "location": file_path})
 
 
 # TODO: fix open telemetry so it doesn't slow app so much

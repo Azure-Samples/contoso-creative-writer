@@ -10,7 +10,7 @@ from azure.ai.evaluation import evaluate
 from evaluate.evaluators import ArticleEvaluator
 from orchestrator import create
 from prompty.tracer import trace
-from tracing import init_tracing
+# from tracing import init_tracing
 
 from dotenv import load_dotenv
 
@@ -166,7 +166,7 @@ if __name__ == "__main__":
     # print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
 
 
-    tracer = init_tracing(local_tracing=True)
+    # tracer = init_tracing(local_tracing=True)
 
     eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
 

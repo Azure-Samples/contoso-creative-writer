@@ -15,3 +15,5 @@ gunicorn==21.2.0
 jupyter
 opentelemetry-instrumentation
 azure-identity==1.17.1
+azure-ai-contentsafety
+azure-ai-inference
