@@ -101,6 +101,15 @@ param runningOnGh string = ''
 @description('Whether the deployment is running on Azure DevOps Pipeline')
 param runningOnAdo string = ''
 
+@description('The name of the Cosmos account')
+param cosmosAccountName string = ''
+
+@description('The name of the Cosmos database')
+param cosmosDatabaseName string = 'contoso-outdoor'
+
+@description('The name of the Cosmos container')
+param cosmosContainerName string = 'customers'
+
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
 
@@ -163,6 +172,27 @@ module bing 'core/bing/bing-search.bicep' = {
   }
 }
 
+module cosmos 'core/database/cosmos/sql/cosmos-sql-db.bicep' = {
+  name: 'cosmos'
+  scope: resourceGroup
+  params: {
+    accountName: !empty(cosmosAccountName) ? cosmosAccountName : 'cosmos-contoso-${resourceToken}'
+    databaseName: 'contoso-outdoor'
+    location: location
+    tags: union(tags, {
+      defaultExperience: 'Core (SQL)'
+      'hidden-cosmos-mmspecial': ''
+    })
+    containers: [
+      {
+        name: 'customers'
+        id: 'customers'
+        partitionKey: '/id'
+      }
+    ]
+  }
+}
+
 // Container apps host (including container registry)
 module containerApps 'core/host/container-apps.bicep' = {
   name: 'container-apps'
@@ -202,6 +232,9 @@ module apiContainerApp 'app/api.bicep' = {
     appinsights_Connectionstring: ai.outputs.applicationInsightsConnectionString
     bingApiEndpoint: bing.outputs.endpoint
     bingApiKey: bing.outputs.bingApiKey
+    cosmosEndpoint: cosmos.outputs.endpoint
+    cosmosDatabaseName: cosmosDatabaseName
+    cosmosContainerName: cosmosContainerName
   }
 }
 
@@ -251,6 +284,36 @@ module userAiSearchRole 'core/security/role.bicep' = if (!empty(principalId)) {
   }
 }
 
+module cosmosRoleContributor 'core/security/role.bicep' = {
+  scope: resourceGroup
+  name: 'ai-search-service-contributor'
+  params: {
+    principalId: managedIdentity.outputs.managedIdentityPrincipalId
+    roleDefinitionId: '7ca78c08-252a-4471-8644-bb5ff32d4ba0' //Search Service Contributor
+    principalType: 'ServicePrincipal'
+  }
+}
+
+module cosmosAccountRole 'core/security/role-cosmos.bicep' = {
+  scope: resourceGroup
+  name: 'cosmos-account-role'
+  params: {
+    principalId: managedIdentity.outputs.managedIdentityPrincipalId
+    databaseAccountId: cosmos.outputs.accountId
+    databaseAccountName: cosmos.outputs.accountName
+  }
+}
+
+module userCosmosRoleContributor 'core/security/role.bicep' = if (!empty(principalId)) {
+  scope: resourceGroup
+  name: 'user-ai-search-service-contributor'
+  params: {
+    principalId: principalId
+    roleDefinitionId: '7ca78c08-252a-4471-8644-bb5ff32d4ba0' //Search Service Contributor
+    principalType: principalType
+  }
+}
+
 module searchRoleUser 'core/security/role.bicep' = {
   scope: resourceGroup
   name: 'search-role-user'
@@ -291,6 +354,16 @@ module openaiRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
   }
 }
 
+module userCosmosAccountRole 'core/security/role-cosmos.bicep' = if (!empty(principalId)) {
+  scope: resourceGroup
+  name: 'user-cosmos-account-role'
+  params: {
+    principalId: principalId
+    databaseAccountId: cosmos.outputs.accountId
+    databaseAccountName: cosmos.outputs.accountName
+  }
+}
+
 output AZURE_LOCATION string = location
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
 
@@ -327,5 +400,9 @@ output AZURE_SEARCH_NAME string = ai.outputs.searchServiceName
 
 output BING_SEARCH_ENDPOINT string = bing.outputs.endpoint
 output BING_SEARCH_KEY string = bing.outputs.bingApiKey
+
+output COSMOS_ENDPOINT string = cosmos.outputs.endpoint
+output AZURE_COSMOS_NAME string = cosmosDatabaseName
+output COSMOS_CONTAINER string = cosmosContainerName
 
 

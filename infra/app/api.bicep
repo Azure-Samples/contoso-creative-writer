@@ -19,6 +19,9 @@ param openAiType string
 param aiSearchEndpoint string
 param aiSearchIndexName string
 param appinsights_Connectionstring string
+param cosmosEndpoint string
+param cosmosDatabaseName string
+param cosmosContainerName string
 
 @secure()
 param bingApiKey string
@@ -42,6 +45,18 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'AZURE_CLIENT_ID'
         value: identityId
+      }
+      {
+        name: 'COSMOS_ENDPOINT'
+        value: cosmosEndpoint
+      }
+      {
+        name: 'AZURE_COSMOS_NAME'
+        value: cosmosDatabaseName
+      }
+      {
+        name: 'COSMOS_CONTAINER'
+        value: cosmosContainerName
       }
       {
         name: 'AZURE_SEARCH_ENDPOINT'

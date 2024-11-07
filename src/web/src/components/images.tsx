@@ -1,6 +1,5 @@
-import { useAppSelector } from "../store/hooks";
 import { getUploadLocation } from "../constants"; 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 
 export const Images = () => {
