@@ -187,7 +187,6 @@ if __name__ == "__main__":
 
     # Function to convert image to base64 string
     def image_to_base64(file_path):
-        import pandas as pd
         with open(file_path, "rb") as image_file:
             return base64.b64encode(image_file.read()).decode("utf-8")
 
@@ -203,4 +202,4 @@ if __name__ == "__main__":
             # Write the JSON object as a line in the JSONL file
             jsonl_file.write(json.dumps(image_data) + "\n")
 
-    evaluate_image(json_file_path, project_scope)    
+    evaluate_image(image_data["image_base64"], project_scope)    

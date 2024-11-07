@@ -66,47 +66,52 @@ def evaluate_article(data, trace_context):
 def evaluate_image(image_path, project_scope):
     import uuid
     azure_cred = DefaultAzureCredential()
-    content_safety_eval = ContentSafetyMultimodalEvaluator(
+    content_safety_eval = ViolenceMultimodalEvaluator(
         azure_ai_project=project_scope, credential=azure_cred
     )
-    conversation={"conversation":{
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": "What's in this image?"
-                            },
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"{image_path}"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "role": "assistant",
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": "This picture of people camping"
-                            }],
+    # conversation={"conversation":{
+    #             "messages": [
+    #                 {
+    #                     "role": "user",
+    #                     "content": [
+    #                         {
+    #                             "type": "text",
+    #                             "text": "Can you describe this image?"
+    #                         },
+    #                         {
+    #                             "type": "image_url",
+    #                             "image_url": {
+    #                                 "url": "https://cdn.britannica.com/68/178268-050-5B4E7FB6/Tom-Cruise-2013.jpg"
+    #                             }
+    #                         }
+    #                     ]
+    #                 },
+    #                 {
+    #                     "role": "system",
+    #                     "content": [
+    #                         {
+    #                             "type": "text",
+    #                             "text": "This picture of a man"
+    #                         }],
                         
-                    }
-                ]
-            }
-    }
+    #                 }
+    #             ]
+    #         }
+    # }
     
     # Specify the JSONL file path
     jsonl_file_path = "conversation_data.jsonl"
 
-    # Write conversation to JSONL file
-    with open(jsonl_file_path, "a") as jsonl_file:
-        json.dump(conversation, jsonl_file)
-        jsonl_file.write("\n")
+    from pprint import pprint
+
+    # # Write conversation to JSONL file
+    # with open(jsonl_file_path, "a") as jsonl_file:
+    #     json.dump(conversation, jsonl_file)
+    #     jsonl_file.write("\n")
     
+
+    #This works as expected but we need to figure out how we can manually add images in. 
+    #maybe create an image url. Figure out where I'm going wrong
     result = evaluate(
         evaluation_name=f"evaluate-api-multi-modal-eval-dataset-{str(uuid.uuid4())}",
         azure_ai_project=project_scope,
@@ -116,9 +121,10 @@ def evaluate_image(image_path, project_scope):
             "content_safety": {"conversation": "${data.conversation}"},
         }
     )
+
+    print("\n======= Eval Results ======")
+    pprint(result["rows"])
         
-    
-    print(result)
 
 
 def evaluate_article_in_background(research_context, product_context, assignment_context, research, products, article):
