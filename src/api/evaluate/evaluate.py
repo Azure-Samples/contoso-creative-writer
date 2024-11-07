@@ -149,26 +149,58 @@ if __name__ == "__main__":
     import jsonlines
     
 
-    model_config = {
-        "azure_deployment":os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],   
-        "api_version":os.environ["AZURE_OPENAI_API_VERSION"],
-        "azure_endpoint":f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
-    }
+    # model_config = {
+    #     "azure_deployment":os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],   
+    #     "api_version":os.environ["AZURE_OPENAI_API_VERSION"],
+    #     "azure_endpoint":f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
+    # }
     project_scope = {
         "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
         "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
         "project_name": os.environ["AZURE_AI_PROJECT_NAME"],        
     }
     
-    start=time.time()
-    print(f"Starting evaluate...")
-    # print(os.environ["BING_SEARCH_ENDPOINT"])
-    # print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
+    # start=time.time()
+    # print(f"Starting evaluate...")
+    # # print(os.environ["BING_SEARCH_ENDPOINT"])
+    # # print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
 
 
-    # tracer = init_tracing(local_tracing=True)
+    # # tracer = init_tracing(local_tracing=True)
 
-    eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
+    # eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
 
-    end=time.time()
-    print(f"Finished evaluate in {end - start}s")
+    # end=time.time()
+    # print(f"Finished evaluate in {end - start}s")
+    from evaluate.evaluators import evaluate_image
+
+    base = Path(__file__).resolve().parents[1]
+
+    # Set the directory for the stored image
+    image_dir = os.path.join(base, 'images')
+
+    # Initialize the image path (note the filetype should be png)
+    file_path  = os.path.join(image_dir, "generated_image.png")
+
+    import json
+    import base64
+
+    # Function to convert image to base64 string
+    def image_to_base64(file_path):
+        import pandas as pd
+        with open(file_path, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode("utf-8")
+
+    json_file_path  = os.path.join(image_dir, "images.jsonl")
+
+    # Convert each image and write to a JSONL file
+    with open(json_file_path, "w") as jsonl_file:
+            # Create a JSON object with the Base64 encoded image
+            image_data = {
+                "image_name": file_path,
+                "image_base64": image_to_base64(file_path)
+            }
+            # Write the JSON object as a line in the JSONL file
+            jsonl_file.write(json.dumps(image_data) + "\n")
+
+    evaluate_image(json_file_path, project_scope)    
