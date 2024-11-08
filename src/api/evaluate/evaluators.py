@@ -47,9 +47,11 @@ class ArticleEvaluator:
 
     def __call__(self, *, data_path, **kwargs):
         output = {}
+        ## NOTE: - The following code expects that the user has Storage Blob Data Contributor permissions in order for the results to upload to the Azure AI Studio.
         result = evaluate(
             data=data_path,
             evaluators=self.evaluators,
+            ## NOTE: If you do not have Storage Blob Data Contributor permissions, please comment out the below line of code. 
             azure_ai_project=self.project_scope,
             evaluator_config={
                 "relevance": {

@@ -6,11 +6,9 @@ from pathlib import Path
 from .evaluators import ArticleEvaluator
 from orchestrator import create
 from prompty.tracer import trace
-from tracing import init_tracing
 from azure.identity import DefaultAzureCredential
 from azure.ai.project import AIProjectClient
 from azure.ai.project.models import Evaluation, Dataset, EvaluatorConfiguration, ConnectionType
-from azure.ai.evaluation import RelevanceEvaluator, FluencyEvaluator, CoherenceEvaluator, GroundednessEvaluator, ViolenceEvaluator, HateUnfairnessEvaluator, SelfHarmEvaluator, SexualEvaluator
 
 from dotenv import load_dotenv
 
@@ -28,7 +26,7 @@ def evaluate_remote(data_path):
 
     project_client = AIProjectClient.from_connection_string(
         credential=DefaultAzureCredential(),
-        conn_str="eastus2.api.azureml.ms;70e1ee3b-e694-4bce-9bff-d5d982d936d7;rg-ignite-11-7-2;ai-project-ykb63sonpiqqk",
+        conn_str=os.getenv("PROJECT_CONNECTION_STRING"),
     )
 
     data_id = project_client.upload_file(data_path)
@@ -93,12 +91,6 @@ def evaluate_remote(data_path):
                     "azure_ai_project": project_client.scope
                 },
             ),
-            # "friendliness": EvaluatorConfiguration(
-            #     id="azureml://locations/eastus2/workspaces/f41c33c3-0aa4-41d1-bba7-31ce3bdaf0ab/models/blue_stem_7dg00zlwmt/versions/1",
-            #     init_params={
-            #         "model_config": model_config
-            #     }
-            # )
         },
     )
 
@@ -154,7 +146,6 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
     # write out eval data to a file so we can re-run evaluation on it
     with jsonlines.open(folder + '/eval_data.jsonl', 'w') as writer:
         for row in eval_data:
-            # print(row)
             writer.write(row)
 
     eval_data_path = folder + '/eval_data.jsonl'
@@ -169,7 +160,6 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
     results_df_gpt_evals = results_df[['relevance.gpt_relevance', 'fluency.gpt_fluency', 'coherence.gpt_coherence','groundedness.gpt_groundedness']]
     results_df_content_safety = results_df[['violence.violence_defect_rate', 'self-harm.self_harm_defect_rate', 'hate-unfairness.hate_unfairness_defect_rate','sexual.sexual_defect_rate']]
 
-    # mean_df = results_df.drop("research_context", axis=1).mean()
     mean_df = results_df_gpt_evals.mean()
     print("\nAverage scores:")
     print(mean_df)
@@ -208,9 +198,6 @@ if __name__ == "__main__":
     print(f"Starting evaluate...")
     # print(os.environ["BING_SEARCH_ENDPOINT"])
     # print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
-
-
-    tracer = init_tracing(local_tracing=True)
 
     eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
     evaluate_remote(data_path=folder +"/eval_data.jsonl")

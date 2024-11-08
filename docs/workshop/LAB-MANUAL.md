@@ -2,10 +2,15 @@
 
 # CREDENTIALS
 
-++Username     = "@lab.CloudPortalCredential(User1).Username"
+````
+Username     = "@lab.CloudPortalCredential(User1).Username"
+
 Password     = "@lab.CloudPortalCredential(User1).Password"
+
 AzureEnvName = "AITOUR@lab.LabInstance.Id"
-Subscription = "@lab.CloudSubscription.Id"++
+
+Subscription = "@lab.CloudSubscription.Id"
+````
 
 
 **If you are viewing this from the Skillable lab page** the above are your unique azure credentials.
@@ -16,7 +21,7 @@ Subscription = "@lab.CloudSubscription.Id"++
 
 ***
 
-### Welcome to this Microsoft workshop!
+### Welcome to the AI Tour and workshop WRK551!
 
 In this session, you will learn how to build the app, **Contoso Creative Writer**. This app will assist the marketing team at Contoso Outdoors in creating trendy, well-researched articles to promote the company’s products.
 
@@ -30,22 +35,32 @@ To participate in this workshop, you will need:
 2. A GitHub Account.
     * If you don't have one, you can [signup for a free account](https://github.com/signup) now.
     * After this workshop is complete, you will have a fork of the "contoso-creative-writer" repository in your GitHub account, which includes all the materials you will need to reproduce this workshop at home.
-
+3. Familiarity with Visual Studio Code.
+    * We will run all code in GitHub Codespaces, a virtualized Linux machine, instead of your local laptop. We won't be running anything on your laptop directly.
+    * VS Code Online will be our development environment in GitHub Codespaces.
+    * If you are familiar with running Codespaces within VS Code Desktop on your laptop, feel free to do so.
+4. (preferred) Familiarity with the *bash* shell.
+    * We'll be using *bash* to run commands in the VS Code terminal.
 
 ### To begin this lab follow these steps:
 
 1. Confirm that you can see your **Azure Credentials** at the top of the page. 
     * You will use these to login to Azure Developer CLI (AZD) and Azure CLI (AZ) later. 
 
-2.  Click on this link [https://aka.ms/contoso-creative-writer-codespace](https://aka.ms/contoso-creative-writer-codespace). This will take you to a page where you can open a Codespace for Contoso Creative Writer. 
+2.  Click on this link [https://aka.ms/aitour/wrk551](https://aka.ms/aitour/wrk551). This will take you to the project Github repository.
     * If you are not logged into Github already you will need to login using **your own** GitHub account credentials. 
 
-3. Click the green **<> Create codespace** button at the bottom of the page.
+3. Click the green **<> Code** button in the top-right part of the page.
+    * Click the Codespaces tab
+    * Then click **Create codespace on main**
     * This will open a pre-built Codespace on main. 
+
+    > **🚧 IMPORTANT**: Do not open the GitHub Codespace on a fork of the repository, this would prevent you from using the prebuilt Codespace container image. Don't worry, you'll have the possibility to fork the repository later.
 
 4. Once your Codespace is ready:
     * In the file explorer look for the **docs** folder and in it open the **workshop** folder. 
-    * Open the **LAB-SETUP.ipynb** file. 
+    * Open the **WORKSHOP-README.md** file. (There are other Readme files in the folder,specifically open the workshop one.)
     * Follow the instructions to get going!
+    * When following the steps to login to AZD and AZ in Part 1 of this file, use the [azure credentials](#azure-credentials) at the top of the Skillable manual to login.
 
 Have fun building!🎉
