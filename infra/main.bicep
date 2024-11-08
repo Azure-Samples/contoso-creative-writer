@@ -26,7 +26,7 @@ param location string
     type: 'location'
   }
 })
-param openAILocation string = 'eastus2'
+param openAILocation string = 'swedencentral'
 
 param containerRegistryName string = ''
 param aiHubName string = ''
