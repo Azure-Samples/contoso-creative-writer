@@ -1,10 +1,10 @@
 using './main.bicep'
 
 param environmentName = readEnvironmentVariable('AZURE_ENV_NAME', 'MY_ENV')
-param location = readEnvironmentVariable('AZURE_LOCATION', 'swedencentral')
+param location = readEnvironmentVariable('AZURE_LOCATION', 'eastus2')
 param principalId = readEnvironmentVariable('AZURE_PRINCIPAL_ID', '')
 param resourceGroupName = readEnvironmentVariable('AZURE_RESOURCE_GROUP', '')
-param openAILocation = readEnvironmentVariable('AZURE_OPENAI_LOCATION','swedencentral')
+param openAILocation = readEnvironmentVariable('AZURE_OPENAI_LOCATION','eastus2')
 
 param aiHubName = readEnvironmentVariable('AZUREAI_HUB_NAME', '')
 param aiProjectName = readEnvironmentVariable('AZUREAI_PROJECT_NAME', '')
