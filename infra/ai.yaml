@@ -33,11 +33,11 @@ deployments:
     sku:
       name: "GlobalStandard"
       capacity: 8
-  - name: dall-e-3
-    model:
-      format: OpenAI
-      name: dall-e-3
-      version: "3.0"
-    sku:
-      name: "Standard"
-      capacity: 1
+  # - name: dall-e-3
+  #   model:
+  #     format: OpenAI
+  #     name: dall-e-3
+  #     version: "3.0"
+  #   sku:
+  #     name: "Standard"
+  #     capacity: 1

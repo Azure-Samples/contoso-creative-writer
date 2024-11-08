@@ -92,9 +92,9 @@ def create(research_context, product_context, assignment_context, evaluate=False
     processed_writer_result = writer.process(full_result)
 
     # send article to the designer, to generate an image for the blog
-    yield start_message("designer")
-    designer_response = designer.design(processed_writer_result['article'])
-    yield complete_message("designer", [f"Image stored in {designer_response}"])
+    # yield start_message("designer")
+    # designer_response = designer.design(processed_writer_result['article'])
+    # yield complete_message("designer", [f"Image stored in {designer_response}"])
 
     # Then send it to the editor, to decide if it's good or not
     yield start_message("editor")
@@ -169,10 +169,6 @@ def test_create_article(research_context, product_context, assignment_context):
                 print(f'Article: {article}')
     
 if __name__ == "__main__":
-
-    from tracing import init_tracing
-
-    tracer = init_tracing(local_tracing=True)
 
     research_context = "Can you find the latest camping trends and what folks are doing in the winter?"
     product_context = "Can you use a selection of tents and sleeping bags as context?"
