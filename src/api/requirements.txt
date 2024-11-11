@@ -17,3 +17,10 @@ opentelemetry-instrumentation
 azure-identity==1.17.1
 azure-ai-contentsafety
 azure-ai-inference
+gunicorn==21.2.0
+azure-keyvault-secrets
+aiohttp==3.9.5
+azure-cognitiveservices-speech==1.37.0
+nbconvert
+azure-ai-inference[opentelemetry]
+
