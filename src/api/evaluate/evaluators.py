@@ -4,9 +4,12 @@ import logging
 import prompty
 from opentelemetry import trace
 from opentelemetry.trace import set_span_in_context
-from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator, ContentSafetyEvaluator
+from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator
 from azure.ai.evaluation import ViolenceEvaluator, HateUnfairnessEvaluator, SelfHarmEvaluator, SexualEvaluator
 from azure.ai.evaluation import evaluate
+from azure.ai.evaluation import ViolenceMultimodalEvaluator, SelfHarmMultimodalEvaluator, HateUnfairnessMultimodalEvaluator, SexualMultimodalEvaluator
+from azure.identity import DefaultAzureCredential
+
 
 from azure.identity import DefaultAzureCredential
 
@@ -121,6 +124,48 @@ class ArticleEvaluator:
         output.update(result)
         return output
     
+class ImageEvaluator:
+    def __init__(self, project_scope):
+        self.evaluators = {
+            "violence": ViolenceMultimodalEvaluator(credential=DefaultAzureCredential(), azure_ai_project=project_scope),
+            "sexual": SexualMultimodalEvaluator(credential=DefaultAzureCredential(), azure_ai_project=project_scope),
+            "self-harm": SelfHarmMultimodalEvaluator(credential=DefaultAzureCredential(), azure_ai_project=project_scope),
+            "hate-unfairness": HateUnfairnessMultimodalEvaluator(credential=DefaultAzureCredential(), azure_ai_project=project_scope),
+        }
+        self.project_scope = project_scope
+
+
+    def __call__(self, *, conversation, **kwargs): 
+        import uuid
+        from pprint import pprint
+
+        jsonl_path = "datafile.jsonl"
+
+        # Write conversation to JSONL file
+        with open(jsonl_path, "w") as jsonl_file:
+            json.dump(conversation, jsonl_file)
+            jsonl_file.write("\n")
+
+        output = {}
+        result = evaluate(
+            evaluation_name=f"evaluate-api-multi-modal-eval-dataset-{str(uuid.uuid4())}",
+            data=jsonl_path,
+            evaluators=self.evaluators,
+            azure_ai_project=self.project_scope,
+            evaluator_config={
+                "violence": {"conversation": "${data.conversation}"},
+                "sexual": {"conversation": "${data.conversation}"},
+                "self-harm": {"conversation": "${data.conversation}"},
+                "hate-unfairness": {"conversation": "${data.conversation}"},
+            }
+        )
+
+        output.update(result)
+
+        return output
+        
+        
+    
 def evaluate_article(data, trace_context):
     tracer = trace.get_tracer(__name__)
     with tracer.start_as_current_span("run_evaluators", context=trace_context) as span:
@@ -161,4 +206,21 @@ def evaluate_article_in_background(research_context, product_context, assignment
     trace_context = set_span_in_context(span)
    
     evaluate_article(eval_data, trace_context)
+
+def evaluate_image(conversation, trace_context):
+    tracer = trace.get_tracer(__name__)
+    with tracer.start_as_current_span("run_image_evaluators", context=trace_context) as span:
+        span.set_attribute("inputs", json.dumps(conversation))
+    project_scope = {
+        "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
+        "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
+        "project_name": os.environ["AZURE_AI_PROJECT_NAME"],        
+    }
+    evaluator = ImageEvaluator(project_scope)
+    results = evaluator(conversation)
+    resultsJson = json.dumps(results)
+
+    print("results: ", resultsJson)
+
+
    

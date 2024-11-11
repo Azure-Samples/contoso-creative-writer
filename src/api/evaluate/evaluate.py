@@ -3,7 +3,7 @@ import os
 import sys
 import json
 from pathlib import Path
-from .evaluators import ArticleEvaluator
+from .evaluators import ArticleEvaluator, ImageEvaluator
 from orchestrator import create
 from prompty.tracer import trace
 from azure.identity import DefaultAzureCredential
@@ -178,9 +178,46 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
 
     return eval_results
 
+def evaluate_image(project_scope,  image_path):
+    image_evaluator = ImageEvaluator(project_scope)
+
+    import pathlib 
+    import base64
+
+    with pathlib.Path(image_path).open("rb") as image_file:
+        encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+
+    conversation = {"conversation":{
+                "messages": [
+        {
+            "role": "system",
+            "content": [
+                {"type": "text", "text": "This is a nature boardwalk at the University of Wisconsin-Madison."}
+            ],
+        },
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "Can you describe this image?"},
+                {"type": "image_url", "image_url": {"url": f"data:image/jpg;base64,{encoded_image}"}},
+            ],
+        },
+    ]
+    }
+    }
+
+    result = image_evaluator(conversation=conversation)
+
+    return result 
+
+
+                 
+
 if __name__ == "__main__":
     import time
     import jsonlines
+    import pathlib
+    from pprint import pprint
     
 
     model_config = {
@@ -201,6 +238,15 @@ if __name__ == "__main__":
 
     eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
     evaluate_remote(data_path=folder +"/eval_data.jsonl")
+
+    parent = pathlib.Path(__file__).parent.resolve()
+    path = os.path.join(parent, "data")
+    image_path = os.path.join(path, "image1.jpg")
+
+    eval_image_result = evaluate_image(project_scope, image_path)
+    image_results = eval_image_result['rows'][0].pop('inputs.conversation')
+
+    pprint(eval_image_result)
 
     end=time.time()
     print(f"Finished evaluate in {end - start}s")
