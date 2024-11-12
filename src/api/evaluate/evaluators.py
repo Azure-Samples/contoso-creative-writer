@@ -8,6 +8,7 @@ from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, Fluen
 from azure.ai.evaluation import ViolenceEvaluator, HateUnfairnessEvaluator, SelfHarmEvaluator, SexualEvaluator
 from azure.ai.evaluation import evaluate
 from azure.ai.evaluation import ViolenceMultimodalEvaluator, SelfHarmMultimodalEvaluator, HateUnfairnessMultimodalEvaluator, SexualMultimodalEvaluator
+from azure.ai.evaluation import ContentSafetyMultimodalEvaluator, ProtectedMaterialMultimodalEvaluator
 from azure.identity import DefaultAzureCredential
 
 
@@ -41,8 +42,8 @@ class ArticleEvaluator:
             "coherence": CoherenceEvaluator(model_config),
             "groundedness": GroundednessEvaluator(model_config),
             "violence": ViolenceEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential()),
-            "hate-unfairness": HateUnfairnessEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential()),
-            "self-harm": SelfHarmEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential()),
+            "hate_unfairness": HateUnfairnessEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential()),
+            "self_harm": SelfHarmEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential()),
             "sexual": SexualEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential()),
             "friendliness": FriendlinessEvaluator(),
         }
@@ -91,14 +92,14 @@ class ArticleEvaluator:
                         "query": "${data.query}",
                     },
                 },
-                "self-harm": {
+                "self_harm": {
                     "column_mapping": {
                         "response": "${data.response}",
                         "context": "${data.context}",
                         "query": "${data.query}",
                     },
                 },
-                "hate-unfairness": {
+                "hate_unfairness": {
                     "column_mapping": {
                         "response": "${data.response}",
                         "context": "${data.context}",
@@ -127,36 +128,46 @@ class ArticleEvaluator:
 class ImageEvaluator:
     def __init__(self, project_scope):
         self.evaluators = {
-            "violence": ViolenceMultimodalEvaluator(credential=DefaultAzureCredential(), azure_ai_project=project_scope),
-            "sexual": SexualMultimodalEvaluator(credential=DefaultAzureCredential(), azure_ai_project=project_scope),
-            "self-harm": SelfHarmMultimodalEvaluator(credential=DefaultAzureCredential(), azure_ai_project=project_scope),
-            "hate-unfairness": HateUnfairnessMultimodalEvaluator(credential=DefaultAzureCredential(), azure_ai_project=project_scope),
+             "content_safety": ContentSafetyMultimodalEvaluator(credential=DefaultAzureCredential(), azure_ai_project=project_scope), 
+            "protected_material": ProtectedMaterialMultimodalEvaluator(credential=DefaultAzureCredential(), azure_ai_project=project_scope)
         }
         self.project_scope = project_scope
 
 
-    def __call__(self, *, conversation, **kwargs): 
+    def __call__(self, *, messages, **kwargs): 
         import uuid
+        import pathlib
         from pprint import pprint
+        import pandas as pd
 
-        jsonl_path = "datafile.jsonl"
+        file_name="dataset_images.jsonl"    
+        parent = pathlib.Path(__file__).parent.resolve()
+        path = os.path.join(parent, "data")
+        datafile_jsonl_path = os.path.join(path, file_name)
+        with open(datafile_jsonl_path, "w") as outfile:
+            for message in messages:
+                conversation = {"conversation": { "messages" : message}}
+                json_line = json.dumps(conversation)
+                outfile.write(json_line + "\n")
 
-        # Write conversation to JSONL file
-        with open(jsonl_path, "w") as jsonl_file:
-            json.dump(conversation, jsonl_file)
-            jsonl_file.write("\n")
+        print("\n===== Reading Data File =======")
 
+        data_path = os.path.join(pathlib.Path(__file__).parent.resolve(), "data")
+        file_path = os.path.join(data_path, file_name)
+        input_data = pd.read_json(file_path, lines=True)
+        pprint(input_data)
+
+
+        print("\n===== Calling Evaluate API - Content Safety & Protected Material Evaluator for multi-modal =======")
         output = {}
         result = evaluate(
             evaluation_name=f"evaluate-api-multi-modal-eval-dataset-{str(uuid.uuid4())}",
-            data=jsonl_path,
+            data=file_path,
             evaluators=self.evaluators,
             azure_ai_project=self.project_scope,
             evaluator_config={
-                "violence": {"conversation": "${data.conversation}"},
-                "sexual": {"conversation": "${data.conversation}"},
-                "self-harm": {"conversation": "${data.conversation}"},
-                "hate-unfairness": {"conversation": "${data.conversation}"},
+                "content_safety": {"conversation": "${data.conversation}"}, 
+                "protected_material": {"conversation": "${data.conversation}"} 
             }
         )
 
@@ -207,17 +218,17 @@ def evaluate_article_in_background(research_context, product_context, assignment
    
     evaluate_article(eval_data, trace_context)
 
-def evaluate_image(conversation, trace_context):
-    tracer = trace.get_tracer(__name__)
-    with tracer.start_as_current_span("run_image_evaluators", context=trace_context) as span:
-        span.set_attribute("inputs", json.dumps(conversation))
+def evaluate_image(messages):
+    # tracer = trace.get_tracer(__name__)
+    # with tracer.start_as_current_span("run_image_evaluators", context=trace_context) as span:
+    #     span.set_attribute("inputs", json.dumps(conversation))
     project_scope = {
         "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
         "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
         "project_name": os.environ["AZURE_AI_PROJECT_NAME"],        
     }
     evaluator = ImageEvaluator(project_scope)
-    results = evaluator(conversation)
+    results = evaluator(messages)
     resultsJson = json.dumps(results)
 
     print("results: ", resultsJson)

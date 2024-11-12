@@ -23,4 +23,6 @@ azure-cognitiveservices-speech==1.37.0
 nbconvert
 azure-ai-inference[opentelemetry]
 azure-ai-evaluation[remote]
+validators
 azureml-mlflow
+
