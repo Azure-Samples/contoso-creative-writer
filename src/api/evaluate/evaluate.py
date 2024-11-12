@@ -9,6 +9,8 @@ from prompty.tracer import trace
 from azure.identity import DefaultAzureCredential
 from azure.ai.project import AIProjectClient
 from azure.ai.project.models import Evaluation, Dataset, EvaluatorConfiguration, ConnectionType
+from openai import AzureOpenAI
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 
 from dotenv import load_dotenv
 
@@ -24,9 +26,11 @@ def evaluate_remote(data_path):
     # At the moment, it should be in the format "<HostName>;<AzureSubscriptionId>;<ResourceGroup>;<HubName>"
     # Customer needs to login to Azure subscription via Azure CLI and set the environment variables
 
+    ai_project_conn_str = os.getenv("AZURE_LOCATION")+".api.azureml.ms;"+os.getenv("AZURE_SUBSCRIPTION_ID")+";"+os.getenv("AZURE_RESOURCE_GROUP")+";"+os.getenv("AZURE_AI_PROJECT_NAME")
+
     project_client = AIProjectClient.from_connection_string(
         credential=DefaultAzureCredential(),
-        conn_str=os.getenv("PROJECT_CONNECTION_STRING"),
+        conn_str=ai_project_conn_str,
     )
 
     data_id = project_client.upload_file(data_path)
@@ -73,13 +77,13 @@ def evaluate_remote(data_path):
                     "azure_ai_project": project_client.scope
                 },
             ),
-            "hateunfairness": EvaluatorConfiguration(
+            "hate_unfairness": EvaluatorConfiguration(
                 id="azureml://registries/azureml/models/Hate-and-Unfairness-Evaluator/versions/4",
                 init_params={
                     "azure_ai_project": project_client.scope
                 },
             ),
-            "selfharm": EvaluatorConfiguration(
+            "self_harm": EvaluatorConfiguration(
                 id="azureml://registries/azureml/models/Self-Harm-Related-Content-Evaluator/versions/3",
                 init_params={
                     "azure_ai_project": project_client.scope
@@ -158,7 +162,7 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
     metrics = {key: [value] for key, value in eval_results['metrics'].items()}
     results_df = pd.DataFrame.from_dict(metrics)
     results_df_gpt_evals = results_df[['relevance.gpt_relevance', 'fluency.gpt_fluency', 'coherence.gpt_coherence','groundedness.gpt_groundedness']]
-    results_df_content_safety = results_df[['violence.violence_defect_rate', 'self-harm.self_harm_defect_rate', 'hate-unfairness.hate_unfairness_defect_rate','sexual.sexual_defect_rate']]
+    results_df_content_safety = results_df[['violence.violence_defect_rate', 'self_harm.self_harm_defect_rate', 'hate_unfairness.hate_unfairness_defect_rate','sexual.sexual_defect_rate']]
 
     mean_df = results_df_gpt_evals.mean()
     print("\nAverage scores:")
@@ -184,34 +188,106 @@ def evaluate_image(project_scope,  image_path):
     import pathlib 
     import base64
 
-    with pathlib.Path(image_path).open("rb") as image_file:
-        encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+    import validators
+    
 
-    conversation = {"conversation":{
-                "messages": [
-        {
-            "role": "system",
-            "content": [
-                {"type": "text", "text": "This is a nature boardwalk at the University of Wisconsin-Madison."}
-            ],
-        },
-        {
-            "role": "user",
-            "content": [
-                {"type": "text", "text": "Can you describe this image?"},
-                {"type": "image_url", "image_url": {"url": f"data:image/jpg;base64,{encoded_image}"}},
-            ],
-        },
-    ]
-    }
-    }
+    if validators.url(image_path):
+        url_path = image_path
+    else:
+        #encode an image or you can add an image file from a url
+        with pathlib.Path(image_path).open("rb") as image_file:
+            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
 
-    result = image_evaluator(conversation=conversation)
+            url_path = f"data:image/jpg;base64,{encoded_image}"
 
-    return result 
+    token_provider = get_bearer_token_provider(
+        DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
+    )
+
+    client = AzureOpenAI(
+        azure_endpoint = f"{os.getenv('AZURE_OPENAI_ENDPOINT')}", 
+        api_version="2023-07-01-preview",
+        azure_ad_token_provider=token_provider
+    )
+
+    sys_message = "You are an AI assistant that describes images in details."
+
+    messages = []
+
+    print(f"\n===== URL : [{url_path}]")
+    print(f"\n===== Calling Open AI to describe image and retrieve response")
+    completion = client.chat.completions.create(
+    model="gpt-4-evals",
+    messages= [
+                    {
+                        "role": "system", 
+                        "content": [
+                            {"type": "text", "text": sys_message}
+                        ]
+                    },
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": "Can you describe this image?"},
+                            {"type": "image_url", "image_url": {"url": url_path}},
+                        ],
+                    },
+                ],
+        )
+    
+    message = [
+            {
+                "role": "system",
+                "content": [
+                    {"type": "text", "text": sys_message}
+                ],
+            },
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": "Can you describe this image?"},
+                    {"type": "image_url", "image_url": {"url": url_path}},
+                ],
+            },
+            {
+                "role": "assistant",
+                "content": [
+                    {"type": "text", "text": completion.choices[0].message.content},
+                ],
+            },
+        ]
+    
+    messages.append(message)
+
+    eval_results = image_evaluator(messages=messages)
+
+    import pandas as pd
+
+    print("Image Evaluation summary:\n")
+    print("View in Azure AI Studio at: " + str(eval_results['studio_url']))
+    metrics = {key: [value] for key, value in eval_results['metrics'].items()}
+    
+    results_df = pd.DataFrame.from_dict(metrics)
+
+    result_keys = [*metrics.keys()]
+    
+    results_df_gpt_evals = results_df[result_keys]
+
+    mean_df = results_df_gpt_evals.mean()
+    print("\nAverage scores:")
+    print(mean_df)
+
+    results_df.to_markdown(folder + '/image_eval_results.md')
+    with open(folder + '/image_eval_results.md', 'a') as file:
+        file.write("\n\nAverages scores:\n\n")
+    mean_df.to_markdown(folder + '/image_eval_results.md', 'a')
+
+    with jsonlines.open(folder + '/image_eval_results.jsonl', 'w') as writer:
+        writer.write(eval_results)
+
+    return eval_results
 
 
-                 
 
 if __name__ == "__main__":
     import time
@@ -239,14 +315,13 @@ if __name__ == "__main__":
     eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
     evaluate_remote(data_path=folder +"/eval_data.jsonl")
 
-    parent = pathlib.Path(__file__).parent.resolve()
-    path = os.path.join(parent, "data")
-    image_path = os.path.join(path, "image1.jpg")
+    # parent = pathlib.Path(__file__).parent.resolve()
+    # path = os.path.join(parent, "data")
+    # image_path = os.path.join(path, "image1.jpg")
+
+    image_path = "https://i.imgflip.com/9a1vlj.jpg"
 
     eval_image_result = evaluate_image(project_scope, image_path)
-    image_results = eval_image_result['rows'][0].pop('inputs.conversation')
-
-    pprint(eval_image_result)
 
     end=time.time()
     print(f"Finished evaluate in {end - start}s")
