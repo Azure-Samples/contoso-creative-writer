@@ -24,3 +24,5 @@ nbconvert
 azure-ai-inference[opentelemetry]
 azure-ai-evaluation[remote]
 validators
+azureml-mlflow
+
