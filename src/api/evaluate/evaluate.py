@@ -17,6 +17,8 @@ from dotenv import load_dotenv
 load_dotenv()
 folder = Path(__file__).parent.absolute().as_posix()
 
+runningonGH = os.getenv("GITHUB_ACTIONS")
+
 # # Add the api directory to the sys.path
 # sys.path.append(os.path.abspath('../src/api'))
 
@@ -268,26 +270,47 @@ def evaluate_image(project_scope,  image_path):
     import pandas as pd
 
     print("Image Evaluation summary:\n")
-    print("View in Azure AI Studio at: " + str(eval_results['studio_url']))
-    metrics = {key: [value] for key, value in eval_results['metrics'].items()}
     
-    results_df = pd.DataFrame.from_dict(metrics)
+    if runningonGH:
+        
+        metrics = {key: [value] for key, value in eval_results.items()}
 
-    result_keys = [*metrics.keys()]
+        results_df = pd.DataFrame.from_dict(metrics)
+        
+        results_df_gpt_evals = results_df.loc[:, results_df.columns.str.contains('score')]
+
+        mean_df = results_df_gpt_evals.mean()
+        print("\nAverage scores:")
+        print(mean_df)
+
+        results_df.to_markdown(folder + '/image_eval_results.md')
+        with open(folder + '/image_eval_results.md', 'a') as file:
+            file.write("\n\nAverages scores:\n\n")
+        mean_df.to_markdown(folder + '/image_eval_results.md', 'a')
+
+        with jsonlines.open(folder + '/image_eval_results.jsonl', 'w') as writer:
+            writer.write(eval_results)
+    else:
+        print("View in Azure AI Studio at: " + str(eval_results['studio_url']))
+        metrics = {key: [value] for key, value in eval_results['metrics'].items()}
     
-    results_df_gpt_evals = results_df[result_keys]
+        results_df = pd.DataFrame.from_dict(metrics)
 
-    mean_df = results_df_gpt_evals.mean()
-    print("\nAverage scores:")
-    print(mean_df)
+        result_keys = [*metrics.keys()]
+        
+        results_df_gpt_evals = results_df[result_keys]
 
-    results_df.to_markdown(folder + '/image_eval_results.md')
-    with open(folder + '/image_eval_results.md', 'a') as file:
-        file.write("\n\nAverages scores:\n\n")
-    mean_df.to_markdown(folder + '/image_eval_results.md', 'a')
+        mean_df = results_df_gpt_evals.mean()
+        print("\nAverage scores:")
+        print(mean_df)
 
-    with jsonlines.open(folder + '/image_eval_results.jsonl', 'w') as writer:
-        writer.write(eval_results)
+        results_df.to_markdown(folder + '/image_eval_results.md')
+        with open(folder + '/image_eval_results.md', 'a') as file:
+            file.write("\n\nAverages scores:\n\n")
+        mean_df.to_markdown(folder + '/image_eval_results.md', 'a')
+
+        with jsonlines.open(folder + '/image_eval_results.jsonl', 'w') as writer:
+            writer.write(eval_results)
 
     return eval_results
 
