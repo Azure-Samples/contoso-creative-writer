@@ -141,10 +141,13 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
 
     data = []    
     eval_data = []
+    print(f"\n===== Creating articles to evaluate using data provided in {data_path}")
+    print("")
     with open(data_path) as f:
-        for line in f:
+        for num, line in enumerate(f):
             row = json.loads(line)
             data.append(row)
+            print(f"generating article {num +1}")
             eval_data.append(run_orchestrator(row["research_context"], row["product_context"], row["assignment_context"]))
 
     # write out eval data to a file so we can re-run evaluation on it
@@ -154,6 +157,7 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
 
     eval_data_path = folder + '/eval_data.jsonl'
 
+    print(f"\n===== Evaluating the generated articles")
     eval_results = writer_evaluator(data_path=eval_data_path)
     import pandas as pd
 
@@ -258,7 +262,7 @@ def evaluate_image(project_scope,  image_path):
         ]
     
     messages.append(message)
-
+    print(f"\n===== Evaluating response")
     eval_results = image_evaluator(messages=messages)
 
     import pandas as pd
@@ -309,12 +313,11 @@ if __name__ == "__main__":
     
     start=time.time()
     print(f"Starting evaluate...")
-    # print(os.environ["BING_SEARCH_ENDPOINT"])
-    # print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
 
     eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
     evaluate_remote(data_path=folder +"/eval_data.jsonl")
 
+    #This is code to add an image from a file path
     # parent = pathlib.Path(__file__).parent.resolve()
     # path = os.path.join(parent, "data")
     # image_path = os.path.join(path, "image1.jpg")
