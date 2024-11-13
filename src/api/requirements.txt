@@ -17,3 +17,13 @@ opentelemetry-instrumentation
 azure-identity==1.17.1
 azure-ai-contentsafety
 azure-ai-inference
+https://remoteevalbugbash.blob.core.windows.net/remoteevalbugbash/azure_ai_project-1.0.0b1-py3-none-any.whl
+gunicorn==21.2.0
+azure-keyvault-secrets
+aiohttp==3.9.5
+azure-cognitiveservices-speech==1.37.0
+nbconvert
+azure-ai-inference[opentelemetry]
+azure-ai-evaluation[remote]
+validators
+azureml-mlflow

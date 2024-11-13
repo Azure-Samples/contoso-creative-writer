@@ -11,6 +11,7 @@ from agents.writer import writer
 from agents.designer import designer
 from agents.editor import editor
 from evaluate.evaluators import evaluate_article_in_background
+from prompty.tracer import trace, Tracer, console_tracer, PromptyTracer
 
 types = Literal["message", "researcher", "marketing", "designer","writer", "editor", "error", "partial", ]
 
@@ -169,7 +170,8 @@ def test_create_article(research_context, product_context, assignment_context):
                 print(f'Article: {article}')
     
 if __name__ == "__main__":
-
+    local_trace = PromptyTracer()
+    Tracer.add("PromptyTracer", local_trace.tracer)
     research_context = "Can you find the latest camping trends and what folks are doing in the winter?"
     product_context = "Can you use a selection of tents and sleeping bags as context?"
     assignment_context = '''Write a fun and engaging article that includes the research and product information. 
