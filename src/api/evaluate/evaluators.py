@@ -56,7 +56,7 @@ class ArticleEvaluator:
             data=data_path,
             evaluators=self.evaluators,
             ## NOTE: If you do not have Storage Blob Data Contributor permissions, please comment out the below line of code. 
-            azure_ai_project=self.project_scope,
+            # azure_ai_project=self.project_scope,
             evaluator_config={
                 "relevance": {
                     "column_mapping": {
