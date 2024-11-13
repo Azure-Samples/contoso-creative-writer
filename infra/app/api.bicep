@@ -99,6 +99,15 @@ module app '../core/host/container-app-upsert.bicep' = {
         name: 'BING_SEARCH_KEY'
         secretRef: 'bing-search-key'
       }
+      {
+        name: 'LOCAL_TRACING_ENABLED'
+        value: 'false'
+      }
+      {
+        name: 'OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT'
+        value: 'true'
+
+      }
 
     ]
     targetPort: 80

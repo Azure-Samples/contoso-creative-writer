@@ -25,6 +25,8 @@ azd env set AZURE_OPENAI_API_VERSION 2023-03-15-preview
 azd env set AZURE_OPENAI_CHAT_DEPLOYMENT gpt-35-turbo
 azd env set AZURE_SEARCH_ENDPOINT $env:AZURE_SEARCH_ENDPOINT
 azd env set REACT_APP_API_BASE_URL $env:WEB_SERVICE_ACA_URI
+azd env set LOCAL_TRACING_ENABLED false
+azd env set OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT true
 
 # Setup to run notebooks
 # Retrieve the internalId of the Cognitive Services account
