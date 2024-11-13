@@ -14,6 +14,10 @@ from azure.identity import DefaultAzureCredential
 
 from azure.identity import DefaultAzureCredential
 
+load_dotenv()
+
+runningonGH = os.getenv("GITHUB_ACTIONS")
+
 logging.basicConfig(level=logging.CRITICAL)
 
 # logging.getLogger('promptflow.core._prompty_utils').setLevel(logging.CRITICAL)
@@ -130,26 +134,26 @@ class ArticleEvaluator:
 class ImageEvaluator:
     def __init__(self, project_scope):
         self.evaluators = {
-            # "content_safety": ContentSafetyMultimodalEvaluator(
-            #     credential=DefaultAzureCredential(), 
-            #     azure_ai_project=project_scope,
-            # ),
-            "violence":ViolenceMultimodalEvaluator(
-                credential=DefaultAzureCredential(), 
-                azure_ai_project=project_scope,
-            ), 
-            "self_harm":SelfHarmMultimodalEvaluator(
-                credential=DefaultAzureCredential(), 
-                azure_ai_project=project_scope,
-            ), 
-            "hate_unfairness":HateUnfairnessMultimodalEvaluator(
-                credential=DefaultAzureCredential(), 
-                azure_ai_project=project_scope,
-            ), 
-            "sexual":SexualMultimodalEvaluator(
+            "content_safety": ContentSafetyMultimodalEvaluator(
                 credential=DefaultAzureCredential(), 
                 azure_ai_project=project_scope,
             ),
+            # "violence":ViolenceMultimodalEvaluator(
+            #     credential=DefaultAzureCredential(), 
+            #     azure_ai_project=project_scope,
+            # ), 
+            # "self_harm":SelfHarmMultimodalEvaluator(
+            #     credential=DefaultAzureCredential(), 
+            #     azure_ai_project=project_scope,
+            # ), 
+            # "hate_unfairness":HateUnfairnessMultimodalEvaluator(
+            #     credential=DefaultAzureCredential(), 
+            #     azure_ai_project=project_scope,
+            # ), 
+            # "sexual":SexualMultimodalEvaluator(
+            #     credential=DefaultAzureCredential(), 
+            #     azure_ai_project=project_scope,
+            # ),
             "protected_material": ProtectedMaterialMultimodalEvaluator(
                 credential=DefaultAzureCredential(),
                 azure_ai_project=project_scope,
@@ -181,21 +185,31 @@ class ImageEvaluator:
         input_data = pd.read_json(file_path, lines=True)
         pprint(input_data)
 
-
         print("\n===== Calling Evaluate API - Content Safety & Protected Material Evaluator for multi-modal =======")
         output = {}
-        result = evaluate(
-            evaluation_name=f"evaluate-api-multi-modal-eval-dataset-{str(uuid.uuid4())}",
-            data=file_path,
-            evaluators=self.evaluators,
-            azure_ai_project=self.project_scope,
-            evaluator_config={
-                "content_safety": {"conversation": "${data.conversation}"}, 
-                "protected_material": {"conversation": "${data.conversation}"} 
-            }
-        )
+        if runningonGH:
+            for message in messages:
+                conversation = {"conversation": { "messages" : message}}
 
-        output.update(result)
+            content_safety_evaluator = ContentSafetyMultimodalEvaluator(credential=DefaultAzureCredential(),azure_ai_project=self.project_scope) 
+            protected_material_evaluator = ProtectedMaterialMultimodalEvaluator(credential=DefaultAzureCredential(),azure_ai_project=self.project_scope) 
+            result_1 = content_safety_evaluator(conversation=conversation["conversation"])
+            output.update(result_1)
+            result_2 = protected_material_evaluator(conversation=conversation["conversation"])
+            output.update(result_2)
+        else:
+            result = evaluate(
+                evaluation_name=f"evaluate-api-multi-modal-eval-dataset-{str(uuid.uuid4())}",
+                data=file_path,
+                evaluators=self.evaluators,
+                azure_ai_project=self.project_scope,
+                evaluator_config={
+                    "content_safety": {"conversation": "${data.conversation}"}, 
+                    "protected_material": {"conversation": "${data.conversation}"} 
+                }
+            )
+
+            output.update(result)
 
         return output
         
