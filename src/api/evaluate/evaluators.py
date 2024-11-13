@@ -12,7 +12,17 @@ from azure.ai.evaluation import ContentSafetyMultimodalEvaluator, ProtectedMater
 from azure.identity import DefaultAzureCredential
 
 
+from azure.ai.contentsafety import ContentSafetyClient
+from azure.ai.contentsafety.models import AnalyzeImageOptions, ImageData, ImageCategory
+from azure.core.credentials import AzureKeyCredential
+from azure.core.exceptions import HttpResponseError
+
 from azure.identity import DefaultAzureCredential
+from dotenv import load_dotenv
+
+load_dotenv()
+
+runningonGH = os.getenv("GITHUB_ACTIONS")
 
 logging.basicConfig(level=logging.CRITICAL)
 
@@ -130,26 +140,26 @@ class ArticleEvaluator:
 class ImageEvaluator:
     def __init__(self, project_scope):
         self.evaluators = {
-            # "content_safety": ContentSafetyMultimodalEvaluator(
-            #     credential=DefaultAzureCredential(), 
-            #     azure_ai_project=project_scope,
-            # ),
-            "violence":ViolenceMultimodalEvaluator(
-                credential=DefaultAzureCredential(), 
-                azure_ai_project=project_scope,
-            ), 
-            "self_harm":SelfHarmMultimodalEvaluator(
-                credential=DefaultAzureCredential(), 
-                azure_ai_project=project_scope,
-            ), 
-            "hate_unfairness":HateUnfairnessMultimodalEvaluator(
-                credential=DefaultAzureCredential(), 
-                azure_ai_project=project_scope,
-            ), 
-            "sexual":SexualMultimodalEvaluator(
+            "content_safety": ContentSafetyMultimodalEvaluator(
                 credential=DefaultAzureCredential(), 
                 azure_ai_project=project_scope,
             ),
+            # "violence":ViolenceMultimodalEvaluator(
+            #     credential=DefaultAzureCredential(), 
+            #     azure_ai_project=project_scope,
+            # ), 
+            # "self_harm":SelfHarmMultimodalEvaluator(
+            #     credential=DefaultAzureCredential(), 
+            #     azure_ai_project=project_scope,
+            # ), 
+            # "hate_unfairness":HateUnfairnessMultimodalEvaluator(
+            #     credential=DefaultAzureCredential(), 
+            #     azure_ai_project=project_scope,
+            # ), 
+            # "sexual":SexualMultimodalEvaluator(
+            #     credential=DefaultAzureCredential(), 
+            #     azure_ai_project=project_scope,
+            # ),
             "protected_material": ProtectedMaterialMultimodalEvaluator(
                 credential=DefaultAzureCredential(),
                 azure_ai_project=project_scope,
@@ -181,21 +191,31 @@ class ImageEvaluator:
         input_data = pd.read_json(file_path, lines=True)
         pprint(input_data)
 
-
         print("\n===== Calling Evaluate API - Content Safety & Protected Material Evaluator for multi-modal =======")
         output = {}
-        result = evaluate(
-            evaluation_name=f"evaluate-api-multi-modal-eval-dataset-{str(uuid.uuid4())}",
-            data=file_path,
-            evaluators=self.evaluators,
-            azure_ai_project=self.project_scope,
-            evaluator_config={
-                "content_safety": {"conversation": "${data.conversation}"}, 
-                "protected_material": {"conversation": "${data.conversation}"} 
-            }
-        )
+        if runningonGH:
+            for message in messages:
+                conversation = {"conversation": { "messages" : message}}
 
-        output.update(result)
+            content_safety_evaluator = ContentSafetyMultimodalEvaluator(credential=DefaultAzureCredential(),azure_ai_project=self.project_scope) 
+            protected_material_evaluator = ProtectedMaterialMultimodalEvaluator(credential=DefaultAzureCredential(),azure_ai_project=self.project_scope) 
+            result_1 = content_safety_evaluator(conversation=conversation["conversation"])
+            output.update(result_1)
+            result_2 = protected_material_evaluator(conversation=conversation["conversation"])
+            output.update(result_2)
+        else:
+            result = evaluate(
+                evaluation_name=f"evaluate-api-multi-modal-eval-dataset-{str(uuid.uuid4())}",
+                data=file_path,
+                evaluators=self.evaluators,
+                azure_ai_project=self.project_scope,
+                evaluator_config={
+                    "content_safety": {"conversation": "${data.conversation}"}, 
+                    "protected_material": {"conversation": "${data.conversation}"} 
+                }
+            )
+
+            output.update(result)
 
         return output
         
@@ -221,6 +241,61 @@ def evaluate_article(data, trace_context):
         span.set_attribute("output", resultsJson)
 
         print("results: ", resultsJson)
+
+def evaluate_image(image_path):
+    # endpoint = os.environ.get('CONTENT_SAFETY_ENDPOINT')
+    # key = os.environ.get('CONTENT_SAFETY_KEY')
+    endpoint = "https://safety-ig.cognitiveservices.azure.com/"
+    image_path = image_path
+    key="D4VBpl18BMX6FxSpm8TLVzISU2L58k3E8WBLDW6HcLOslLYLKSt3JQQJ99AKACfhMk5XJ3w3AAAHACOGGDob"
+
+    # Create an Azure AI Content Safety client
+    client = ContentSafetyClient(endpoint, AzureKeyCredential(key))
+
+
+    # Build request
+    with open(image_path, "rb") as file:
+        request = AnalyzeImageOptions(image=ImageData(content=file.read()))
+
+    # Analyze image
+    try:
+        response = client.analyze_image(request)
+    except HttpResponseError as e:
+        print("Analyze image failed.")
+        if e.error:
+            print(f"Error code: {e.error.code}")
+            print(f"Error message: {e.error.message}")
+            raise
+        print(e)
+        raise
+
+    hate_result = next(item for item in response.categories_analysis if item.category == ImageCategory.HATE)
+    self_harm_result = next(item for item in response.categories_analysis if item.category == ImageCategory.SELF_HARM)
+    sexual_result = next(item for item in response.categories_analysis if item.category == ImageCategory.SEXUAL)
+    violence_result = next(item for item in response.categories_analysis if item.category == ImageCategory.VIOLENCE)
+
+    results = [hate_result, self_harm_result, sexual_result, violence_result]
+
+    if hate_result:
+        print(f"Hate severity: {hate_result.severity}")
+    if self_harm_result:
+        print(f"SelfHarm severity: {self_harm_result.severity}")
+    if sexual_result:
+        print(f"Sexual severity: {sexual_result.severity}")
+    if violence_result:
+        print(f"Violence severity: {violence_result.severity}")
+
+    unsafe_content = []
+
+    for result in results:
+        if result.severity > 0:
+            unsafe_content.append({f"{result}": result.severity})
+    
+    if len(unsafe_content) > 0:
+            return f"This image cannot be uploaded. It contains the following unsafe content and it's severity level {unsafe_content}."
+    else:
+        return "Image is safe to upload"
+
 
 def evaluate_article_in_background(research_context, product_context, assignment_context, research, products, article):
     eval_data = {
