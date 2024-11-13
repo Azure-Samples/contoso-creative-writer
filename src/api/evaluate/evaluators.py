@@ -56,7 +56,7 @@ class ArticleEvaluator:
             data=data_path,
             evaluators=self.evaluators,
             ## NOTE: If you do not have Storage Blob Data Contributor permissions, please comment out the below line of code. 
-            # azure_ai_project=self.project_scope,
+            azure_ai_project=self.project_scope,
             evaluator_config={
                 "relevance": {
                     "column_mapping": {
@@ -130,13 +130,11 @@ class ImageEvaluator:
         self.evaluators = {
             "content_safety": ContentSafetyMultimodalEvaluator(
                 credential=DefaultAzureCredential(), 
-                # azure_ai_project=project_scope,
-                azure_ai_project=None,
+                azure_ai_project=project_scope,
             ),
             "protected_material": ProtectedMaterialMultimodalEvaluator(
                 credential=DefaultAzureCredential(),
-                # azure_ai_project=project_scope,
-                azure_ai_project=None,
+                azure_ai_project=project_scope,
             )
         }
         self.project_scope = project_scope
@@ -172,8 +170,7 @@ class ImageEvaluator:
             evaluation_name=f"evaluate-api-multi-modal-eval-dataset-{str(uuid.uuid4())}",
             data=file_path,
             evaluators=self.evaluators,
-            # azure_ai_project=self.project_scope,
-            azure_ai_project=None,
+            azure_ai_project=self.project_scope,
             evaluator_config={
                 "content_safety": {"conversation": "${data.conversation}"}, 
                 "protected_material": {"conversation": "${data.conversation}"} 
