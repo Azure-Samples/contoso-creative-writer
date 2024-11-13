@@ -138,22 +138,6 @@ class ImageEvaluator:
                 credential=DefaultAzureCredential(), 
                 azure_ai_project=project_scope,
             ),
-            # "violence":ViolenceMultimodalEvaluator(
-            #     credential=DefaultAzureCredential(), 
-            #     azure_ai_project=project_scope,
-            # ), 
-            # "self_harm":SelfHarmMultimodalEvaluator(
-            #     credential=DefaultAzureCredential(), 
-            #     azure_ai_project=project_scope,
-            # ), 
-            # "hate_unfairness":HateUnfairnessMultimodalEvaluator(
-            #     credential=DefaultAzureCredential(), 
-            #     azure_ai_project=project_scope,
-            # ), 
-            # "sexual":SexualMultimodalEvaluator(
-            #     credential=DefaultAzureCredential(), 
-            #     azure_ai_project=project_scope,
-            # ),
             "protected_material": ProtectedMaterialMultimodalEvaluator(
                 credential=DefaultAzureCredential(),
                 azure_ai_project=project_scope,
@@ -188,6 +172,7 @@ class ImageEvaluator:
         print("\n===== Calling Evaluate API - Content Safety & Protected Material Evaluator for multi-modal =======")
         output = {}
         if runningonGH:
+            print('Running in actions')
             for message in messages:
                 conversation = {"conversation": { "messages" : message}}
 
