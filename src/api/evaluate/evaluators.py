@@ -14,7 +14,9 @@ from azure.identity import DefaultAzureCredential
 
 from azure.identity import DefaultAzureCredential
 
-logging.getLogger('promptflow.core._prompty_utils').setLevel(logging.CRITICAL)
+logging.basicConfig(level=logging.CRITICAL)
+
+# logging.getLogger('promptflow.core._prompty_utils').setLevel(logging.CRITICAL)
 
 class FriendlinessEvaluator:
     def __init__(self) -> None:
@@ -128,7 +130,23 @@ class ArticleEvaluator:
 class ImageEvaluator:
     def __init__(self, project_scope):
         self.evaluators = {
-            "content_safety": ContentSafetyMultimodalEvaluator(
+            # "content_safety": ContentSafetyMultimodalEvaluator(
+            #     credential=DefaultAzureCredential(), 
+            #     azure_ai_project=project_scope,
+            # ),
+            "violence":ViolenceMultimodalEvaluator(
+                credential=DefaultAzureCredential(), 
+                azure_ai_project=project_scope,
+            ), 
+            "self_harm":SelfHarmMultimodalEvaluator(
+                credential=DefaultAzureCredential(), 
+                azure_ai_project=project_scope,
+            ), 
+            "hate_unfairness":HateUnfairnessMultimodalEvaluator(
+                credential=DefaultAzureCredential(), 
+                azure_ai_project=project_scope,
+            ), 
+            "sexual":SexualMultimodalEvaluator(
                 credential=DefaultAzureCredential(), 
                 azure_ai_project=project_scope,
             ),
