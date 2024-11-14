@@ -10,6 +10,7 @@ resourceGroupName=$AZURE_RESOURCE_GROUP
 searchService=$AZURE_SEARCH_NAME
 openAiService=$AZURE_OPENAI_NAME
 subscriptionId=$AZURE_SUBSCRIPTION_ID
+runningonGH=$GITHUB_ACTIONS
 
 # Ensure all required environment variables are set
 if [ -z "$resourceGroupName" ] || [ -z "$searchService" ] || [ -z "$openAiService" ] || [ -z "$subscriptionId" ]; then
@@ -17,6 +18,21 @@ if [ -z "$resourceGroupName" ] || [ -z "$searchService" ] || [ -z "$openAiServic
     echo "Ensure that AZURE_RESOURCE_GROUP, AZURE_SEARCH_NAME, AZURE_OPENAI_NAME, AZURE_SUBSCRIPTION_ID are set."
     exit 1
 fi
+
+PRINCIPAL_ID=$(az ad signed-in-user show --query id -o tsv)
+
+#adding blob storage role 
+if [ "$runningonGH" ]; then
+    principleType='ServicePrincipal'
+else
+    principleType='User'
+fi
+
+az role assignment create \
+    --role "Storage Blob Data Contributor" \
+    --scope /subscriptions/"${AZURE_SUBSCRIPTION_ID}"/resourceGroups/"${AZURE_OPENAI_RESOURCE_GROUP}" \
+    --assignee-principal-type "$principleType" \
+    --assignee-object-id "${PRINCIPAL_ID}"
 
 # Set additional environment variables expected by app
 # TODO: Standardize these and remove need for setting here

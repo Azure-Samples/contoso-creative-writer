@@ -17,6 +17,8 @@ from dotenv import load_dotenv
 load_dotenv()
 folder = Path(__file__).parent.absolute().as_posix()
 
+runningonGH = os.getenv("GITHUB_ACTIONS")
+
 # # Add the api directory to the sys.path
 # sys.path.append(os.path.abspath('../src/api'))
 
@@ -141,10 +143,13 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
 
     data = []    
     eval_data = []
+    print(f"\n===== Creating articles to evaluate using data provided in {data_path}")
+    print("")
     with open(data_path) as f:
-        for line in f:
+        for num, line in enumerate(f):
             row = json.loads(line)
             data.append(row)
+            print(f"generating article {num +1}")
             eval_data.append(run_orchestrator(row["research_context"], row["product_context"], row["assignment_context"]))
 
     # write out eval data to a file so we can re-run evaluation on it
@@ -154,6 +159,7 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
 
     eval_data_path = folder + '/eval_data.jsonl'
 
+    print(f"\n===== Evaluating the generated articles")
     eval_results = writer_evaluator(data_path=eval_data_path)
     import pandas as pd
 
@@ -258,32 +264,53 @@ def evaluate_image(project_scope,  image_path):
         ]
     
     messages.append(message)
-
+    print(f"\n===== Evaluating response")
     eval_results = image_evaluator(messages=messages)
 
     import pandas as pd
 
     print("Image Evaluation summary:\n")
-    print("View in Azure AI Studio at: " + str(eval_results['studio_url']))
-    metrics = {key: [value] for key, value in eval_results['metrics'].items()}
+
+    if runningonGH:
+        
+        metrics = {key: [value] for key, value in eval_results.items()}
+
+        results_df = pd.DataFrame.from_dict(metrics)
+        
+        results_df_gpt_evals = results_df.loc[:, results_df.columns.str.contains('score')]
+
+        mean_df = results_df_gpt_evals.mean()
+        print("\nAverage scores:")
+        print(mean_df)
+
+        results_df.to_markdown(folder + '/image_eval_results.md')
+        with open(folder + '/image_eval_results.md', 'a') as file:
+            file.write("\n\nAverages scores:\n\n")
+        mean_df.to_markdown(folder + '/image_eval_results.md', 'a')
+
+        with jsonlines.open(folder + '/image_eval_results.jsonl', 'w') as writer:
+            writer.write(eval_results)
+    else:
+        print("View in Azure AI Studio at: " + str(eval_results['studio_url']))
+        metrics = {key: [value] for key, value in eval_results['metrics'].items()}
     
-    results_df = pd.DataFrame.from_dict(metrics)
+        results_df = pd.DataFrame.from_dict(metrics)
 
-    result_keys = [*metrics.keys()]
-    
-    results_df_gpt_evals = results_df[result_keys]
+        result_keys = [*metrics.keys()]
+        
+        results_df_gpt_evals = results_df[result_keys]
 
-    mean_df = results_df_gpt_evals.mean()
-    print("\nAverage scores:")
-    print(mean_df)
+        mean_df = results_df_gpt_evals.mean()
+        print("\nAverage scores:")
+        print(mean_df)
 
-    results_df.to_markdown(folder + '/image_eval_results.md')
-    with open(folder + '/image_eval_results.md', 'a') as file:
-        file.write("\n\nAverages scores:\n\n")
-    mean_df.to_markdown(folder + '/image_eval_results.md', 'a')
+        results_df.to_markdown(folder + '/image_eval_results.md')
+        with open(folder + '/image_eval_results.md', 'a') as file:
+            file.write("\n\nAverages scores:\n\n")
+        mean_df.to_markdown(folder + '/image_eval_results.md', 'a')
 
-    with jsonlines.open(folder + '/image_eval_results.jsonl', 'w') as writer:
-        writer.write(eval_results)
+        with jsonlines.open(folder + '/image_eval_results.jsonl', 'w') as writer:
+            writer.write(eval_results)
 
     return eval_results
 
@@ -309,12 +336,11 @@ if __name__ == "__main__":
     
     start=time.time()
     print(f"Starting evaluate...")
-    # print(os.environ["BING_SEARCH_ENDPOINT"])
-    # print("value: ", os.environ["BING_SEARCH_KEY"], len(os.environ["BING_SEARCH_KEY"]))
 
     eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
     evaluate_remote(data_path=folder +"/eval_data.jsonl")
 
+    #This is code to add an image from a file path
     # parent = pathlib.Path(__file__).parent.resolve()
     # path = os.path.join(parent, "data")
     # image_path = os.path.join(path, "image1.jpg")

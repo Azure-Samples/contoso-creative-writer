@@ -7,6 +7,7 @@ on:
     # Set this to the mainline branch you are using
     branches:
       - main
+      - ignite2024
 
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
@@ -23,6 +24,7 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_AI_PROJECT_NAME: ${{ vars.AZURE_AI_PROJECT_NAME }}
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
       AZURE_OPENAI_API_VERSION: ${{ vars.AZURE_OPENAI_API_VERSION }}
       AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME }}
@@ -74,6 +76,12 @@ jobs:
         with:
           name: eval_result
           path: ./src/api/evaluate/eval_results.jsonl
+        
+      - name: Upload image eval results as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval_image_result
+          path: ./src/api/evaluate/image_eval_results.jsonl
 
       - name: GitHub Summary Step
         if: ${{ success() }}
@@ -81,6 +89,7 @@ jobs:
         run: |
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          echo "📊 Promptflow Evaluation Results" >> $GITHUB_STEP_SUMMARY
+          echo "📊 Evaluation Results" >> $GITHUB_STEP_SUMMARY
           cat evaluate/eval_results.md >> $GITHUB_STEP_SUMMARY
+          cat evaluate/image_eval_results.md >> $GITHUB_STEP_SUMMARY
         
