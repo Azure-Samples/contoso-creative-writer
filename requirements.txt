@@ -14,7 +14,7 @@ gunicorn==21.2.0
 jupyter
 opentelemetry-sdk
 opentelemetry-instrumentation
-azure-identity==1.17.1
+azure-identity==1.19.0
 https://remoteevalbugbash.blob.core.windows.net/remoteevalbugbash/azure_ai_project-1.0.0b1-py3-none-any.whl
 gunicorn==21.2.0
 azure-keyvault-secrets
