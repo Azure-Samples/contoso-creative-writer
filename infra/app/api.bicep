@@ -20,10 +20,9 @@ param aiSearchEndpoint string
 param aiSearchIndexName string
 param appinsights_Connectionstring string
 param aiProjectName string
-param azure_subscription_id string
-param azure_ai_project_resource_group string
-param azure_ai_project_location string
-
+param azureSubscriptionId string
+param azureAiProjectResourceGroup string
+param azureAiProjectLocation string
 
 @secure()
 param bingApiKey string
@@ -118,15 +117,15 @@ module app '../core/host/container-app-upsert.bicep' = {
       }
       {
         name: 'AZURE_LOCATION'
-        value: azure_ai_project_location
+        value: azureSubscriptionId
       }
       {
         name: 'AZURE_SUBSCRIPTION_ID'
-        value: azure_subscription_id
+        value: azureAiProjectResourceGroup
       }
       {
         name: 'AZURE_RESOURCE_GROUP'
-        value: azure_ai_project_resource_group
+        value: azureAiProjectLocation
       }
 
     ]

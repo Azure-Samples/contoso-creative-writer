@@ -203,9 +203,9 @@ module apiContainerApp 'app/api.bicep' = {
     bingApiEndpoint: bing.outputs.endpoint
     bingApiKey: bing.outputs.bingApiKey
     aiProjectName: ai.outputs.projectName
-    azure_ai_project_location: openAILocation
-    azure_ai_project_resource_group: resourceGroup.name
-    azure_subscription_id: subscription().subscriptionId
+    azureAiProjectLocation: openAILocation
+    azureAiProjectResourceGroup: resourceGroup.name
+    azureSubscriptionId: subscription().subscriptionId
   }
 }
 
