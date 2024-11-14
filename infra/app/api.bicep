@@ -19,6 +19,11 @@ param openAiType string
 param aiSearchEndpoint string
 param aiSearchIndexName string
 param appinsights_Connectionstring string
+param aiProjectName string
+param azure_subscription_id string
+param azure_ai_project_resource_group string
+param azure_ai_project_location string
+
 
 @secure()
 param bingApiKey string
@@ -106,7 +111,22 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT'
         value: 'true'
-
+      }
+      {
+        name: 'AZURE_AI_PROJECT_NAME'
+        value: aiProjectName
+      }
+      {
+        name: 'AZURE_LOCATION'
+        value: azure_ai_project_location
+      }
+      {
+        name: 'AZURE_SUBSCRIPTION_ID'
+        value: azure_subscription_id
+      }
+      {
+        name: 'AZURE_RESOURCE_GROUP'
+        value: azure_ai_project_resource_group
       }
 
     ]

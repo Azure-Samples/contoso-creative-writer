@@ -1,5 +1,5 @@
 
-post http://127.0.0.1:8000/api/article HTTP/1.1
+post http://localhost:8000/api/article HTTP/1.1
 Content-Type: application/json
 
 {
