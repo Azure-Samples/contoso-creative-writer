@@ -117,6 +117,7 @@ module app '../core/host/container-app-upsert.bicep' = {
       }
       {
         name: 'AZURE_LOCATION'
+<<<<<<< HEAD
         value: azureSubscriptionId
       }
       {
@@ -126,6 +127,17 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'AZURE_RESOURCE_GROUP'
         value: azureAiProjectLocation
+=======
+        value: azure_ai_project_location
+      }
+      {
+        name: 'AZURE_SUBSCRIPTION_ID'
+        value: azure_subscription_id
+      }
+      {
+        name: 'AZURE_RESOURCE_GROUP'
+        value: azure_ai_project_resource_group
+>>>>>>> d88e2f0 (changes to include env vars in bicep api deployment)
       }
 
     ]
