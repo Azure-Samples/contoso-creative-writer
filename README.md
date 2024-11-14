@@ -262,7 +262,7 @@ To test the sample:
 To activate the Prompty tracing server:
 
 ```
-export LOCAL_TRACING=true
+export LOCAL_TRACING_ENABLED=true
 ```
 
 Then start the orchestrator:

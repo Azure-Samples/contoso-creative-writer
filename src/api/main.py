@@ -57,6 +57,3 @@ async def create_article(task: Task):
         media_type="text/event-stream",
     )
 
-
-# TODO: fix open telemetry so it doesn't slow app so much
-FastAPIInstrumentor.instrument_app(app)
