@@ -33,7 +33,7 @@ def setup_telemetry(app: FastAPI):
     location = os.environ["AZURE_LOCATION"]+".api.azureml.ms;"
     subscription = os.environ["AZURE_SUBSCRIPTION_ID"]+";"
     resource_group = os.environ["AZURE_RESOURCE_GROUP"]+";"
-    project_name = os.environ["AZURE_AI_PROJECT_NAME"]+";"
+    project_name = os.environ["AZURE_AI_PROJECT_NAME"]
 
     # Configure OpenTelemetry using Azure AI Project 
     ai_project_conn_str = location + subscription +resource_group + project_name
