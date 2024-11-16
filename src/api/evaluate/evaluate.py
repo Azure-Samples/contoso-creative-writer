@@ -312,7 +312,6 @@ def evaluate_image(project_scope,  image_path):
     import pandas as pd
 
     print("Image Evaluation summary:\n")
-
     print("View in Azure AI Studio at: ")
     print(str(eval_results['studio_url']))
     print('')
@@ -346,13 +345,8 @@ def evaluate_image(project_scope,  image_path):
         file.write("\n\nContent Safety Scores:\n\n")
     mean_scores_df.to_markdown(folder + '/image_eval_results.md', 'a')
 
-        results_df.to_markdown(folder + '/image_eval_results.md')
-        with open(folder + '/image_eval_results.md', 'a') as file:
-            file.write("\n\nAverages scores:\n\n")
-        mean_df.to_markdown(folder + '/image_eval_results.md', 'a')
-
-        with jsonlines.open(folder + '/image_eval_results.jsonl', 'w') as writer:
-            writer.write(eval_results)
+    with jsonlines.open(folder + '/image_eval_results.jsonl', 'w') as writer:
+        writer.write(eval_results)
 
     print('')
     # Filter the content safety scores greater than 1
