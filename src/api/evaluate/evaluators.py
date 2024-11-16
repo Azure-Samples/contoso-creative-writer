@@ -24,7 +24,16 @@ load_dotenv()
 
 runningonGH = os.getenv("GITHUB_ACTIONS")
 
-logging.basicConfig(level=logging.CRITICAL)
+# logging.basicConfig(level=logging.CRITICAL)
+
+import logging
+logging.basicConfig()
+
+# Enable DEBUG logging for all azure libraries
+azure_root_logger = logging.getLogger('promptflow')
+azure_root_logger.setLevel(logging.CRITICAL)
+
+os.environ["PF_LOGGING_LEVEL"] = "CRITICAL"
 
 # logging.getLogger('promptflow.core._prompty_utils').setLevel(logging.CRITICAL)
 
@@ -140,26 +149,26 @@ class ArticleEvaluator:
 class ImageEvaluator:
     def __init__(self, project_scope):
         self.evaluators = {
-            "content_safety": ContentSafetyMultimodalEvaluator(
-                credential=DefaultAzureCredential(), 
-                azure_ai_project=project_scope,
-            ),
-            # "violence":ViolenceMultimodalEvaluator(
-            #     credential=DefaultAzureCredential(), 
-            #     azure_ai_project=project_scope,
-            # ), 
-            # "self_harm":SelfHarmMultimodalEvaluator(
-            #     credential=DefaultAzureCredential(), 
-            #     azure_ai_project=project_scope,
-            # ), 
-            # "hate_unfairness":HateUnfairnessMultimodalEvaluator(
-            #     credential=DefaultAzureCredential(), 
-            #     azure_ai_project=project_scope,
-            # ), 
-            # "sexual":SexualMultimodalEvaluator(
+            # "content_safety": ContentSafetyMultimodalEvaluator(
             #     credential=DefaultAzureCredential(), 
             #     azure_ai_project=project_scope,
             # ),
+            "violence":ViolenceMultimodalEvaluator(
+                credential=DefaultAzureCredential(), 
+                azure_ai_project=project_scope,
+            ), 
+            "self_harm":SelfHarmMultimodalEvaluator(
+                credential=DefaultAzureCredential(), 
+                azure_ai_project=project_scope,
+            ), 
+            "hate_unfairness":HateUnfairnessMultimodalEvaluator(
+                credential=DefaultAzureCredential(), 
+                azure_ai_project=project_scope,
+            ), 
+            "sexual":SexualMultimodalEvaluator(
+                credential=DefaultAzureCredential(), 
+                azure_ai_project=project_scope,
+            ),
             "protected_material": ProtectedMaterialMultimodalEvaluator(
                 credential=DefaultAzureCredential(),
                 azure_ai_project=project_scope,
@@ -210,7 +219,11 @@ class ImageEvaluator:
                 evaluators=self.evaluators,
                 azure_ai_project=self.project_scope,
                 evaluator_config={
-                    "content_safety": {"conversation": "${data.conversation}"}, 
+                    # "content_safety": {"conversation": "${data.conversation}"}, 
+                    "violence": {"conversation": "${data.conversation}"},
+                    "self_harm": {"conversation": "${data.conversation}"},
+                    "hate_unfairness": {"conversation": "${data.conversation}"},
+                    "sexual": {"conversation": "${data.conversation}"},
                     "protected_material": {"conversation": "${data.conversation}"} 
                 }
             )

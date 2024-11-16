@@ -62,10 +62,11 @@ async def create_article(task: Task):
 @app.post("/api/upload-image")
 async def upload_image(file: UploadFile = File(...)):
 
-    base = Path(__file__).resolve().parent
+    base = Path(__file__).resolve().parents[1]
 
     # Set the directory for the stored image
-    image_dir = os.path.join(base, 'images')
+    image_dir = os.path.join(base, 'web/src/components/images')
+    print(image_dir)
 
     # Initialize the image path (note the filetype should be png)
     file_path  = os.path.join(image_dir, file.filename)
@@ -79,16 +80,29 @@ async def upload_image(file: UploadFile = File(...)):
         content = await file.read()
         image.write(content)
 
-    from evaluate.evaluators import evaluate_image
+    project_scope = {
+        "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
+        "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
+        "project_name": os.environ["AZURE_AI_PROJECT_NAME"],        
+    }
 
-    result = evaluate_image(file_path)
+    from evaluate.evaluate import evaluate_image
 
-    if result != "Image is safe to upload":
+    result = evaluate_image(project_scope, file_path)
+
+    if len(result) > 0:
         # Return the filename and location
-        return JSONResponse({"location": result})
+        return JSONResponse({"filename": file.filename, 
+                             "location": file_path,
+                            "message": f'''
+                            This image contains the following harmful/protected content {result}. 
+                            We do not recommend including it in the blog!'''
+                            })
     else:
         # Return the filename and location
-        return JSONResponse({"filename": file.filename, "location": file_path})
+        return JSONResponse({"filename": file.filename, 
+            "location": file_path,
+            "message":"This image is safe to include in the blog"})
 
 
 # TODO: fix open telemetry so it doesn't slow app so much
