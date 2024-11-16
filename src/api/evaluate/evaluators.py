@@ -200,33 +200,23 @@ class ImageEvaluator:
 
         print("\n===== Calling Evaluate API - Content Safety & Protected Material Evaluator for multi-modal =======")
         output = {}
-        if runningonGH:
-            for message in messages:
-                conversation = {"conversation": { "messages" : message}}
 
-            content_safety_evaluator = ContentSafetyMultimodalEvaluator(credential=DefaultAzureCredential(),azure_ai_project=self.project_scope) 
-            protected_material_evaluator = ProtectedMaterialMultimodalEvaluator(credential=DefaultAzureCredential(),azure_ai_project=self.project_scope) 
-            result_1 = content_safety_evaluator(conversation=conversation["conversation"])
-            output.update(result_1)
-            result_2 = protected_material_evaluator(conversation=conversation["conversation"])
-            output.update(result_2)
-        else:
-            result = evaluate(
-                evaluation_name=f"evaluate-api-multi-modal-eval-dataset-{str(uuid.uuid4())}",
-                data=file_path,
-                evaluators=self.evaluators,
-                azure_ai_project=self.project_scope,
-                evaluator_config={
-                    # "content_safety": {"conversation": "${data.conversation}"}, 
-                    "violence": {"conversation": "${data.conversation}"},
-                    "self_harm": {"conversation": "${data.conversation}"},
-                    "hate_unfairness": {"conversation": "${data.conversation}"},
-                    "sexual": {"conversation": "${data.conversation}"},
-                    "protected_material": {"conversation": "${data.conversation}"} 
-                }
-            )
+        result = evaluate(
+            evaluation_name=f"evaluate-api-multi-modal-eval-dataset-{str(uuid.uuid4())}",
+            data=file_path,
+            evaluators=self.evaluators,
+            azure_ai_project=self.project_scope,
+            evaluator_config={
+                # "content_safety": {"conversation": "${data.conversation}"}, 
+                "violence": {"conversation": "${data.conversation}"},
+                "self_harm": {"conversation": "${data.conversation}"},
+                "hate_unfairness": {"conversation": "${data.conversation}"},
+                "sexual": {"conversation": "${data.conversation}"},
+                "protected_material": {"conversation": "${data.conversation}"} 
+            }
+        )
 
-            output.update(result)
+        output.update(result)
 
         return output
         
