@@ -74,32 +74,22 @@ jobs:
           inlineScript: |
             az account set --subscription ${{env.AZURE_SUBSCRIPTION_ID}}
 
-      # - name: evaluate orchestrator
-      #   working-directory: ./src/api
-      #   run: |
-      #     python -m evaluate.evaluate
+      - name: evaluate orchestrator
+        working-directory: ./src/api
+        run: |
+          python -m evaluate.evaluate
       
-      # - name: Upload eval results as build artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: eval_result
-      #     path: ./src/api/evaluate/eval_results.jsonl
+      - name: Upload eval results as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval_result
+          path: ./src/api/evaluate/eval_results.jsonl
         
-      # - name: Upload image eval results as build artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: eval_image_result
-      #     path: ./src/api/evaluate/image_eval_results.jsonl
-
-      # - name: GitHub Summary Step
-      #   if: ${{ success() }}
-      #   working-directory: ./src/api
-      #   run: |
-      #     echo "" >> $GITHUB_STEP_SUMMARY
-
-      #     echo "📊 Evaluation Results" >> $GITHUB_STEP_SUMMARY
-      #     cat evaluate/eval_results.md >> $GITHUB_STEP_SUMMARY
-      #     cat evaluate/image_eval_results.md >> $GITHUB_STEP_SUMMARY
+      - name: Upload image eval results as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval_image_result
+          path: ./src/api/evaluate/image_eval_results.jsonl
         
       - name: Convert to microsoft/genai-evals Data Format
         run: |
@@ -123,10 +113,19 @@ jobs:
           }
           EOF
 
-      - name: Run AI Evaluation
+      - name: Text Evaluation Summary
         id: run-ai-evaluation
         uses: microsoft/genai-evals@users/daviwu/ignite2024
         with:          
           evaluate-configuration: ${{ env.EVAL_CONFIG_FILE_PATH }}
           show-summary: true
           show-raw-output: true
+
+      - name: Image Evaluation Summary
+        if: ${{ success() }}
+        working-directory: ./src/api
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "📊 Image Evaluation Results" >> $GITHUB_STEP_SUMMARY
+          cat evaluate/image_eval_results.md >> $GITHUB_STEP_SUMMARY
