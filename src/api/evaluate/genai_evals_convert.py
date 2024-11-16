@@ -31,6 +31,7 @@ with open(output_file, 'w') as f:
             "query": row["inputs.query"],
             "context": row["inputs.context"],
             "response": row["inputs.response"],
+            "ground_truth": "",
         }
         f.write(json.dumps(new_row) + "\n")
 
