@@ -1,9 +1,6 @@
 import json
 import sys
-import pathlib
-
-# input_file = "eval_results.jsonl"
-# output_file = "genai_evals_data.jsonl"
+import uuid
 
 if len(sys.argv) != 3:
     print("Usage: python genai_evals_convert.py input_file output_file")
@@ -16,16 +13,21 @@ else:
 input_file = sys.argv[1]
 output_file = sys.argv[2]
 
-# current_folder = pathlib.Path(__file__).parent.resolve()
-# with open(current_folder.joinpath(input_file), 'r') as f:
 with open(input_file, 'r') as f:
     content = f.read()  # Reads the entire file into a string
 eval_results = json.loads(content)
 
-# with open(current_folder.joinpath(output_file), 'w') as f:
 with open(output_file, 'w') as f:
-    for row in eval_results["rows"]:
+    for index, row in enumerate(eval_results["rows"]):
+        description = {
+            "context": {
+                "system-prompt": f"Test {index + 1}",
+            },
+        }
+
         new_row = {
+            "id": uuid.uuid4().hex,
+            "description": json.dumps(description),
             "query": row["inputs.query"],
             "context": row["inputs.context"],
             "response": row["inputs.response"],
