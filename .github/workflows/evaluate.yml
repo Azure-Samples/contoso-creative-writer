@@ -35,6 +35,9 @@ jobs:
       AZURE_OPENAI_NAME: ${{ vars.AZURE_OPENAI_NAME }}
       BING_SEARCH_ENDPOINT: ${{ vars.BING_SEARCH_ENDPOINT }}
       BING_SEARCH_KEY: ${{ secrets.BING_SEARCH_KEY }}
+      EVAL_CONFIG_FILE_PATH: ${{ github.workspace }}/evaluate-config.json
+      GENAI_EVALS_INPUT_FILE_PATH: ${{ github.workspace }}/src/api/evaluate/eval_results.jsonl
+      GENAI_EVALS_OUTPUT_FILE_PATH: ${{ github.workspace }}/src/api/evaluate/genai_evals_data.jsonl
 
     steps:
       - name: checkout repo content
@@ -66,30 +69,59 @@ jobs:
           inlineScript: |
             az account set --subscription ${{env.AZURE_SUBSCRIPTION_ID}}
 
-      - name: evaluate orchestrator
-        working-directory: ./src/api
-        run: |
-          python -m evaluate.evaluate
+      # - name: evaluate orchestrator
+      #   working-directory: ./src/api
+      #   run: |
+      #     python -m evaluate.evaluate
       
-      - name: Upload eval results as build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: eval_result
-          path: ./src/api/evaluate/eval_results.jsonl
+      # - name: Upload eval results as build artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: eval_result
+      #     path: ./src/api/evaluate/eval_results.jsonl
         
-      - name: Upload image eval results as build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: eval_image_result
-          path: ./src/api/evaluate/image_eval_results.jsonl
+      # - name: Upload image eval results as build artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: eval_image_result
+      #     path: ./src/api/evaluate/image_eval_results.jsonl
 
-      - name: GitHub Summary Step
-        if: ${{ success() }}
-        working-directory: ./src/api
+      # - name: GitHub Summary Step
+      #   if: ${{ success() }}
+      #   working-directory: ./src/api
+      #   run: |
+      #     echo "" >> $GITHUB_STEP_SUMMARY
+
+      #     echo "📊 Evaluation Results" >> $GITHUB_STEP_SUMMARY
+      #     cat evaluate/eval_results.md >> $GITHUB_STEP_SUMMARY
+      #     cat evaluate/image_eval_results.md >> $GITHUB_STEP_SUMMARY
+        
+      - name: Convert to microsoft/genai-evals Data Format
         run: |
-          echo "" >> $GITHUB_STEP_SUMMARY
+          python -m src.api.evaluate.genai_evals_convert ${{ env.GENAI_EVALS_INPUT_FILE_PATH }} ${{ env.GENAI_EVALS_OUTPUT_FILE_PATH }}
 
-          echo "📊 Evaluation Results" >> $GITHUB_STEP_SUMMARY
-          cat evaluate/eval_results.md >> $GITHUB_STEP_SUMMARY
-          cat evaluate/image_eval_results.md >> $GITHUB_STEP_SUMMARY
-        
+      - name: Prepare AI evaluation configuration file
+        run: |
+          cat > ${{ env.EVAL_CONFIG_FILE_PATH }}<<EOF
+          {
+            "data": "${{ env.GENAI_EVALS_OUTPUT_FILE_PATH }}",
+            "evaluators": {
+              "coherence": "CoherenceEvaluator",
+              "fluency": "FluencyEvaluator"
+            },
+            "ai_model_configuration": {
+              "type": "azure_openai",
+              "azure_endpoint": "${{ vars.AZURE_OPENAI_ENDPOINT }}",
+              "azure_deployment": "${{ vars.AZURE_OPENAI_DEPLOYMENT_NAME }}",
+              "api_version": "${{ vars.AZURE_OPENAI_API_VERSION }}"
+            }
+          }
+          EOF
+
+      - name: Run AI Evaluation
+        id: run-ai-evaluation
+        uses: microsoft/genai-evals@users/daviwu/ignite2024
+        with:          
+          evaluate-configuration: ${{ env.EVAL_CONFIG_FILE_PATH }}
+          show-summary: true
+          show-raw-output: true
