@@ -193,18 +193,60 @@ def evaluate_image(project_scope,  image_path):
 
     import pathlib 
     import base64
-
+    import jsonlines
     import validators
     
 
     if validators.url(image_path):
         url_path = image_path
     else:
+        # Check the size of the original image
+        original_size_kb = os.path.getsize(image_path) / 1024 # Convert bytes to kilobytes
+        if original_size_kb <= 1024:
+            print(f"The image size is {original_size_kb:.2f} KB, which is within the limit.")
+        else:
+            print(f"The image size is {original_size_kb:.2f} KB, which is larger than the limit of 1024KB. Compressing image...")
+            # Open the image
+            from PIL import Image
+
+            with Image.open(image_path) as img:
+                # Get the image name
+                image_name = os.path.basename(image_path)
+                #get the file name minus extension
+                name, extension = os.path.splitext(image_name)
+
+                # This is code to add an image from a file path
+                parent = pathlib.Path(__file__).parent.resolve()
+                path = os.path.join(parent, "data")
+
+                output_path = os.path.join(path, f"compressed_{name}.png")
+                # Compress and save the image
+                # downsize the image with an ANTIALIAS filter (gives the highest quality)
+                img = img.resize((img.width // 2, img.height // 2),Image.LANCZOS)
+                img.save(output_path, quality=95)  
+                new_size_kb = os.path.getsize(output_path) / 1024
+                if new_size_kb > 1024:
+                    print(f"The new image size is {new_size_kb:.2f} KB, which is still above the limit. Compressing again.")
+                    # Compress and save the image
+                    # downsize the image with an ANTIALIAS filter (gives the highest quality)
+                    img = img.resize((img.width // 2, img.height // 2),Image.LANCZOS)
+                    img.save(output_path, quality=85)  
+                    new_size_kb = os.path.getsize(output_path) / 1024
+                    print(f"The image size is {new_size_kb:.2f} KB, which is within the limit..")
+                else:
+                    print(f"The image size is {new_size_kb:.2f} KB, which is within the limit..")
+            image_path = output_path
+
+        #get the file type
+        _, extension = os.path.splitext(image_path)
+        # Normalize the extension (e.g., .JPG -> jpg)
+        extension = extension.lower().strip('.')
+
         #encode an image or you can add an image file from a url
         with pathlib.Path(image_path).open("rb") as image_file:
             encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
 
-            url_path = f"data:image/jpg;base64,{encoded_image}"
+            url_path = f"data:image/{extension};base64,{encoded_image}"
 
     token_provider = get_bearer_token_provider(
         DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
@@ -220,7 +262,7 @@ def evaluate_image(project_scope,  image_path):
 
     messages = []
 
-    print(f"\n===== URL : [{url_path}]")
+    print(f"\n===== URL : [{image_path}]")
     print(f"\n===== Calling Open AI to describe image and retrieve response")
     completion = client.chat.completions.create(
     model="gpt-4-evals",
@@ -271,17 +313,38 @@ def evaluate_image(project_scope,  image_path):
 
     print("Image Evaluation summary:\n")
 
-    if runningonGH:
-        
-        metrics = {key: [value] for key, value in eval_results.items()}
+    print("View in Azure AI Studio at: ")
+    print(str(eval_results['studio_url']))
+    print('')
 
-        results_df = pd.DataFrame.from_dict(metrics)
-        
-        results_df_gpt_evals = results_df.loc[:, results_df.columns.str.contains('score')]
+    metrics = {key: [value] for key, value in eval_results['metrics'].items()}
+    results_df = pd.DataFrame.from_dict(metrics)
 
-        mean_df = results_df_gpt_evals.mean()
-        print("\nAverage scores:")
-        print(mean_df)
+    eval_results['rows'][0].pop('inputs.conversation')
+    rows = eval_results['rows'][0]
+    scores = [{key: value} for key, value in rows.items() if 'score' in key]
+    scores_df = pd.DataFrame.from_dict(scores)
+    mean_scores_df = scores_df.mean()
+
+    print("Image Evaluation Content Safety Scores:\n")
+    print(mean_scores_df)
+    print('')
+    print("Protected Material Prescence:\n")
+    protected_materials_evals = results_df[['protected_material.fictional_characters_label', 'protected_material.logos_and_brands_label', 'protected_material.artwork_label']]
+
+    protected_materials_evals = protected_materials_evals.mean()
+    print(protected_materials_evals)
+
+    title = "Protected Material Prescence:\n\n"
+    df_md = protected_materials_evals.to_markdown()
+    full_md = title + "\n" + df_md
+
+    with open(folder + '/image_eval_results.md', 'w') as file:
+        file.write(full_md)
+        
+    with open(folder + '/image_eval_results.md', 'a') as file:
+        file.write("\n\nContent Safety Scores:\n\n")
+    mean_scores_df.to_markdown(folder + '/image_eval_results.md', 'a')
 
         results_df.to_markdown(folder + '/image_eval_results.md')
         with open(folder + '/image_eval_results.md', 'a') as file:
@@ -290,29 +353,44 @@ def evaluate_image(project_scope,  image_path):
 
         with jsonlines.open(folder + '/image_eval_results.jsonl', 'w') as writer:
             writer.write(eval_results)
+
+    print('')
+    # Filter the content safety scores greater than 1
+    scores_greater_than_1 = mean_scores_df[mean_scores_df > 1]
+    print('content eval scores')
+    scores = []
+    # Check if any scores are greater than 1
+    if not scores_greater_than_1.empty:
+        # Get the score names and their values
+        score_names = scores_greater_than_1.index
+        score_values = scores_greater_than_1.values
+
+        # Display the results
+        print("Scores greater than 1:")
+        for name, value in zip(score_names, score_values):
+            print(f"{name}: {value}")
+            scores.append({f"{name}: {value}"})
     else:
-        print("View in Azure AI Studio at: " + str(eval_results['studio_url']))
-        metrics = {key: [value] for key, value in eval_results['metrics'].items()}
-    
-        results_df = pd.DataFrame.from_dict(metrics)
+        print("No scores are greater than 1.")
 
-        result_keys = [*metrics.keys()]
-        
-        results_df_gpt_evals = results_df[result_keys]
+    # Filter the protected material scores greater than 1
+    print('protected material scores')
+    pm_scores_greater_than_0 = protected_materials_evals[protected_materials_evals > 0]
+    # Check if any scores are greater than 1
+    if not pm_scores_greater_than_0.empty:
+        # Get the score names and their values
+        score_names = pm_scores_greater_than_0.index
+        score_values = pm_scores_greater_than_0.values
 
-        mean_df = results_df_gpt_evals.mean()
-        print("\nAverage scores:")
-        print(mean_df)
+        # Display the results
+        print("Scores greater than 0:")
+        for name, value in zip(score_names, score_values):
+            print(f"{name}: {value}")
+            scores.append({f"{name}: {value}"})
+    else:
+        print("No scores are greater than 1.")
 
-        results_df.to_markdown(folder + '/image_eval_results.md')
-        with open(folder + '/image_eval_results.md', 'a') as file:
-            file.write("\n\nAverages scores:\n\n")
-        mean_df.to_markdown(folder + '/image_eval_results.md', 'a')
-
-        with jsonlines.open(folder + '/image_eval_results.jsonl', 'w') as writer:
-            writer.write(eval_results)
-
-    return eval_results
+    return scores
 
 
 
@@ -320,7 +398,6 @@ if __name__ == "__main__":
     import time
     import jsonlines
     import pathlib
-    from pprint import pprint
     
 
     model_config = {
@@ -340,12 +417,10 @@ if __name__ == "__main__":
     eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
     evaluate_remote(data_path=folder +"/eval_data.jsonl")
 
-    #This is code to add an image from a file path
-    # parent = pathlib.Path(__file__).parent.resolve()
-    # path = os.path.join(parent, "data")
-    # image_path = os.path.join(path, "image1.jpg")
-
-    image_path = "https://i.imgflip.com/9a1vlj.jpg"
+    # This is code to add an image from a file path
+    parent = pathlib.Path(__file__).parent.resolve()
+    path = os.path.join(parent, "data")
+    image_path = os.path.join(path, "5.png")
 
     eval_image_result = evaluate_image(project_scope, image_path)
 
