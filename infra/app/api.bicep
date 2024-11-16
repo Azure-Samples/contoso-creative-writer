@@ -1,7 +1,8 @@
 param name string
 param location string = resourceGroup().location
 param tags object = {}
-
+param subscriptionId string
+param azureAiProjectName string
 param identityName string
 param identityId string
 param containerAppsEnvironmentName string
@@ -42,6 +43,22 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'AZURE_CLIENT_ID'
         value: identityId
+      }
+      {
+        name: 'AZURE_LOCATION'
+        value: location
+      }
+      {
+        name: 'AZURE_SUBSCRIPTION_ID'
+        value: subscriptionId
+      }
+      {
+        name: 'AZURE_RESOURCE_GROUP'
+        value: resourceGroup().name
+      }
+      {
+        name: 'AZURE_AI_PROJECT_NAME'
+        value: azureAiProjectName
       }
       {
         name: 'AZURE_SEARCH_ENDPOINT'
@@ -98,6 +115,15 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'BING_SEARCH_KEY'
         secretRef: 'bing-search-key'
+      }
+      {
+        name: 'LOCAL_TRACING_ENABLED'
+        value: 'false'
+      }
+      {
+        name: 'OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT'
+        value: 'true'
+
       }
 
     ]

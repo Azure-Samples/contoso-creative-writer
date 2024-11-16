@@ -1,0 +1,9 @@
+
+post http://127.0.0.1:8000/api/article HTTP/1.1
+Content-Type: application/json
+
+{
+    "research": "Can you find the latest camping trends and what folks are doing in the winter?",
+    "products": "Can you use a selection of tents and sleeping bags as context?",
+    "assignment": "Write a fun and engaging article that includes the research and product information. The article should be between 800 and 1000 words. Make sure to cite sources in the article as you mention the research not at the end."
+}

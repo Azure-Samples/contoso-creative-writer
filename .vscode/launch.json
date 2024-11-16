@@ -4,7 +4,7 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-    {
+       {
       "name": "Python: FastAPI",
       "type": "debugpy",
       "request": "launch",
@@ -28,6 +28,33 @@
       "module": "api.evaluate.evaluate",
       "cwd": "${workspaceFolder}/src/api",
       "justMyCode": true
+    },
+    {
+      "name": "Web",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/web/node_modules/vite/bin/vite.js",
+      "args": ["--host"],
+      "cwd": "${workspaceFolder}/src/web",
+      "outFiles": ["${workspaceFolder}/src/web/dist/**/*.js"],
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"],
+      "serverReadyAction": {
+        "action": "debugWithEdge",
+        "killOnServerStop": true,
+        "pattern": "Local: (http://localhost:\\d+)",
+        "uriFormat": "%s",
+        "webRoot": "${workspaceFolder}/src/web"
+      }
+    } 
+  ],
+  "compounds": [
+    {
+      "name": "Start API(backend) and Web(fronted)",
+      "configurations": [
+        "Python: FastAPI",
+        "Web"
+      ]
     }
   ]
 }

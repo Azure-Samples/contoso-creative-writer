@@ -32,7 +32,8 @@
 				"GitHub.vscode-github-actions",
 				"ms-azuretools.azure-dev",
 				"ms-python.black-formatter",
-                "ms-toolsai.prompty@0.1.2024090502"
+                "ms-toolsai.prompty@0.1.2024090502",
+                "humao.rest-client"
             ]
         }
     },

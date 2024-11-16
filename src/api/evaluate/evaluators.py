@@ -22,9 +22,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-runningonGH = os.getenv("GITHUB_ACTIONS")
-
-# logging.basicConfig(level=logging.CRITICAL)
+logging.basicConfig(level=logging.CRITICAL)
 
 import logging
 logging.basicConfig()

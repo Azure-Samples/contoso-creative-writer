@@ -70,10 +70,6 @@ async def upload_image(file: UploadFile = File(...)):
 
     # Initialize the image path (note the filetype should be png)
     file_path  = os.path.join(image_dir, file.filename)
-    # UPLOAD_DIRECTORY = Path(base / "images")
-
-    # Construct the file path where the image will be saved
-    # file_path = os.path.join(UPLOAD_DIRECTORY, file.filename)
     
     # Save the image to the specified path
     with open(file_path, "wb") as image:
