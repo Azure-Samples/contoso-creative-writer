@@ -30,14 +30,10 @@ def setup_telemetry(app: FastAPI):
     local_tracing_enabled=os.getenv("LOCAL_TRACING_ENABLED")
     otel_exporter_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
    
-    location = os.environ["AZURE_LOCATION"]+".api.azureml.ms;"
-    subscription = os.environ["AZURE_SUBSCRIPTION_ID"]+";"
-    resource_group = os.environ["AZURE_RESOURCE_GROUP"]+";"
-    project_name = os.environ["AZURE_AI_PROJECT_NAME"]
-
-    # Configure OpenTelemetry using Azure AI Project 
-    ai_project_conn_str = location + subscription +resource_group + project_name
-
+    # Get the connection string from the environment variables
+    ai_project_conn_str = os.getenv("AZURE_LOCATION")+".api.azureml.ms;"+os.getenv(
+        "AZURE_SUBSCRIPTION_ID")+";"+os.getenv("AZURE_RESOURCE_GROUP")+";"+os.getenv("AZURE_AI_PROJECT_NAME")
+    
     # Configure OpenTelemetry using Azure AI Project 
     with AIProjectClient.from_connection_string(
     credential=DefaultAzureCredential(),
@@ -67,7 +63,7 @@ def setup_telemetry(app: FastAPI):
 
             # Set the EventLoggerProvider as opentelemetry-instrumentation-openai-v2 use log events to log tokens
             event_provider = EventLoggerProvider()
-            set_event_logger_provider(event_provider)    
+            set_event_logger_provider(event_provider)
 
     # Instrument FastAPI and exclude the send span to reduce noise
     FastAPIInstrumentor.instrument_app(app,exclude_spans=["send"])
