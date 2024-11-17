@@ -17,8 +17,6 @@ from dotenv import load_dotenv
 load_dotenv()
 folder = Path(__file__).parent.absolute().as_posix()
 
-runningonGH = os.getenv("GITHUB_ACTIONS")
-
 # # Add the api directory to the sys.path
 # sys.path.append(os.path.abspath('../src/api'))
 
@@ -329,9 +327,12 @@ def evaluate_image(project_scope,  image_path):
     print(mean_scores_df)
     print('')
     print("Protected Material Prescence:\n")
-    protected_materials_evals = results_df[['protected_material.fictional_characters_label', 'protected_material.logos_and_brands_label', 'protected_material.artwork_label']]
-
-    protected_materials_evals = protected_materials_evals.mean()
+    if results_df.empty:
+        protected_materials_evals = mean_scores_df
+    else:
+        protected_materials_evals = results_df[['protected_material.fictional_characters_label', 'protected_material.logos_and_brands_label', 'protected_material.artwork_label']]
+        protected_materials_evals = protected_materials_evals.mean()
+        
     print(protected_materials_evals)
 
     title = "Protected Material Prescence:\n\n"

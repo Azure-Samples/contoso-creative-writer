@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { image_endpoint } from "../constants";
-import { setUploadLocation } from "../constants";
 import "./spinner.css";
 
 const ImageUpload = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [uploadStatus, setUploadStatus] = useState<string>("");
     const [isProcessing, setIsProcessing] = useState<boolean>(false); // New state for processing
+    const [uploadLocation, setUploadLocation] = useState<string>("");
+    const [uploadSafety, setUploadSafety] = useState<string>("");
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
@@ -35,8 +36,8 @@ const ImageUpload = () => {
                 }
             });
             setUploadStatus(`Upload successful! ${response.data.message}`);
-            const location = response.data.location;
-            setUploadLocation(location); 
+            setUploadLocation(`../../public/${response.data.filename}`);
+            setUploadSafety(`${response.data.safety}`);
         } catch (error) {
             setUploadStatus("Upload failed. Please try again.");
             console.error("Error uploading file:", error);
@@ -62,7 +63,16 @@ const ImageUpload = () => {
                 </div>
             )}
             {uploadStatus && <p>{uploadStatus}</p>}
-        
+            <p></p>
+            {uploadSafety.length > 0 ? (
+            uploadStatus && <img 
+                    src={uploadLocation} 
+                    alt="Uploaded content" 
+                    style={{ maxWidth: "100%", height: "auto", border: "1px solid #ccc" }} 
+                    />
+            ) : (
+            <p></p>
+            )}
         </div>
     );
 };

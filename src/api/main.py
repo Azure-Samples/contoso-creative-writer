@@ -65,7 +65,7 @@ async def upload_image(file: UploadFile = File(...)):
     base = Path(__file__).resolve().parents[1]
 
     # Set the directory for the stored image
-    image_dir = os.path.join(base, 'web/src/components/images')
+    image_dir = os.path.join(base, 'web/public')
     print(image_dir)
 
     # Initialize the image path (note the filetype should be png)
@@ -91,14 +91,17 @@ async def upload_image(file: UploadFile = File(...)):
         return JSONResponse({"filename": file.filename, 
                              "location": file_path,
                             "message": f'''
-                            This image contains the following harmful/protected content {result}. 
-                            We do not recommend including it in the blog!'''
+                            ❌This image contains the following harmful/protected content {result}. 
+                            We do not recommend including it in the blog!❌''',
+                            "safety": ""
                             })
     else:
         # Return the filename and location
         return JSONResponse({"filename": file.filename, 
             "location": file_path,
-            "message":"This image is safe to include in the blog"})
+            "message":"This image is safe to include in the blog ✅",
+            "safety": "Yes this is safe"
+            })
 
 
 # TODO: fix open telemetry so it doesn't slow app so much
