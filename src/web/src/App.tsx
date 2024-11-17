@@ -3,7 +3,6 @@ import { version } from "./version";
 import Toolbar from "./components/toolbar";
 import Article from "./components/article";
 import Task from './components/task';
-import AddImage from "./components/add_image";
 
 function App() {
   return (
