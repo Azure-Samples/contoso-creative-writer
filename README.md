@@ -111,6 +111,8 @@ The easiest way to get started is GitHub Codespaces, since it will setup all the
 
 5. Once the above steps are completed you can [test the sample](#testing-the-sample). 
 
+NOTE: If the api is failing due to permissions, add the AppID as Contributor in the IAM for the Resource Group.
+
 ### VS Code Dev Containers
 
 A related option is VS Code Dev Containers, which will open the project in your local VS Code using the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers):
@@ -302,6 +304,18 @@ This template is set up to run CI/CD when you push changes to your repo. When CI
 To set up CI/CD with GitHub actions on your repository, run the following command:
 ```shell
 azd pipeline config
+```
+Add permission to Service Principal that is created:
+```
+Azure AI Administrator
+AzureML Data Scientist
+Cognitive Services OpenAI Contributor
+Contributor
+Key Vault Administrator
+Key Vault Contributor
+Key Vault Reader
+Search Index Data Contrbutor
+Storage Blob Data Contributor
 ```
 
 ## Guidance

@@ -8,6 +8,11 @@ on:
     branches:
       - main
       - ignite2024
+  pull_request:
+    # Run when pull requests are opened or updated
+    branches:
+      - main
+      - ignite2024
 
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
@@ -35,6 +40,9 @@ jobs:
       AZURE_OPENAI_NAME: ${{ vars.AZURE_OPENAI_NAME }}
       BING_SEARCH_ENDPOINT: ${{ vars.BING_SEARCH_ENDPOINT }}
       BING_SEARCH_KEY: ${{ secrets.BING_SEARCH_KEY }}
+      EVAL_CONFIG_FILE_PATH: ${{ github.workspace }}/evaluate-config.json
+      GENAI_EVALS_INPUT_FILE_PATH: ${{ github.workspace }}/src/api/evaluate/eval_results.jsonl
+      GENAI_EVALS_OUTPUT_FILE_PATH: ${{ github.workspace }}/src/api/evaluate/genai_evals_data.jsonl
 
     steps:
       - name: checkout repo content
@@ -82,14 +90,42 @@ jobs:
         with:
           name: eval_image_result
           path: ./src/api/evaluate/image_eval_results.jsonl
+        
+      - name: Convert to microsoft/genai-evals Data Format
+        run: |
+          python -m src.api.evaluate.genai_evals_convert ${{ env.GENAI_EVALS_INPUT_FILE_PATH }} ${{ env.GENAI_EVALS_OUTPUT_FILE_PATH }}
 
-      - name: GitHub Summary Step
+      - name: Prepare AI evaluation configuration file
+        run: |
+          cat > ${{ env.EVAL_CONFIG_FILE_PATH }}<<EOF
+          {
+            "data": "${{ env.GENAI_EVALS_OUTPUT_FILE_PATH }}",
+            "evaluators": {
+              "coherence": "CoherenceEvaluator",
+              "fluency": "FluencyEvaluator"
+            },
+            "ai_model_configuration": {
+              "type": "azure_openai",
+              "azure_endpoint": "${{ vars.AZURE_OPENAI_ENDPOINT }}",
+              "azure_deployment": "${{ vars.AZURE_OPENAI_DEPLOYMENT_NAME }}",
+              "api_version": "${{ vars.AZURE_OPENAI_API_VERSION }}"
+            }
+          }
+          EOF
+
+      - name: Text Evaluation Summary
+        id: run-ai-evaluation
+        uses: microsoft/genai-evals@users/daviwu/ignite2024
+        with:          
+          evaluate-configuration: ${{ env.EVAL_CONFIG_FILE_PATH }}
+          show-summary: true
+          show-raw-output: true
+
+      - name: Image Evaluation Summary
         if: ${{ success() }}
         working-directory: ./src/api
         run: |
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          echo "📊 Evaluation Results" >> $GITHUB_STEP_SUMMARY
-          cat evaluate/eval_results.md >> $GITHUB_STEP_SUMMARY
+          echo "📊 Image Evaluation Results" >> $GITHUB_STEP_SUMMARY
           cat evaluate/image_eval_results.md >> $GITHUB_STEP_SUMMARY
-        
