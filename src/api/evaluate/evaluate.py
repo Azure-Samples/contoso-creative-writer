@@ -409,8 +409,8 @@ if __name__ == "__main__":
     start=time.time()
     print(f"Starting evaluate...")
 
-    # eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
-    # evaluate_remote(data_path=folder +"/eval_data.jsonl")
+    eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
+    evaluate_remote(data_path=folder +"/eval_data.jsonl")
 
     # This is code to add an image from a file path
     parent = pathlib.Path(__file__).parent.resolve()
