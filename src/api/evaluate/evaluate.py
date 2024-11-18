@@ -231,6 +231,7 @@ def evaluate_image(project_scope,  image_path):
                 else:
                     print(f"The image size is {new_size_kb:.2f} KB, which is within the limit..")
             image_path = output_path
+            return image_path
 
     def make_image_message(url_path):
         token_provider = get_bearer_token_provider(
@@ -298,7 +299,6 @@ def evaluate_image(project_scope,  image_path):
             resized_image_urls = []
             for image in image_path:
                 new_image = local_image_resize(image)
-
                 #get the file type
                 _, extension = os.path.splitext(new_image)
                 # Normalize the extension (e.g., .JPG -> jpg)
@@ -444,7 +444,7 @@ if __name__ == "__main__":
 
     img_paths = []
     # This is code to add an image from a file path
-    for image_num in range(1,3):
+    for image_num in range(1,4):
         parent = pathlib.Path(__file__).parent.resolve()
         path = os.path.join(parent, "data")
         image_path = os.path.join(path, f"{image_num}.png")
