@@ -309,7 +309,7 @@ def evaluate_image(project_scope,  image_path):
                     encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
 
                     url_path = f"data:image/{extension};base64,{encoded_image}"
-                    resized_image_urls.append(new_image)
+                    resized_image_urls.append(url_path)
         else:
             resized_image = local_image_resize(image_path)
 
