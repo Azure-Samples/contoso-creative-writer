@@ -193,11 +193,8 @@ def evaluate_image(project_scope,  image_path):
     import base64
     import jsonlines
     import validators
-    
 
-    if validators.url(image_path):
-        url_path = image_path
-    else:
+    def local_image_resize(image_path):
         # Check the size of the original image
         original_size_kb = os.path.getsize(image_path) / 1024 # Convert bytes to kilobytes
         if original_size_kb <= 1024:
@@ -235,75 +232,108 @@ def evaluate_image(project_scope,  image_path):
                     print(f"The image size is {new_size_kb:.2f} KB, which is within the limit..")
             image_path = output_path
 
-        #get the file type
-        _, extension = os.path.splitext(image_path)
-        # Normalize the extension (e.g., .JPG -> jpg)
-        extension = extension.lower().strip('.')
+    def make_image_message(url_path):
+        token_provider = get_bearer_token_provider(
+        DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
+        )
 
-        #encode an image or you can add an image file from a url
-        with pathlib.Path(image_path).open("rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+        client = AzureOpenAI(
+            azure_endpoint = f"{os.getenv('AZURE_OPENAI_ENDPOINT')}", 
+            api_version="2023-07-01-preview",
+            azure_ad_token_provider=token_provider
+        )
+
+        sys_message = "You are an AI assistant that describes images in details."
+
+
+        print(f"\n===== Calling Open AI to describe image and retrieve response")
+        completion = client.chat.completions.create(
+        model="gpt-4-evals",
+        messages= [
+                        {
+                            "role": "system", 
+                            "content": [
+                                {"type": "text", "text": sys_message}
+                            ]
+                        },
+                        {
+                            "role": "user",
+                            "content": [
+                                {"type": "text", "text": "Can you describe this image?"},
+                                {"type": "image_url", "image_url": {"url": url_path}},
+                            ],
+                        },
+                    ],
+            )
+        
+        message = [
+                {
+                    "role": "system",
+                    "content": [
+                        {"type": "text", "text": sys_message}
+                    ],
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": "Can you describe this image?"},
+                        {"type": "image_url", "image_url": {"url": url_path}},
+                    ],
+                },
+                {
+                    "role": "assistant",
+                    "content": [
+                        {"type": "text", "text": completion.choices[0].message.content},
+                    ],
+                },
+            ]
+        
+        return message
+        
+
+    if validators.url(image_path):
+        url_path = image_path
+    else:
+        if type(image_path) is list: 
+            resized_image_urls = []
+            for image in image_path:
+                new_image = local_image_resize(image)
+
+                #get the file type
+                _, extension = os.path.splitext(new_image)
+                # Normalize the extension (e.g., .JPG -> jpg)
+                extension = extension.lower().strip('.')
+
+                #encode an image or you can add an image file from a url
+                with pathlib.Path(new_image).open("rb") as image_file:
+                    encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+
+                    url_path = f"data:image/{extension};base64,{encoded_image}"
+                    resized_image_urls.append(new_image)
+        else:
+            resized_image = local_image_resize(image_path)
+
+            #get the file type
+            _, extension = os.path.splitext(resized_image)
+            # Normalize the extension (e.g., .JPG -> jpg)
+            extension = extension.lower().strip('.')
+
+            #encode an image or you can add an image file from a url
+            with pathlib.Path(resized_image).open("rb") as image_file:
+                encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
 
             url_path = f"data:image/{extension};base64,{encoded_image}"
 
-    token_provider = get_bearer_token_provider(
-        DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
-    )
-
-    client = AzureOpenAI(
-        azure_endpoint = f"{os.getenv('AZURE_OPENAI_ENDPOINT')}", 
-        api_version="2023-07-01-preview",
-        azure_ad_token_provider=token_provider
-    )
-
-    sys_message = "You are an AI assistant that describes images in details."
-
     messages = []
 
-    print(f"\n===== URL : [{image_path}]")
-    print(f"\n===== Calling Open AI to describe image and retrieve response")
-    completion = client.chat.completions.create(
-    model="gpt-4-evals",
-    messages= [
-                    {
-                        "role": "system", 
-                        "content": [
-                            {"type": "text", "text": sys_message}
-                        ]
-                    },
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "text", "text": "Can you describe this image?"},
-                            {"type": "image_url", "image_url": {"url": url_path}},
-                        ],
-                    },
-                ],
-        )
-    
-    message = [
-            {
-                "role": "system",
-                "content": [
-                    {"type": "text", "text": sys_message}
-                ],
-            },
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": "Can you describe this image?"},
-                    {"type": "image_url", "image_url": {"url": url_path}},
-                ],
-            },
-            {
-                "role": "assistant",
-                "content": [
-                    {"type": "text", "text": completion.choices[0].message.content},
-                ],
-            },
-        ]
-    
-    messages.append(message)
+    if type(image_path) is list: 
+        for image_url in resized_image_urls:
+            message = make_image_message(image_url)
+            messages.append(message)
+    else:
+        message = make_image_message(url_path)
+        messages.append(message)
+
     print(f"\n===== Evaluating response")
     eval_results = image_evaluator(messages=messages)
 
@@ -412,12 +442,15 @@ if __name__ == "__main__":
     eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
     evaluate_remote(data_path=folder +"/eval_data.jsonl")
 
+    img_paths = []
     # This is code to add an image from a file path
-    parent = pathlib.Path(__file__).parent.resolve()
-    path = os.path.join(parent, "data")
-    image_path = os.path.join(path, "5.png")
+    for image_num in range(1,3):
+        parent = pathlib.Path(__file__).parent.resolve()
+        path = os.path.join(parent, "data")
+        image_path = os.path.join(path, f"{image_num}.png")
+        img_paths.append(image_path)
 
-    eval_image_result = evaluate_image(project_scope, image_path)
+    eval_image_result = evaluate_image(project_scope, img_paths)
 
     end=time.time()
     print(f"Finished evaluate in {end - start}s")
