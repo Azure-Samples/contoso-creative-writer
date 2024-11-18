@@ -418,7 +418,7 @@ if __name__ == "__main__":
         path = os.path.join(parent, "data")
         image_path = os.path.join(path, f"{image_num}.png")
 
-    eval_image_result = evaluate_image(project_scope, image_path)
+        eval_image_result = evaluate_image(project_scope, image_path)
 
     end=time.time()
     print(f"Finished evaluate in {end - start}s")
