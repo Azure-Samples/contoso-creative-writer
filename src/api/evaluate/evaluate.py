@@ -413,9 +413,10 @@ if __name__ == "__main__":
     evaluate_remote(data_path=folder +"/eval_data.jsonl")
 
     # This is code to add an image from a file path
-    parent = pathlib.Path(__file__).parent.resolve()
-    path = os.path.join(parent, "data")
-    image_path = os.path.join(path, "5.png")
+    for image_num in range(1,3):
+        parent = pathlib.Path(__file__).parent.resolve()
+        path = os.path.join(parent, "data")
+        image_path = os.path.join(path, f"{image_num}.png")
 
     eval_image_result = evaluate_image(project_scope, image_path)
 
