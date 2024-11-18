@@ -127,5 +127,5 @@ jobs:
         run: |
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          echo "📊 Image Evaluation Results" >> $GITHUB_STEP_SUMMARY
+          echo "# 📊 Image Evaluation Results" >> $GITHUB_STEP_SUMMARY
           cat evaluate/image_eval_results.md >> $GITHUB_STEP_SUMMARY
