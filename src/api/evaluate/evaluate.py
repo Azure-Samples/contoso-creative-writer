@@ -141,6 +141,8 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
 
     data = []    
     eval_data = []
+    import time
+    start = time.time()
     print(f"\n===== Creating articles to evaluate using data provided in {data_path}")
     print("")
     with open(data_path) as f:
@@ -155,7 +157,8 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
                 except Exception as e:
                     print("Agents failed to produce an article. Error details:" + str(e) + f"\Retrying {i+1}/3 times.")
                     continue
-
+    end = time.time()
+    raise Exception(f"Finished orchestrator in {end-start} sec!")
     # write out eval data to a file so we can re-run evaluation on it
     with jsonlines.open(folder + '/eval_data.jsonl', 'w') as writer:
         for row in eval_data:

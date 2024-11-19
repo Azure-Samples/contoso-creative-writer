@@ -11,6 +11,8 @@ model:
     api_version: 2023-07-01-preview
   parameters:
     max_tokens: 1500
+    response_format:
+      type: json_object
 sample:
   context: Can you use a selection of sports and outdoor cooking gear as context?
 ---
@@ -48,4 +50,5 @@ Only output the full array of specialized queries to make to the search index. L
 yoursef to 5 queries.
 
 user:
-{{context}}
+context: {{context}}
+queries:
