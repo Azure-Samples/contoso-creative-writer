@@ -309,6 +309,7 @@ def evaluate_image(project_scope,  image_path):
             resized_image_urls = []
             for image in image_path:
                 new_image = local_image_resize(image)
+                if new_image is None: continue
                 #get the file type
                 _, extension = os.path.splitext(new_image)
                 # Normalize the extension (e.g., .JPG -> jpg)
@@ -454,7 +455,7 @@ if __name__ == "__main__":
 
     img_paths = []
     # This is code to add an image from a file path
-    for image_num in range(1, 10):
+    for image_num in range(1, 9):
         parent = pathlib.Path(__file__).parent.resolve()
         path = os.path.join(parent, "data")
         image_path = os.path.join(path, f"{image_num}.png")
