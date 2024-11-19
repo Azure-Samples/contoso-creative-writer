@@ -18,10 +18,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Upgrade bicep
+        run: |
+          which bicep
+          sudo curl -o $(which bicep) -L https://github.com/Azure/bicep/releases/download/v0.31.92/bicep-linux-x64
+          sudo chmod +x $(which bicep)
+
       - name: Build Bicep for linting
         uses: azure/CLI@v1
         with:
-          inlineScript: az config set bicep.use_binary_from_path=false && az bicep build -f infra/main.bicep --stdout
+          inlineScript: bicep build -f infra/main.bicep --stdout
 
       - name: Run PSRule analysis
         uses: microsoft/ps-rule@v2.9.0
