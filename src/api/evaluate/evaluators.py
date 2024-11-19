@@ -56,14 +56,18 @@ class FriendlinessEvaluator:
 class ArticleEvaluator:
     def __init__(self, model_config, project_scope):
         self.evaluators = {
+            # RAG metrics
             "relevance": RelevanceEvaluator(model_config),
+            "groundedness": GroundednessEvaluator(model_config),
+            # business writing metrics
             "fluency": FluencyEvaluator(model_config),
             "coherence": CoherenceEvaluator(model_config),
-            "groundedness": GroundednessEvaluator(model_config),
+            # safety metrics
             "violence": ViolenceEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential()),
             "hate_unfairness": HateUnfairnessEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential()),
             "self_harm": SelfHarmEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential()),
             "sexual": SexualEvaluator(azure_ai_project=project_scope, credential=DefaultAzureCredential()),
+            # custom evaluator for friendly tones
             "friendliness": FriendlinessEvaluator(),
         }
         self.project_scope = project_scope
@@ -73,6 +77,7 @@ class ArticleEvaluator:
         ## NOTE: - The following code expects that the user has Storage Blob Data Contributor permissions in order for the results to upload to the Azure AI Studio.
         result = evaluate(
             data=data_path,
+            evaluation_name="Local Evaluation",
             evaluators=self.evaluators,
             ## NOTE: If you do not have Storage Blob Data Contributor permissions, please comment out the below line of code. 
             azure_ai_project=self.project_scope,

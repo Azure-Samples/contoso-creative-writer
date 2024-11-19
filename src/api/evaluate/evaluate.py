@@ -43,7 +43,7 @@ def evaluate_remote(data_path):
     model_config = default_connection.to_evaluator_model_config(deployment_name=deployment_name, api_version=api_version)
     # Create an evaluation
     evaluation = Evaluation(
-        display_name="Remote Evaluation",
+        display_name="Cloud Evaluation",
         description="Evaluation of dataset",
         data=Dataset(id=data_id),
         evaluators={
@@ -148,7 +148,11 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
             row = json.loads(line)
             data.append(row)
             print(f"generating article {num +1}")
-            eval_data.append(run_orchestrator(row["research_context"], row["product_context"], row["assignment_context"]))
+            try:
+                eval_data.append(run_orchestrator(row["research_context"], row["product_context"], row["assignment_context"]))
+            except Exception as e:
+                print("Agents failed to produce an article. Error details:" + str(e) + "\nSkipping this article.")
+                continue
 
     # write out eval data to a file so we can re-run evaluation on it
     with jsonlines.open(folder + '/eval_data.jsonl', 'w') as writer:
@@ -444,7 +448,7 @@ if __name__ == "__main__":
 
     img_paths = []
     # This is code to add an image from a file path
-    for image_num in range(1,4):
+    for image_num in range(1, 10):
         parent = pathlib.Path(__file__).parent.resolve()
         path = os.path.join(parent, "data")
         image_path = os.path.join(path, f"{image_num}.png")
