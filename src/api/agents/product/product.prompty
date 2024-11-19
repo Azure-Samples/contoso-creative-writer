@@ -15,6 +15,10 @@ model:
       type: json_object
 sample:
   context: Can you use a selection of sports and outdoor cooking gear as context?
+inputs:
+  context:
+    type: string
+
 ---
 system:
 

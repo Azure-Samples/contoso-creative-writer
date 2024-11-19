@@ -16,6 +16,11 @@ model:
 sample:
   instructions: Can you find the latest camping trends and what folks are doing in the winter?
   feedback: Can you dig find some information about the latest camping trends and what folks are doing in the winter?
+inputs:
+  instructions:
+    type: string
+  feedback:
+    type: string
 ---
 system:
 # Researcher Agent
