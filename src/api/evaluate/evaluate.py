@@ -148,11 +148,13 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
             row = json.loads(line)
             data.append(row)
             print(f"generating article {num +1}")
-            try:
-                eval_data.append(run_orchestrator(row["research_context"], row["product_context"], row["assignment_context"]))
-            except Exception as e:
-                print("Agents failed to produce an article. Error details:" + str(e) + "\nSkipping this article.")
-                continue
+            for i in range(3):
+                try:
+                    eval_data.append(run_orchestrator(row["research_context"], row["product_context"], row["assignment_context"]))
+                    break
+                except Exception as e:
+                    print("Agents failed to produce an article. Error details:" + str(e) + f"\Retrying {i+1}/3 times.")
+                    continue
 
     # write out eval data to a file so we can re-run evaluation on it
     with jsonlines.open(folder + '/eval_data.jsonl', 'w') as writer:
