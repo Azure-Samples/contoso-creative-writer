@@ -41,6 +41,7 @@ def find_information(query, market="en-US"):
         {"url": a["url"], "name": a["name"], "description": a["snippet"]}
         for a in items["webPages"]["value"]
     ]
+    # set defaults
     related = [""] * len(items)
     if "relatedSearches" in items:
         related = [a["text"] for a in items["relatedSearches"]["value"]]
