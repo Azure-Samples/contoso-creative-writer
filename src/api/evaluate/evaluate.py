@@ -43,7 +43,7 @@ def evaluate_remote(data_path):
     model_config = default_connection.to_evaluator_model_config(deployment_name=deployment_name, api_version=api_version)
     # Create an evaluation
     evaluation = Evaluation(
-        display_name="Remote Evaluation",
+        display_name="Cloud Evaluation",
         description="Evaluation of dataset",
         data=Dataset(id=data_id),
         evaluators={
@@ -141,15 +141,25 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
 
     data = []    
     eval_data = []
+    import time
+    start = time.time()
     print(f"\n===== Creating articles to evaluate using data provided in {data_path}")
     print("")
+    num_retries = 3
     with open(data_path) as f:
         for num, line in enumerate(f):
             row = json.loads(line)
             data.append(row)
             print(f"generating article {num +1}")
-            eval_data.append(run_orchestrator(row["research_context"], row["product_context"], row["assignment_context"]))
-
+            for i in range(num_retries):
+                try:
+                    eval_data.append(run_orchestrator(row["research_context"], row["product_context"], row["assignment_context"]))
+                    break
+                except Exception as e:
+                    print("Agents failed to produce an article. Examine trace for details. Error message:" + str(e) + f"\Retrying {i+1}/{num_retries} times.")
+                    continue
+    end = time.time()
+    print(f"Agent finished writing articles in {end-start} seconds.")
     # write out eval data to a file so we can re-run evaluation on it
     with jsonlines.open(folder + '/eval_data.jsonl', 'w') as writer:
         for row in eval_data:
@@ -299,6 +309,7 @@ def evaluate_image(project_scope,  image_path):
             resized_image_urls = []
             for image in image_path:
                 new_image = local_image_resize(image)
+                if new_image is None: continue
                 #get the file type
                 _, extension = os.path.splitext(new_image)
                 # Normalize the extension (e.g., .JPG -> jpg)
@@ -444,7 +455,7 @@ if __name__ == "__main__":
 
     img_paths = []
     # This is code to add an image from a file path
-    for image_num in range(1,4):
+    for image_num in range(1, 9):
         parent = pathlib.Path(__file__).parent.resolve()
         path = os.path.join(parent, "data")
         image_path = os.path.join(path, f"{image_num}.png")

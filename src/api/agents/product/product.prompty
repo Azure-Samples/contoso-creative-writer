@@ -7,12 +7,18 @@ model:
   api: chat
   configuration:
     type: azure_openai
-    azure_deployment: gpt-4-evals
-    api_version: 2023-07-01-preview
+    azure_deployment: gpt-4o-mini
+    api_version: 2024-06-01
   parameters:
     max_tokens: 1500
+    response_format:
+      type: json_object
 sample:
   context: Can you use a selection of sports and outdoor cooking gear as context?
+inputs:
+  context:
+    type: string
+
 ---
 system:
 
@@ -48,4 +54,5 @@ Only output the full array of specialized queries to make to the search index. L
 yoursef to 5 queries.
 
 user:
-{{context}}
+context: {{context}}
+queries:

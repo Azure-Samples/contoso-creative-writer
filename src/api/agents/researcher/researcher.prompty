@@ -9,13 +9,18 @@ model:
   api: chat
   configuration: 
     type: azure_openai
-    azure_deployment: gpt-35-turbo
-    api_version: 2023-07-01-preview
+    azure_deployment: gpt-4o-mini
+    api_version: 2024-06-01
   parameters:
     tools: ${file:functions.json}
 sample:
   instructions: Can you find the latest camping trends and what folks are doing in the winter?
   feedback: Can you dig find some information about the latest camping trends and what folks are doing in the winter?
+inputs:
+  instructions:
+    type: string
+  feedback:
+    type: string
 ---
 system:
 # Researcher Agent
