@@ -2,9 +2,10 @@ import os
 import json
 import logging
 import prompty
+import pandas as pd
 from opentelemetry import trace
 from opentelemetry.trace import set_span_in_context
-from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator
+from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator, RetrievalEvaluator
 from azure.ai.evaluation import ViolenceEvaluator, HateUnfairnessEvaluator, SelfHarmEvaluator, SexualEvaluator
 from azure.ai.evaluation import evaluate
 from azure.ai.evaluation import ViolenceMultimodalEvaluator, SelfHarmMultimodalEvaluator, HateUnfairnessMultimodalEvaluator, SexualMultimodalEvaluator
@@ -57,8 +58,9 @@ class ArticleEvaluator:
     def __init__(self, model_config, project_scope):
         self.evaluators = {
             # RAG metrics
-            "relevance": RelevanceEvaluator(model_config),
             "groundedness": GroundednessEvaluator(model_config),
+            "retrieval": RetrievalEvaluator(model_config),
+            "relevance": RelevanceEvaluator(model_config),
             # business writing metrics
             "fluency": FluencyEvaluator(model_config),
             "coherence": CoherenceEvaluator(model_config),
