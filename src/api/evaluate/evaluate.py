@@ -146,31 +146,20 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
     print(f"\n===== Creating articles to evaluate using data provided in {data_path}")
     print("")
     num_retries = 3
-    run_status = {}
-    for run_id in range(1):
-        print("repeated run", run_id+1)
-        error_df = []
-        with open(data_path) as f:
-            for num, line in enumerate(f):
-                row = json.loads(line)
-                data.append(row)
-                print(f"generating article {num +1}")
-                for try_id in range(num_retries):
-                    try:
-                        eval_data.append(run_orchestrator(row["research_context"], row["product_context"], row["assignment_context"]))
-                        break
-                    except Exception as e:
-                        print("Agents failed to produce an article. Examine trace for details. Top layer error message:" + str(e) + f"\Retrying {try_id+1}/{num_retries} times.")
-                        error_df += [pd.DataFrame({f"Try {try_id+1}": e}, index=f"Article {num+1}")]
-                        continue
-        run_status[run_id+1] = pd.concat(error_df)
-
+    with open(data_path) as f:
+        for num, line in enumerate(f):
+            row = json.loads(line)
+            data.append(row)
+            print(f"generating article {num +1}")
+            for i in range(num_retries):
+                try:
+                    eval_data.append(run_orchestrator(row["research_context"], row["product_context"], row["assignment_context"]))
+                    break
+                except Exception as e:
+                    print("Agents failed to produce an article. Examine trace for details. Error message:" + str(e) + f"\Retrying {i+1}/{num_retries} times.")
+                    continue
     end = time.time()
     print(f"Agent finished writing articles in {end-start} seconds.")
-    run_status = pd.concat(run_status)
-    timestamp = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
-    run_status.to_csv(f'./data/trace_{timestamp}.csv')
-            
     # write out eval data to a file so we can re-run evaluation on it
     with jsonlines.open(folder + '/eval_data.jsonl', 'w') as writer:
         for row in eval_data:
@@ -460,6 +449,7 @@ if __name__ == "__main__":
     
     start=time.time()
     print(f"Starting evaluate...")
+
     eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
     evaluate_remote(data_path=folder +"/eval_data.jsonl")
 
