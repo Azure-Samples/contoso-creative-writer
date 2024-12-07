@@ -16,11 +16,11 @@ def bold(text: str):
     return click.style(text, fg="bright_white", bold=True)
 
 def step(label: str):
+
     """Decorator to register and label setup steps"""
     def decorator(func):
         @wraps(func)
-        def wrapper(*args, **kwargs):
-            step_number = len([s for s in steps if s[0] == func]) + 1
+        def wrapper(*args, step_number, **kwargs):
             click.echo(f"\n{bold(f'Step {step_number}')}: {blue(label)}")
             click.echo()
             return func(*args, **kwargs)
@@ -118,9 +118,11 @@ def setup(username, password, azure_env_name, subscription, tenant):
         }
         
         # Execute all registered steps
-        for step_func, _ in steps:
-            # Get the parameter names for this function
+        for index, entry in enumerate(steps):
             from inspect import signature
+            step_func, _ = entry
+
+            # Get the parameter names for this function
             sig = signature(step_func.__wrapped__)
             # Filter params to only include what the function needs
             step_params = {
@@ -129,7 +131,7 @@ def setup(username, password, azure_env_name, subscription, tenant):
                 if name in params
             }
             # Execute step and merge any returned dict into params
-            result = step_func(**step_params)
+            result = step_func(step_number=index + 1, **step_params)
             if isinstance(result, dict):
                 params.update(result)
             
