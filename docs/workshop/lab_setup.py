@@ -43,6 +43,11 @@ def github_auth():
     )
     process.communicate(input='Y\n')
 
+@step("Fork GitHub Repository")
+def fork_repository():
+    """Fork the current repository using the gh CLI tool"""
+    subprocess.run(['gh', 'repo', 'fork', '--remote'], check=True)
+
 @step("Azure CLI Authentication")
 def azure_login(*, username: str = None, password: str = None, tenant: str = None):
     login_cmd = ['az', 'login']
