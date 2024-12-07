@@ -111,7 +111,10 @@ def setup(username, password, azure_env_name, subscription, tenant):
                 for name in sig.parameters
                 if name in params
             }
-            step_func(**step_params)
+            # Execute step and merge any returned dict into params
+            result = step_func(**step_params)
+            if isinstance(result, dict):
+                params.update(result)
             
         click.echo("\nSetup completed successfully!")
 
