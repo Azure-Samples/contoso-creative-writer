@@ -20,8 +20,8 @@ def step(label: str):
     """Decorator to register and label setup steps"""
     def decorator(func):
         @wraps(func)
-        def wrapper(*args, step_number, **kwargs):
-            click.echo(f"\n{bold(f'Step {step_number}')}: {blue(label)}")
+        def wrapper(*args, step_number, total_steps, **kwargs):
+            click.echo(f"\n{bold(f'Step {step_number}/{total_steps}')}: {blue(label)}")
             click.echo()
             return func(*args, **kwargs)
         steps.append((wrapper, label))
@@ -131,7 +131,7 @@ def setup(username, password, azure_env_name, subscription, tenant):
                 if name in params
             }
             # Execute step and merge any returned dict into params
-            result = step_func(step_number=index + 1, **step_params)
+            result = step_func(step_number=index + 1, total_steps=len(steps), **step_params)
             if isinstance(result, dict):
                 params.update(result)
             
