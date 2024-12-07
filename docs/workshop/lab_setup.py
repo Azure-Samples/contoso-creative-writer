@@ -6,6 +6,7 @@ import os
 from functools import wraps
 from typing import List, Callable
 from click import style
+from pathlib import Path
 
 # Step registration
 steps: List[tuple[Callable, str]] = []
@@ -143,7 +144,10 @@ def refresh_environment(*, azure_env_name: str):
 
 @step("Export Environment Variables")
 def export_variables():
-    with open('../../.env', 'w') as env_file:
+    # Get the directory where the script is located and resolve .env path
+    env_path = Path(__file__).parent.parent.parent / '.env'
+    
+    with open(env_path, 'w') as env_file:
         subprocess.run(['azd', 'env', 'get-values'], stdout=env_file, check=True)
 
 @step("Run Roles Script")
