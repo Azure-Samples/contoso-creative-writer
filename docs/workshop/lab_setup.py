@@ -1,17 +1,27 @@
 #!/bin/env python
 
-import click
+import rich_click as click
 import subprocess
 import os
 
 @click.command()
-@click.option('--username', required=True, help='Azure username/email')
-@click.option('--password', required=True, help='Azure password')
-@click.option('--azure-env-name', required=True, help='Azure environment name')
-@click.option('--subscription', required=True, help='Azure subscription ID')
-@click.option('--tenant', help='Azure tenant ID (optional)')
+@click.option('--username', required=True, help='Azure username/email for authentication')
+@click.option('--password', required=True, help='Azure password for authentication', hide_input=True)
+@click.option('--azure-env-name', required=True, help='Name for the new Azure environment')
+@click.option('--subscription', required=True, help='Azure subscription ID to use')
+@click.option('--tenant', help='Optional Azure tenant ID for specific directory')
 def setup(username, password, azure_env_name, subscription, tenant):
-    """Automates Azure environment setup and configuration."""
+    """
+    Automates Azure environment setup and configuration.
+    
+    This command will:
+    * Log into Azure CLI
+    * Create a new AZD environment
+    * Refresh the environment
+    * Export environment variables
+    * Run roles script
+    * Execute postprovision hook
+    """
     try:
         # Azure CLI login
         click.echo("Logging into Azure CLI...")
