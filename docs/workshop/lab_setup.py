@@ -61,6 +61,16 @@ def fork_repository():
 
 @step("Azure CLI Authentication")
 def azure_login(*, username: str = None, password: str = None, tenant: str = None):
+    # Check if already logged in
+    result = subprocess.run(['az', 'account', 'show'], 
+                          capture_output=True, 
+                          text=True, 
+                          check=False)
+    if result.returncode == 0:
+        click.echo("Already authenticated with Azure CLI")
+        return
+
+    # Proceed with login if not authenticated
     login_cmd = ['az', 'login']
     if username and password:
         login_cmd.extend(['-u', username, '-p', password])
