@@ -9,20 +9,27 @@ import os
 @click.option('--password', required=True, help='Azure password')
 @click.option('--azure-env-name', required=True, help='Azure environment name')
 @click.option('--subscription', required=True, help='Azure subscription ID')
-def setup(username, password, azure_env_name, subscription):
+@click.option('--tenant', help='Azure tenant ID (optional)')
+def setup(username, password, azure_env_name, subscription, tenant):
     """Automates Azure environment setup and configuration."""
     try:
         # Azure CLI login
         click.echo("Logging into Azure CLI...")
-        subprocess.run(['az', 'login', '-u', username, '-p', password], check=True)
+        login_cmd = ['az', 'login', '-u', username, '-p', password]
+        if tenant:
+            login_cmd.extend(['--tenant', tenant])
+        subprocess.run(login_cmd, check=True)
 
         # Azure Developer CLI environment setup
         click.echo("Creating new AZD environment...")
-        subprocess.run([
+        azd_cmd = [
             'azd', 'env', 'new', azure_env_name,
             '--location', 'canadaeast',
             '--subscription', subscription
-        ], check=True)
+        ]
+        if tenant:
+            azd_cmd.extend(['--tenant', tenant])
+        subprocess.run(azd_cmd, check=True)
 
         # Refresh AZD environment
         click.echo("Refreshing AZD environment...")
