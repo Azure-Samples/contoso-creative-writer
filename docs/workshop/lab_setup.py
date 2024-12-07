@@ -79,6 +79,26 @@ def azure_login(*, username: str = None, password: str = None, tenant: str = Non
         login_cmd.extend(['--tenant', tenant])
     subprocess.run(login_cmd, check=True)
 
+@step("Azure Developer CLI Authentication")
+def azd_login(*, force: bool = False):
+    """Authenticate with Azure Developer CLI using device code"""
+    # Only check authentication status if not forcing re-auth
+    if not force:
+        result = subprocess.run(['azd', 'auth', 'status'], 
+                              capture_output=True, 
+                              text=True, 
+                              check=False)
+        if result.returncode == 0:
+            click.echo("Already authenticated with Azure Developer CLI")
+            return
+
+    # Proceed with authentication
+    subprocess.run([
+        'azd', 'auth', 'login',
+        '--use-device-code',
+        '--no-prompt'
+    ], check=True)
+
 @step("Azure Developer CLI Environment Setup")
 def create_azd_environment(*, azure_env_name: str, subscription: str):
     azd_cmd = [
