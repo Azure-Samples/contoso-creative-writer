@@ -6,8 +6,6 @@ import os
 from functools import wraps
 from typing import List, Callable
 
-# Rich-click configuration remains the same...
-
 # Step registration
 steps: List[tuple[Callable, str]] = []
 
@@ -30,54 +28,45 @@ def step(label: str):
         return wrapper
     return decorator
 
-class SetupContext:
-    """Context object to hold setup parameters"""
-    def __init__(self, username, password, azure_env_name, subscription, tenant):
-        self.username = username
-        self.password = password
-        self.azure_env_name = azure_env_name
-        self.subscription = subscription
-        self.tenant = tenant
-
 @step("Azure CLI Authentication")
-def azure_login(ctx: SetupContext):
-    login_cmd = ['az', 'login', '-u', ctx.username, '-p', ctx.password]
-    if ctx.tenant:
-        login_cmd.extend(['--tenant', ctx.tenant])
+def azure_login(*, username: str, password: str, tenant: str = None):
+    login_cmd = ['az', 'login', '-u', username, '-p', password]
+    if tenant:
+        login_cmd.extend(['--tenant', tenant])
     subprocess.run(login_cmd, check=True)
 
 @step("Azure Developer CLI Environment Setup")
-def create_azd_environment(ctx: SetupContext):
+def create_azd_environment(*, azure_env_name: str, subscription: str, tenant: str = None):
     azd_cmd = [
-        'azd', 'env', 'new', ctx.azure_env_name,
+        'azd', 'env', 'new', azure_env_name,
         '--location', 'canadaeast',
-        '--subscription', ctx.subscription
+        '--subscription', subscription
     ]
-    if ctx.tenant:
-        azd_cmd.extend(['--tenant', ctx.tenant])
+    if tenant:
+        azd_cmd.extend(['--tenant', tenant])
     subprocess.run(azd_cmd, check=True)
 
 @step("Refresh AZD Environment")
-def refresh_environment(ctx: SetupContext):
+def refresh_environment(*, azure_env_name: str):
     subprocess.run([
         'azd', 'env', 'refresh',
-        '-e', ctx.azure_env_name,
+        '-e', azure_env_name,
         '--no-prompt'
     ], check=True)
 
 @step("Export Environment Variables")
-def export_variables(ctx: SetupContext):
+def export_variables():
     with open('../../.env', 'w') as env_file:
         subprocess.run(['azd', 'env', 'get-values'], stdout=env_file, check=True)
 
 @step("Run Roles Script")
-def run_roles(ctx: SetupContext):
+def run_roles():
     subprocess.run(['../../infra/hooks/roles.sh'], check=True)
 
 @step("Execute Postprovision Hook")
-def run_postprovision(ctx: SetupContext):
+def run_postprovision(*, azure_env_name: str):
     process = subprocess.Popen(
-        ['azd', 'hooks', 'run', 'postprovision', '-e', ctx.azure_env_name],
+        ['azd', 'hooks', 'run', 'postprovision', '-e', azure_env_name],
         stdin=subprocess.PIPE,
         text=True
     )
@@ -102,11 +91,27 @@ def setup(username, password, azure_env_name, subscription, tenant):
     * Execute postprovision hook
     """
     try:
-        ctx = SetupContext(username, password, azure_env_name, subscription, tenant)
+        # Create parameters dictionary
+        params = {
+            'username': username,
+            'password': password,
+            'azure_env_name': azure_env_name,
+            'subscription': subscription,
+            'tenant': tenant
+        }
         
         # Execute all registered steps
         for step_func, _ in steps:
-            step_func(ctx)
+            # Get the parameter names for this function
+            from inspect import signature
+            sig = signature(step_func.__wrapped__)
+            # Filter params to only include what the function needs
+            step_params = {
+                name: params[name] 
+                for name in sig.parameters
+                if name in params
+            }
+            step_func(**step_params)
             
         click.echo("\nSetup completed successfully!")
 
