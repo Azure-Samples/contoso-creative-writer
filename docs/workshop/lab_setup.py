@@ -29,18 +29,19 @@ def step(label: str):
     return decorator
 
 @step("GitHub Authentication")
-def github_auth():
+def github_auth(*, force: bool = False):
     """Authenticate with GitHub using the gh CLI tool"""
-    # Check if already authenticated
-    result = subprocess.run(['gh', 'auth', 'status'], 
-                            capture_output=True, 
-                            text=True, 
-                            check=False)
-    if result.returncode == 0:
-        click.echo("Already authenticated with GitHub")
-        return
+    # Only check authentication status if not forcing re-auth
+    if not force:
+        result = subprocess.run(['gh', 'auth', 'status'], 
+                capture_output=True, 
+                text=True, 
+                check=False)
+        if result.returncode == 0:
+            click.echo("Already authenticated with GitHub")
+            return
 
-    # Proceed with authentication if not already authenticated
+    # Proceed with authentication
     process = subprocess.Popen(
         ['gh', 'auth', 'login',
          '--hostname', 'github.com',
@@ -158,4 +159,3 @@ def setup(username, password, azure_env_name, subscription, tenant):
 
 if __name__ == '__main__':
     setup()
-
