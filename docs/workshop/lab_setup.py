@@ -152,7 +152,10 @@ def export_variables():
 
 @step("Run Roles Script")
 def run_roles():
-    subprocess.run(['bash', '../../infra/hooks/roles.sh'], check=True)
+    # Get the directory where the script is located
+    script_dir = Path(__file__).parent
+    roles_script = script_dir.parent.parent / 'infra' / 'hooks' / 'roles.sh'
+    subprocess.run(['bash', str(roles_script)], check=True)
 
 @step("Execute Postprovision Hook")
 def run_postprovision(*, azure_env_name: str):
@@ -168,8 +171,8 @@ def run_postprovision(*, azure_env_name: str):
 @click.option('--password', help='Azure password for authentication', hide_input=True)
 @click.option('--azure-env-name', required=True, help='Name for the new Azure environment')
 @click.option('--subscription', required=True, help='Azure subscription ID to use')
-@click.option('--tenant', help='Optional Azure tenant ID for specific directory')
-@click.option('--force', is_flag=True, help='Force re-authentication and re-provisioning')
+@click.option('--tenant', help='Azure tenant ID')
+@click.option('--force', is_flag=True, help='Force re-authentication')
 def setup(username, password, azure_env_name, subscription, tenant, force):
     """
     Automates Azure environment setup and configuration.
