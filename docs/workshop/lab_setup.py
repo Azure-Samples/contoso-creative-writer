@@ -113,6 +113,19 @@ def azd_login(*, username: str = None, password: str = None, force: bool = False
 
 @step("Azure Developer CLI Environment Setup")
 def create_azd_environment(*, azure_env_name: str, subscription: str):
+    # Check if environment already exists
+    result = subprocess.run(
+        ['azd', 'env', 'list'], 
+        capture_output=True, 
+        text=True, 
+        check=True
+    )
+    
+    if azure_env_name in result.stdout:
+        click.echo(f"Environment '{azure_env_name}' already exists")
+        return
+        
+    # Create new environment if it doesn't exist
     azd_cmd = [
         'azd', 'env', 'new', azure_env_name,
         '--location', 'canadaeast',
@@ -135,7 +148,7 @@ def export_variables():
 
 @step("Run Roles Script")
 def run_roles():
-    subprocess.run(['../../infra/hooks/roles.sh'], check=True)
+    subprocess.run(['bash', '../../infra/hooks/roles.sh'], check=True)
 
 @step("Execute Postprovision Hook")
 def run_postprovision(*, azure_env_name: str):
