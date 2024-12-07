@@ -28,6 +28,21 @@ def step(label: str):
         return wrapper
     return decorator
 
+@step("GitHub Authentication")
+def github_auth():
+    """Authenticate with GitHub using the gh CLI tool"""
+    process = subprocess.Popen(
+        ['gh', 'auth', 'login',
+         '--hostname', 'github.com',
+         '--git-protocol', 'https',
+         '--web',
+         '--scopes', 'workflow'],
+        stdin=subprocess.PIPE,
+        env={**os.environ, 'GITHUB_TOKEN': ''},
+        text=True
+    )
+    process.communicate(input='Y\n')
+
 @step("Azure CLI Authentication")
 def azure_login(*, username: str = None, password: str = None, tenant: str = None):
     login_cmd = ['az', 'login']
