@@ -5,15 +5,16 @@ import subprocess
 import os
 from functools import wraps
 from typing import List, Callable
+from click import style
 
 # Step registration
 steps: List[tuple[Callable, str]] = []
 
 def blue(text: str):
-    return click.style(text, fg="blue")
+    return style(text, fg="blue")
 
 def bold(text: str):
-    return click.style(text, fg="bright_white", bold=True)
+    return style(text, fg="bright_white", bold=True)
 
 def step(label: str):
 
@@ -80,7 +81,7 @@ def azure_login(*, username: str = None, password: str = None, tenant: str = Non
     subprocess.run(login_cmd, check=True)
 
 @step("Azure Developer CLI Authentication")
-def azd_login(*, force: bool = False):
+def azd_login(*, username: str = None, password: str = None, force: bool = False):
     """Authenticate with Azure Developer CLI using device code"""
     # Only check authentication status if not forcing re-auth
     if not force:
@@ -91,6 +92,17 @@ def azd_login(*, force: bool = False):
         if result.returncode == 0:
             click.echo("Already authenticated with Azure Developer CLI")
             return
+
+    # Display credentials if provided
+    if username and password:
+        click.echo(f"Enter the following credentials to authenticate with Azure Developer CLI:")
+        click.echo(f"Username: {username}")
+        click.echo(f"Password: {password}")
+        click.echo()
+        click.echo(f"{style('IMPORTANT', fg='red', reverse=True)}: {style('Do not use your personal credentials for this step!', underline=True)}")
+
+        # Wait for user to press Enter
+        input("\nPress Enter to start the azd login process...")
 
     # Proceed with authentication
     subprocess.run([
