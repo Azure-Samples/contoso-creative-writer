@@ -80,14 +80,12 @@ def azure_login(*, username: str = None, password: str = None, tenant: str = Non
     subprocess.run(login_cmd, check=True)
 
 @step("Azure Developer CLI Environment Setup")
-def create_azd_environment(*, azure_env_name: str, subscription: str, tenant: str = None):
+def create_azd_environment(*, azure_env_name: str, subscription: str):
     azd_cmd = [
         'azd', 'env', 'new', azure_env_name,
         '--location', 'canadaeast',
         '--subscription', subscription
     ]
-    if tenant:
-        azd_cmd.extend(['--tenant', tenant])
     subprocess.run(azd_cmd, check=True)
 
 @step("Refresh AZD Environment")
@@ -122,7 +120,8 @@ def run_postprovision(*, azure_env_name: str):
 @click.option('--azure-env-name', required=True, help='Name for the new Azure environment')
 @click.option('--subscription', required=True, help='Azure subscription ID to use')
 @click.option('--tenant', help='Optional Azure tenant ID for specific directory')
-def setup(username, password, azure_env_name, subscription, tenant):
+@click.option('--force', is_flag=True, help='Force re-authentication and re-provisioning')
+def setup(username, password, azure_env_name, subscription, tenant, force):
     """
     Automates Azure environment setup and configuration.
     
@@ -141,7 +140,8 @@ def setup(username, password, azure_env_name, subscription, tenant):
             'password': password,
             'azure_env_name': azure_env_name,
             'subscription': subscription,
-            'tenant': tenant
+            'tenant': tenant,
+            'force': force
         }
         
         # Execute all registered steps
