@@ -29,8 +29,10 @@ def step(label: str):
     return decorator
 
 @step("Azure CLI Authentication")
-def azure_login(*, username: str, password: str, tenant: str = None):
-    login_cmd = ['az', 'login', '-u', username, '-p', password]
+def azure_login(*, username: str = None, password: str = None, tenant: str = None):
+    login_cmd = ['az', 'login']
+    if username and password:
+        login_cmd.extend(['-u', username, '-p', password])
     if tenant:
         login_cmd.extend(['--tenant', tenant])
     subprocess.run(login_cmd, check=True)
@@ -73,8 +75,8 @@ def run_postprovision(*, azure_env_name: str):
     process.communicate(input='1\n')
 
 @click.command()
-@click.option('--username', required=True, help='Azure username/email for authentication')
-@click.option('--password', required=True, help='Azure password for authentication', hide_input=True)
+@click.option('--username', help='Azure username/email for authentication')
+@click.option('--password', help='Azure password for authentication', hide_input=True)
 @click.option('--azure-env-name', required=True, help='Name for the new Azure environment')
 @click.option('--subscription', required=True, help='Azure subscription ID to use')
 @click.option('--tenant', help='Optional Azure tenant ID for specific directory')
@@ -83,7 +85,7 @@ def setup(username, password, azure_env_name, subscription, tenant):
     Automates Azure environment setup and configuration.
     
     This command will:
-    * Log into Azure CLI
+    * Log into Azure CLI (interactive if no credentials provided)
     * Create a new AZD environment
     * Refresh the environment
     * Export environment variables
