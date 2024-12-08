@@ -213,7 +213,7 @@ def setup(username, password, azure_env_name, subscription, tenant, force, step)
                 click.echo("\nAll steps were already successfully executed!")
                 click.echo("Use --force to execute all steps from the beginning if needed.")
                 return
-            click.echo(f"\nResuming from step {start_step + 1}")
+            click.echo(f"\nResuming from step {blue(start_step + 1)}")
         
         # Execute all registered steps
         for index, entry in enumerate(steps):
