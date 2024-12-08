@@ -101,14 +101,12 @@ def azd_login(*, username: str = None, password: str = None, tenant: str = None,
 
     # Display credentials if provided
     if username and password:
-        click.echo(f"Enter the following credentials to authenticate with Azure Developer CLI:")
-        click.echo(f"Username: {username}")
-        click.echo(f"Password: {password}")
+        click.echo(f"{style('When asked for Azure credentials, enter the following:', underline=True)}")
+        click.echo(f"Username: {style(username, fg='blue', bold=True)}")
+        click.echo(f"Password: {style(password, fg='blue', bold=True)}")
         click.echo()
-        click.echo(f"{style('IMPORTANT', fg='red', reverse=True)}: {style('Do not use your personal credentials for this step!', underline=True)}")
-
-        # Wait for user to press Enter
-        input("\nPress Enter to start the azd login process...")
+        click.echo(f"{style('IMPORTANT', fg='red', reverse=True)}: {style('DO NOT use your personal credentials for this step!', fg='red', underline=True)}")
+        click.echo()
 
     # Proceed with authentication
     login_cmd = ['azd', 'auth', 'login', '--use-device-code', '--no-prompt']
