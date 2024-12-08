@@ -177,7 +177,8 @@ def run_postprovision(*, azure_env_name: str):
 @click.option('--subscription', required=True, help='Azure subscription ID to use')
 @click.option('--tenant', help='Azure tenant ID')
 @click.option('--force', is_flag=True, help='Force re-authentication and start from beginning')
-def setup(username, password, azure_env_name, subscription, tenant, force):
+@click.option('--step', type=int, help='Resume from a specific step number (1-based)')
+def setup(username, password, azure_env_name, subscription, tenant, force, step):
     """
     Automates Azure environment setup and configuration.
     
@@ -202,7 +203,11 @@ def setup(username, password, azure_env_name, subscription, tenant, force):
         
         # Determine starting step
         start_step = 0
-        if not force and TEMP_FILE.exists():
+        if step is not None:
+            if not 1 <= step <= len(steps):
+                raise click.BadParameter(f"Step must be between 1 and {len(steps)}")
+            start_step = step - 1
+        elif not force and TEMP_FILE.exists():
             start_step = int(TEMP_FILE.read_text().strip())
             if start_step >= len(steps):
                 click.echo("\nAll steps were already successfully executed!")
