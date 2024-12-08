@@ -183,12 +183,15 @@ def setup(username, password, azure_env_name, subscription, tenant, force, step)
     Automates Azure environment setup and configuration.
     
     This command will:
-    * Log into Azure CLI (interactive if no credentials provided)
-    * Create a new AZD environment
-    * Refresh the environment
-    * Export environment variables
-    * Run roles script
-    * Execute postprovision hook
+    1. GitHub Authentication
+    2. Fork GitHub Repository
+    3. Azure CLI Authentication
+    4. Azure Developer CLI Authentication
+    5. Azure Developer CLI Environment Setup
+    6. Refresh AZD Environment
+    7. Export Environment Variables
+    8. Run Roles Script
+    9. Execute Postprovision Hook
     """
     try:
         # Create parameters dictionary
