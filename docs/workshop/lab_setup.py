@@ -59,6 +59,16 @@ def github_auth(*, force: bool = False):
 @step("Fork GitHub Repository")
 def fork_repository():
     """Fork the current repository using the gh CLI tool"""
+    # Check if upstream remote already exists
+    result = subprocess.run(['git', 'remote', 'get-url', 'upstream'], 
+                capture_output=True, 
+                text=True, 
+                check=False)
+    if result.returncode == 0:
+        click.echo("Repository already has an upstream remote")
+        return
+
+    # Proceed with fork if no upstream remote exists
     subprocess.run(['gh', 'repo', 'fork', '--remote'], check=True)
 
 @step("Azure CLI Authentication")
