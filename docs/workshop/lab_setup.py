@@ -7,6 +7,7 @@ from functools import wraps
 from typing import List, Callable
 from click import style
 from pathlib import Path
+from inspect import signature
 
 # Add these constants near the top
 TEMP_FILE = Path.home() / '.lab_setup_progress'
@@ -203,6 +204,10 @@ def setup(username, password, azure_env_name, subscription, tenant, force):
         start_step = 0
         if not force and TEMP_FILE.exists():
             start_step = int(TEMP_FILE.read_text().strip())
+            if start_step >= len(steps):
+                click.echo("\nAll steps were already successfully executed!")
+                click.echo("Use --force to execute all steps from the beginning if needed.")
+                return
             click.echo(f"\nResuming from step {start_step + 1}")
         
         # Execute all registered steps
