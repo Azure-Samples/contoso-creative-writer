@@ -8,6 +8,9 @@ from typing import List, Callable
 from click import style
 from pathlib import Path
 
+# Add these constants near the top
+TEMP_FILE = Path.home() / '.lab_setup_progress'
+
 # Step registration
 steps: List[tuple[Callable, str]] = []
 
@@ -172,7 +175,7 @@ def run_postprovision(*, azure_env_name: str):
 @click.option('--azure-env-name', required=True, help='Name for the new Azure environment')
 @click.option('--subscription', required=True, help='Azure subscription ID to use')
 @click.option('--tenant', help='Azure tenant ID')
-@click.option('--force', is_flag=True, help='Force re-authentication')
+@click.option('--force', is_flag=True, help='Force re-authentication and start from beginning')
 def setup(username, password, azure_env_name, subscription, tenant, force):
     """
     Automates Azure environment setup and configuration.
@@ -196,9 +199,19 @@ def setup(username, password, azure_env_name, subscription, tenant, force):
             'force': force
         }
         
+        # Determine starting step
+        start_step = 0
+        if not force and TEMP_FILE.exists():
+            start_step = int(TEMP_FILE.read_text().strip())
+            click.echo(f"\nResuming from step {start_step + 1}")
+        
         # Execute all registered steps
         for index, entry in enumerate(steps):
             from inspect import signature
+            # Skip steps that were already completed
+            if index < start_step:
+                continue
+                
             step_func, _ = entry
 
             # Get the parameter names for this function
@@ -213,6 +226,13 @@ def setup(username, password, azure_env_name, subscription, tenant, force):
             result = step_func(step_number=index + 1, total_steps=len(steps), **step_params)
             if isinstance(result, dict):
                 params.update(result)
+            
+            # Save progress after each successful step
+            TEMP_FILE.write_text(str(index + 1))
+            
+        # Clean up temp file on successful completion
+        if TEMP_FILE.exists():
+            TEMP_FILE.unlink()
             
         click.echo("\nSetup completed successfully!")
 
