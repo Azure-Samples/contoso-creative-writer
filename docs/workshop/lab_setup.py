@@ -101,7 +101,8 @@ def azd_login(*, username: str = None, password: str = None, tenant: str = None,
 
     # Display credentials if provided
     if username and password:
-        click.echo(f"{style('When asked for Azure credentials, enter the following:', underline=True)}")
+        opts = {'underline': True}
+        click.echo(f"{style('When asked to ', **opts)}{style('Pick an account', **opts, bold=True)}{style(', hit the ', **opts)}{style('Use another account', **opts, bold=True)}{style(' button and enter the following:', **opts)}")
         click.echo(f"Username: {style(username, fg='blue', bold=True)}")
         click.echo(f"Password: {style(password, fg='blue', bold=True)}")
         click.echo()
