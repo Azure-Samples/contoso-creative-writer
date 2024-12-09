@@ -37,15 +37,6 @@ def step(label: str):
 @step("GitHub Authentication")
 def github_auth(*, force: bool = False):
     """Authenticate with GitHub using the gh CLI tool"""
-    # Only check authentication status if not forcing re-auth
-    if not force:
-        result = subprocess.run(['gh', 'auth', 'status'], 
-                capture_output=True, 
-                text=True, 
-                check=False)
-        if result.returncode == 0:
-            click.echo("Already authenticated with GitHub")
-            return
 
     # Proceed with authentication
     process = subprocess.Popen(
