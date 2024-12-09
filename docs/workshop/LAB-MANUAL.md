@@ -44,7 +44,7 @@ To participate in this workshop, you will need:
 
 5. Once the previous script is complete:
     * In the file explorer look for the **docs** folder and in it open the **workshop** folder. 
-    * Open the **LAB-SETUP.ipynb** file. 
+    * Open the **workshop-1-intro.ipynb** file. 
     * Follow the instructions to get going!
 
 Have fun building!🎉
