@@ -64,14 +64,15 @@ def fork_repository():
         return
 
     # Proceed with fork if no upstream remote exists
-    subprocess.run(['gh', 'repo', 'fork', '--remote'], check=True)
     process = subprocess.Popen(
         ['gh', 'repo', 'fork', '--remote'],
-        check=True,
         stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
         env={**os.environ, 'GITHUB_TOKEN': ''},
         text=True
     )
+    out, err = process.communicate()
+    print(out)
 
 @step("Azure CLI Authentication")
 def azure_login(*, username: str = None, password: str = None, tenant: str = None, force: bool = False):
