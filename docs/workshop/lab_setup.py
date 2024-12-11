@@ -79,9 +79,18 @@ def fetch_origin():
     """
     Fetch the latest changes from origin.
 
-    Necessary because after forking repository, main is still tracking upstream and origin has not been fetched.
+    Necessary because after forking repository, origin has not been fetched.
     """
     subprocess.run(['git', 'fetch', 'origin'], check=True)
+
+@step("Track origin/main")
+def track_origin_main():
+    """
+    Set the main branch to track origin/main instead of upstream/main
+
+    Necessary because after forking repository, main is still tracking upstream.
+    """
+    subprocess.run(['git', 'branch', 'main', '--set-upstream-to', 'origin/main'], check=True)
 
 @step("Azure CLI Authentication")
 def azure_login(*, username: str = None, password: str = None, tenant: str = None, force: bool = False):
