@@ -31,10 +31,10 @@ To participate in this workshop, you will need:
 
 ```
 ./docs/workshop/lab_setup.py \
-  --username "@lab.CloudPortalCredential(User1).Username" \
-  --password "@lab.CloudPortalCredential(User1).Password" \
-  --azure-env-name "AITOUR@lab.LabInstance.Id" \
-  --subscription "@lab.CloudSubscription.Id"
+  --username '@lab.CloudPortalCredential(User1).Username' \
+  --password '@lab.CloudPortalCredential(User1).Password' \
+  --azure-env-name 'AITOUR@lab.LabInstance.Id \
+  --subscription '@lab.CloudSubscription.Id'
 ```
 
 > [!IMPORTANT]
