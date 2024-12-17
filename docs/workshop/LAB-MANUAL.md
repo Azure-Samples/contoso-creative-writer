@@ -29,13 +29,8 @@ To participate in this workshop, you will need:
 
 4. Once your Codespace is ready, **run the following command**:
 
-```
-./docs/workshop/lab_setup.py \
-  --username '@lab.CloudPortalCredential(User1).Username' \
-  --password '@lab.CloudPortalCredential(User1).Password' \
-  --azure-env-name 'AITOUR@lab.LabInstance.Id \
-  --subscription '@lab.CloudSubscription.Id'
-```
+++./docs/workshop/lab_setup.py --username "@lab.CloudPortalCredential(User1).Username" --password "@lab.CloudPortalCredential(User1).Password" --azure-env-name "AITOUR@lab.LabInstance.Id" --subscription "@lab.CloudSubscription.Id"++
+
 
 > [!IMPORTANT]
 > - **If you are viewing this from the Skillable lab page**: The above are your unique azure credentials.
