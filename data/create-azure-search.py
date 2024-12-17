@@ -12,6 +12,12 @@
 # In[1]:
 
 
+get_ipython().system(' pip install pandas, azure-identity, azure-search-documents, openai, python-dotenv')
+
+
+# In[2]:
+
+
 import os
 import pandas as pd
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
@@ -45,7 +51,7 @@ from pathlib import Path
 load_dotenv()
 
 
-# In[2]:
+# In[3]:
 
 
 def delete_index(search_index_client: SearchIndexClient, search_index: str):
@@ -53,7 +59,7 @@ def delete_index(search_index_client: SearchIndexClient, search_index: str):
     search_index_client.delete_index(search_index)
 
 
-# In[3]:
+# In[4]:
 
 
 def create_index_definition(name: str) -> SearchIndex:
@@ -137,7 +143,7 @@ def create_index_definition(name: str) -> SearchIndex:
     return index
 
 
-# In[4]:
+# In[5]:
 
 
 def gen_products(
@@ -176,7 +182,7 @@ def gen_products(
     return items
 
 
-# In[5]:
+# In[6]:
 
 
 aisearch_endpoint = os.environ["AZURE_SEARCH_ENDPOINT"]
@@ -193,7 +199,7 @@ search_index_client.create_or_update_index(index)
 print(f"index {index_name} created")
 
 
-# In[6]:
+# In[7]:
 
 
 print(f"indexing documents")
