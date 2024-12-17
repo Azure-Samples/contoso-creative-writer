@@ -6,7 +6,7 @@
 targetScope = 'subscription'
 
 param environmentName string = 'testing'
-param location string = 'canadaeast'
+param location string = 'swedencentral'
 
 module main 'main.bicep' = {
   name: 'main'
