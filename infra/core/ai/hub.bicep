@@ -67,7 +67,7 @@ resource hub 'Microsoft.MachineLearningServices/workspaces@2024-01-01-preview' =
       isSharedToAll: true
       target: openAi.properties.endpoints['OpenAI Language Model Instance API']
       metadata: {
-        ApiVersion: '2024-05-13'
+        ApiVersion: '2024-08-01-preview'
         ApiType: 'azure'
         ResourceId: openAi.id
       }
@@ -85,7 +85,7 @@ resource hub 'Microsoft.MachineLearningServices/workspaces@2024-01-01-preview' =
       isSharedToAll: true
       target: openAi.properties.endpoints['Content Safety']
       metadata: {
-        ApiVersion: '2024-05-13'
+        ApiVersion: '2024-08-01-preview'
         ApiType: 'azure'
         ResourceId: openAi.id
       }
