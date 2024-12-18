@@ -146,6 +146,18 @@ def create_index_definition(name: str) -> SearchIndex:
 # In[5]:
 
 
+print(os.environ["AZURE_OPENAI_ENDPOINT"])
+
+
+# In[6]:
+
+
+print(os.environ["AZURE_OPENAI_API_VERSION"])
+
+
+# In[7]:
+
+
 def gen_products(
     path: str,
 ) -> List[Dict[str, any]]:
@@ -155,7 +167,7 @@ def gen_products(
     azure_credential = DefaultAzureCredential()
     token_provider = get_bearer_token_provider(azure_credential,"https://cognitiveservices.azure.com/.default")
     client = AzureOpenAI(
-        api_version="2023-07-01-preview",
+        api_version="2024-08-01-preview",
         azure_endpoint=openai_service_endoint,
         azure_deployment=openai_deployment,
         azure_ad_token_provider=token_provider
@@ -182,7 +194,7 @@ def gen_products(
     return items
 
 
-# In[6]:
+# In[8]:
 
 
 aisearch_endpoint = os.environ["AZURE_SEARCH_ENDPOINT"]
@@ -199,7 +211,7 @@ search_index_client.create_or_update_index(index)
 print(f"index {index_name} created")
 
 
-# In[7]:
+# In[9]:
 
 
 print(f"indexing documents")

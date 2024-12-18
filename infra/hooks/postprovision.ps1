@@ -21,8 +21,7 @@ if ([string]::IsNullOrEmpty($resourceGroupName) -or [string]::IsNullOrEmpty($sea
 
 # Set additional environment variables expected by app
 # TODO: Standardize these and remove need for setting here
-azd env set AZURE_OPENAI_API_VERSION 2023-03-15-preview
-azd env set AZURE_OPENAI_CHAT_DEPLOYMENT gpt-35-turbo
+azd env set AZURE_OPENAI_API_VERSION 2024-08-01-preview
 azd env set AZURE_SEARCH_ENDPOINT $env:AZURE_SEARCH_ENDPOINT
 azd env set REACT_APP_API_BASE_URL $env:WEB_SERVICE_ACA_URI
 
