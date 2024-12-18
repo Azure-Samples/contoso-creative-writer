@@ -143,17 +143,6 @@ def create_index_definition(name: str) -> SearchIndex:
     return index
 
 
-# In[5]:
-
-
-print(os.environ["AZURE_OPENAI_ENDPOINT"])
-
-
-# In[6]:
-
-
-print(os.environ["AZURE_OPENAI_API_VERSION"])
-
 
 # In[7]:
 
