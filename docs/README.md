@@ -34,10 +34,11 @@ description: Using Azure OpenAI agent with Python, integrating Bing Search API a
       - [Initializing the project](#initializing-the-project)
 - [Deployment](#deployment)
 - [Testing the sample](#testing-the-sample)
-    - [Evaluating prompt flow results](#evaluating-prompt-flow-results)
-- [Costs](#costs)
-- [Security Guidelines](#security-guidelines)
+    - [Evaluating results](#evaluating-results)
 - [Guidance](#guidance)
+    - [Region Availability](#region-availability)
+    - [Costs](#costs)
+    - [Security Guidelines](#security)
 - [Resources](#resources)
 - [Code of Conduct](#code-of-conduct)
 
@@ -66,9 +67,9 @@ This project template provides the following features:
 **IMPORTANT:** In order to deploy and run this example, you'll need:
 
 * **Azure account**. If you're new to Azure, [get an Azure account for free](https://azure.microsoft.com/free/cognitive-search/) and you'll get some free Azure credits to get started. See [guide to deploying with the free trial](docs/deploy_lowcost.md).
-* **Azure subscription with access enabled for the Azure OpenAI Service**. You can request access with [this form](https://aka.ms/oaiapply). If your access request to Azure OpenAI Service doesn't match the [acceptance criteria](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access?context=%2Fazure%2Fcognitive-services%2Fopenai%2Fcontext%2Fcontext), you can use [OpenAI public API](https://platform.openai.com/docs/api-reference/introduction) instead.
-    - Ability to deploy `gpt-35-turbo-0613`,`gpt-4-1106-Preview` and `gpt-4o-2024-05-13`.
-    - We recommend using Canada East, as this region has access to all models and services required. 
+* **Azure subscription with access enabled for the Azure OpenAI Service**. If your access request to Azure OpenAI Service doesn't match the [acceptance criteria](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access?context=%2Fazure%2Fcognitive-services%2Fopenai%2Fcontext%2Fcontext), you can use [OpenAI public API](https://platform.openai.com/docs/api-reference/introduction) instead.
+    - Ability to deploy `gpt-4o` and `gpt-4o-mini`.
+    - We recommend using `swedencentral`, as this region has access to all models and services required. 
 * **Azure subscription with access enabled for [Bing Search API](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)**
 * **Azure subscription with access enabled for [Azure AI Search](https://azure.microsoft.com/en-gb/products/ai-services/ai-search)**
 
@@ -104,9 +105,9 @@ The easiest way to get started is GitHub Codespaces, since it will setup all the
     azd up
     ```
 
-    You will be prompted to select some details about your deployed resources, including location. As a reminder we recommend Canada East as the region for this project.
+    You will be prompted to select some details about your deployed resources, including location. As a reminder we recommend `Sweden Central` as the region for this project.
     Once the deployment is complete you should be able to scroll up in your terminal and see the url that the app has been deployed to. It should look similar to this 
-    `Ingress Updated. Access your app at https://env-name.codespacesname.eastus2.azurecontainerapps.io/`. Navigate to the link to try out the app straight away! 
+    `Ingress Updated. Access your app at https://env-name.codespacesname.swedencentral.azurecontainerapps.io/`. Navigate to the link to try out the app straight away! 
 
 5. Once the above steps are completed you can [test the sample](#testing-the-sample). 
 
@@ -184,7 +185,7 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
     azd up
     ```
 
-    This project uses `gpt-35-turbo-0613`,`gpt-4-1106-Preview` and `gpt-4o-2024-05-13` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. We recommend using Canada East for this project.
+    This project uses `gpt-4o` and `gpt-4o-mini which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly. We recommend using Sweden Central for this project.
 
    After running azd up, you may be asked the following question during `Github Setup`:
 
@@ -215,8 +216,8 @@ To test the sample:
     ```
     
     **Important Note**: If you are running in Codespaces, you will need to change the visibility of the API's 8000 and 5173 ports to `public` in your VS Code terminal's `PORTS` tab. The ports tab should look like this:
-   
-   <img src="./images/ports.png" alt="Screenshot showing setting port-visibility" width="800px" />
+
+    ![Screenshot showing setting port-visibility](images/ports-resized.png)
 
 
     If you open the server link in a browser, you will see a URL not found error, this is because we haven't created a home url route in FastAPI. We have instead created a `/get_article` route which is used to pass context and instructions directly to the get_article.py file which runs the agent workflow.
@@ -274,20 +275,25 @@ python -m orchestrator
 Once you can see the article has been generated, a `.runs` folder should appear in the `./src/api` . Select this folder and click the `.tracy` file in it. 
 This shows you all the Python functions that were called in order to generate the article. Explore each section and see what helpful information you can find.
 
-## Evaluating prompt flow results
+## Evaluating results
 
-To understand how well our prompt flow performs using defined metrics like **groundedness**, **coherence** etc we can evaluate the results. To evaluate the prompt flow, we need to be able to compare it to what we see as "good results" in order to understand how well it aligns with our expectations. 
+Contoso Creative Writer uses evaluators to assess application response quality. The 4 metrics the evaluators in this project assess are Coherence, Fluency, Relevance and Groundedness. A custom `evaluate.py` script has been written to run all evaulations for you.
 
-We may be able to evaluate the flow manually (e.g., using Azure AI Foundry) but for now, we'll evaluate this by running the prompt flow using **gpt-4** and comparing our performance to the results obtained there. To do this, follow the instructions and steps in the notebook `evaluate-chat-prompt-flow.ipynb` under the `eval` folder.
-
-You can also view the evaluation metrics by running the following command from the src/api folder. 
-
-Run evaluation:
+1. To run the script run the following commands:
 
 ```shell
 cd ./src/api
 python -m evaluate.evaluate
 ```
+
+- Check: You see scores for Coherence, Fluency, Relevance and Groundedness.
+- Check: The scores are between 1 and 5
+  
+
+2. To understand what is being evaluated open the `src/api/evaluate/eval_inputs.jsonl` file.
+   - Observe that 3 examples of research, product and assignment context are stored in this file. This data will be sent to the orchestrator so that each example will have:
+   - each example will have the evaluations run and will incoperate all of the context, research, products, and final article when grading the response.
+        
 
 ## Setting up CI/CD with GitHub actions
 
@@ -302,8 +308,8 @@ azd pipeline config
 
 ### Region Availability
 
-This template uses `gpt-35-turbo-0613`,`gpt-4-1106-Preview` and `gpt-4o-2024-05-13` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly
-  * We recommend using Canada East
+This template uses `gpt-4o` and `gpt-4o-mini` which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly
+  * We recommend using Sweden Central
 
 ### Costs
 
@@ -322,6 +328,7 @@ This template has either [Managed Identity](https://learn.microsoft.com/entra/id
 ## Resources
 
 * [Prompty Documentation](https://prompty.ai/)
+* [Quickstart: Multi-agent applications using Azure OpenAI article](https://learn.microsoft.com/en-us/azure/developer/ai/get-started-multi-agents?tabs=github-codespaces): The Microsoft Learn Quickstart article for this sample, walks through both deployment and the relevant code for orchestrating multi-agents in chat.
 * [Develop Python apps that use Azure AI services](https://learn.microsoft.com/azure/developer/python/azure-ai-for-python-developers)
 
 ## Code of Conduct

@@ -149,7 +149,7 @@ def create_azd_environment(*, azure_env_name: str, subscription: str):
     # Create new environment if it doesn't exist
     azd_cmd = [
         'azd', 'env', 'new', azure_env_name,
-        '--location', 'canadaeast',
+        '--location', 'swedencentral',
         '--subscription', subscription
     ]
     subprocess.run(azd_cmd, check=True)
