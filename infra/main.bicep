@@ -5,7 +5,7 @@ targetScope = 'subscription'
 @description('Name which is used to generate a short unique hash for each resource')
 param environmentName string
 
-@allowed(['swedencentral','eastus2','northcentralus','francecentral'])
+@allowed(['eastus2','swedencentral','northcentralus','francecentral'])
 @minLength(1)
 @description('Primary location for all resources')
 @metadata({
@@ -13,7 +13,7 @@ param environmentName string
     type: 'location'
   }
 })
-param location string = 'swedencentral'
+param location string = 'eastus2'
 
 param containerRegistryName string = ''
 param aiHubName string = ''
