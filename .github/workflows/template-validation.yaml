@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: microsoft/template-validation-action@v0.3.3
+      - uses: microsoft/template-validation-action@v0.3.5
         id: validation
         env:
           AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
