@@ -10,7 +10,7 @@ model:
     azure_deployment: gpt-4
     api_version: 2024-08-01-preview
   parameters:
-    max_tokens: 50
+    max_tokens: 1500
 sample:
   researchContext: Can you find the latest camping trends and what folks are doing in the winter?
   research: research
