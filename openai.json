@@ -1,0 +1,24 @@
+from openai import AzureOpenAI
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+
+token_provider = get_bearer_token_provider(
+    DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
+)
+
+client = AzureOpenAI(
+  azure_endpoint = os.getenv("https://aibotforjonathan.openai.azure.com/"), 
+  azure_ad_token_provider=token_provider,
+  api_version="2024-12-01-preview"
+)
+
+response = client.chat.completions.create(
+    model="o1-new", # replace with the model deployment name of your o1-preview, or o1-mini model
+    messages=[
+        {"role": "developer","content": "You are a helpful assistant."}, # optional equivalent to a system message for reasoning models 
+        {"role": "user", "content": "What steps should I think about when writing my first Python API?"},
+    ],
+    max_completion_tokens = 5000
+
+)
+
+print(response.model_dump_json(indent=2))

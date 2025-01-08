@@ -1,0 +1,218 @@
+[
+    {
+        "question": "What is the meaning of life?",
+        "functions": [
+            {
+                "name": "newton_thoughts",
+                "description": "Apply Newton's laws to the given question.",
+                "parameters": {
+                    "question": "How does Newton's third law apply to human interactions?"
+                }
+            },
+            {
+                "name": "davinci_insights",
+                "description": "Generate insights like Da Vinci for the given question.",
+                "parameters": {
+                    "question": "What can we learn from nature's design about the meaning of life?"
+                }
+            },
+            {
+                "name": "human_intuition",
+                "description": "Provide human intuition for the given question.",
+                "parameters": {
+                    "question": "What does your gut instinct tell you about finding happiness?"
+                }
+            },
+            {
+                "name": "neural_network_thinking",
+                "description": "Apply neural network thinking to the given question.",
+                "parameters": {
+                    "question": "How can neural networks help us understand human creativity?"
+                }
+            },
+            {
+                "name": "quantum_computing_thinking",
+                "description": "Apply quantum computing principles to the given question.",
+                "parameters": {
+                    "question": "How can quantum computing revolutionize problem-solving?"
+                }
+            },
+            {
+                "name": "resilient_kindness",
+                "description": "Provide perspectives of resilient kindness.",
+                "parameters": {
+                    "question": "How can we find strength in kindness during difficult times?"
+                }
+            },
+            {
+                "name": "identify_and_refute_fallacies",
+                "description": "Identify and refute common logical fallacies in the argument.",
+                "parameters": {
+                    "argument": "Life has no meaning because it is full of suffering."
+                }
+            }
+        ]
+    },
+    {
+        "question": "How can we mitigate bias in artificial intelligence systems?",
+        "functions": [
+            {
+                "name": "newton_thoughts",
+                "description": "Apply Newton's laws to the given question.",
+                "parameters": {
+                    "question": "How can Newton's laws of motion inspire fairness in AI?"
+                }
+            },
+            {
+                "name": "davinci_insights",
+                "description": "Generate insights like Da Vinci for the given question.",
+                "parameters": {
+                    "question": "What can Da Vinci's approach to art teach us about unbiased AI?"
+                }
+            },
+            {
+                "name": "human_intuition",
+                "description": "Provide human intuition for the given question.",
+                "parameters": {
+                    "question": "How can we use human intuition to detect bias in AI?"
+                }
+            },
+            {
+                "name": "neural_network_thinking",
+                "description": "Apply neural network thinking to the given question.",
+                "parameters": {
+                    "question": "How can neural networks be designed to minimize bias?"
+                }
+            },
+            {
+                "name": "quantum_computing_thinking",
+                "description": "Apply quantum computing principles to the given question.",
+                "parameters": {
+                    "question": "How can quantum computing help in creating unbiased AI?"
+                }
+            },
+            {
+                "name": "resilient_kindness",
+                "description": "Provide perspectives of resilient kindness.",
+                "parameters": {
+                    "question": "How can kindness be integrated into AI to ensure fairness?"
+                }
+            },
+            {
+                "name": "identify_and_refute_fallacies",
+                "description": "Identify and refute common logical fallacies in the argument.",
+                "parameters": {
+                    "argument": "AI will always be biased because it is created by humans."
+                }
+            }
+        ]
+    },
+    {
+        "question": "How does Hydrogen's properties influence its interactions?",
+        "functions": [
+            {
+                "name": "newton_thoughts",
+                "description": "Apply Newton's laws to the given question.",
+                "parameters": {
+                    "question": "How does Newton's laws explain Hydrogen's behavior in reactions?"
+                }
+            },
+            {
+                "name": "davinci_insights",
+                "description": "Generate insights like Da Vinci for the given question.",
+                "parameters": {
+                    "question": "What can Da Vinci's observations teach us about Hydrogen?"
+                }
+            },
+            {
+                "name": "human_intuition",
+                "description": "Provide human intuition for the given question.",
+                "parameters": {
+                    "question": "What intuitive insights can we gain about Hydrogen's role in the universe?"
+                }
+            },
+            {
+                "name": "neural_network_thinking",
+                "description": "Apply neural network thinking to the given question.",
+                "parameters": {
+                    "question": "How can neural networks model Hydrogen's interactions?"
+                }
+            },
+            {
+                "name": "quantum_computing_thinking",
+                "description": "Apply quantum computing principles to the given question.",
+                "parameters": {
+                    "question": "How can quantum computing enhance our understanding of Hydrogen?"
+                }
+            },
+            {
+                "name": "resilient_kindness",
+                "description": "Provide perspectives of resilient kindness.",
+                "parameters": {
+                    "question": "How can we draw parallels between Hydrogen's simplicity and resilience?"
+                }
+            },
+            {
+                "name": "identify_and_refute_fallacies",
+                "description": "Identify and refute common logical fallacies in the argument.",
+                "parameters": {
+                    "argument": "Hydrogen is not important because it is the simplest element."
+                }
+            }
+        ]
+    },
+    {
+        "question": "What makes Diamond unique in its applications?",
+        "functions": [
+            {
+                "name": "newton_thoughts",
+                "description": "Apply Newton's laws to the given question.",
+                "parameters": {
+                    "question": "How do Newton's laws explain Diamond's hardness?"
+                }
+            },
+            {
+                "name": "davinci_insights",
+                "description": "Generate insights like Da Vinci for the given question.",
+                "parameters": {
+                    "question": "What can Da Vinci's approach to materials teach us about Diamond?"
+                }
+            },
+            {
+                "name": "human_intuition",
+                "description": "Provide human intuition for the given question.",
+                "parameters": {
+                    "question": "What intuitive insights can we gain about Diamond's value?"
+                }
+            },
+            {
+                "name": "neural_network_thinking",
+                "description": "Apply neural network thinking to the given question.",
+                "parameters": {
+                    "question": "How can neural networks predict Diamond's properties?"
+                }
+            },
+            {
+                "name": "quantum_computing_thinking",
+                "description": "Apply quantum computing principles to the given question.",
+                "parameters": {
+                    "question": "How can quantum computing help in synthesizing Diamonds?"
+                }
+            },
+            {
+                "name": "resilient_kindness",
+                "description": "Provide perspectives of resilient kindness.",
+                "parameters": {
+                    "question": "How can we draw parallels between Diamond's strength and human resilience?"
+                }
+            },
+            {
+                "name": "identify_and_refute_fallacies",
+                "description": "Identify and refute common logical fallacies in the argument.",
+                "parameters": {
+                    "argument": "Diamonds are valuable only because they are rare."
+                }
+            }
+        ]
+    }
+]

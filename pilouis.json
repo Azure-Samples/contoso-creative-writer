@@ -1,0 +1,65 @@
+{
+    "apiVersion": "2024-10-01",
+    "id": "/subscriptions/5dd32870-bdc6-40cd-981a-f299e93a6439/resourceGroups/Justforpi/providers/Microsoft.CognitiveServices/accounts/pilouis",
+    "name": "pilouis",
+    "type": "microsoft.cognitiveservices/accounts",
+    "sku": {
+        "name": "F0"
+    },
+    "kind": "LUIS.Authoring",
+    "location": "westus",
+    "identity": {
+        "principalId": "9a4a3675-9f5f-43a3-90a1-0640b3f753cb",
+        "tenantId": "05b815de-344b-4a3f-8387-52ca67249c55",
+        "type": "SystemAssigned"
+    },
+    "properties": {
+        "endpoint": "https://pilouis.cognitiveservices.azure.com/",
+        "provisioningState": "Succeeded",
+        "internalId": "6a7ae86489d64f168c3fa6b4866b05cd",
+        "dateCreated": "2024-12-23T22:03:09.951Z",
+        "callRateLimit": {
+            "rules": [
+                {
+                    "key": "default",
+                    "renewalPeriod": 1,
+                    "count": 5,
+                    "matchPatterns": [
+                        {
+                            "path": "*",
+                            "method": "*"
+                        }
+                    ]
+                }
+            ]
+        },
+        "isMigrated": false,
+        "customSubDomainName": "pilouis",
+        "privateEndpointConnections": [],
+        "publicNetworkAccess": "Enabled",
+        "capabilities": [
+            {
+                "name": "VirtualNetworks"
+            }
+        ],
+        "endpoints": {
+            "LUIS.Authoring": "https://pilouis.cognitiveservices.azure.com/",
+            "LUIS": "https://pilouis.cognitiveservices.azure.com/",
+            "Container": "https://pilouis.cognitiveservices.azure.com/"
+        },
+        "armFeatures": [
+            "Microsoft.CognitiveServices/LegalTerms.TextAnalytics.TAForPIIRAITermsAccepted",
+            "Microsoft.CognitiveServices/LegalTerms.TextAnalytics.TAForHealthRAITermsAccepted",
+            "Microsoft.CognitiveServices/LegalTerms.ComputerVision.SpatialAnaysisRAITermsAccepted"
+        ]
+    },
+    "systemData": {
+        "createdBy": "jonathan@raiffsbits.com",
+        "createdByType": "User",
+        "createdAt": "2024-12-23T22:03:08.79Z",
+        "lastModifiedBy": "jonathan@raiffsbits.com",
+        "lastModifiedByType": "User",
+        "lastModifiedAt": "2024-12-23T22:03:35.303Z"
+    },
+    "etag": "\"a900c91a-0000-0700-0000-6769de380000\""
+}
