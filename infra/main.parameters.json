@@ -15,23 +15,11 @@
       "value": "${AZURE_OPENAI_RESOURCE_LOCATION}"
     },
     "openAiApiVersion": {
-      "value": "${AZURE_OPENAI_API_VERSION=2023-07-01-preview}"
-    },
-    "openAi_35_turbo_DeploymentName": {
-      "value": "${AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME=gpt-35-turbo}"
-    },
-    "openAi_35_ModelName": {
-      "value": "${AZURE_OPENAI_35_MODEL_NAME=gpt-35-turbo}"
-    },
-    "openAi_35_ModelVersion": {
-      "value": "${AZURE_OPENAI_35_MODEL_VERSION=0613}"
+      "value": "${AZURE_OPENAI_API_VERSION=2024-08-01-preview}"
     },
     "openAi_4_DeploymentName": {
       "value": "${AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4}"
     },
-    "openAILocation": {
-        "value": "${AZURE_OPENAI_LOCATION}"
-      },
     "openAi_4_ModelName": {
       "value": "${AZURE_OPENAI_MODEL_NAME=gpt-4o}"
     },
@@ -42,10 +30,10 @@
       "value": "${AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME=gpt-4-evals}"
     },
     "openAi_4_eval_ModelName": {
-      "value": "${AZURE_OPENAI_4_EVAL_MODEL_NAME=gpt-4o}"
+      "value": "${AZURE_OPENAI_4_EVAL_MODEL_NAME=gpt-4o-mini}"
     },
     "openAi_4_eval_ModelVersion": {
-      "value": "${AZURE_OPENAI_4_EVAL_MODEL_VERSION=2024-05-13}"
+      "value": "${AZURE_OPENAI_4_EVAL_MODEL_VERSION=2024-07-18}"
     },
     "openAiEmbeddingDeploymentName": {
       "value": "${AZURE_EMBEDDING_NAME=text-embedding-ada-002}"

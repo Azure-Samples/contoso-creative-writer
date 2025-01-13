@@ -1,5 +1,5 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/python 
+// README at: https://github.com/devcontainers/templates/tree/main/src/python
 {
     "name": "Creative Writing Assistant (ACA)",
     "build": {
@@ -32,8 +32,7 @@
 				"GitHub.vscode-github-actions",
 				"ms-azuretools.azure-dev",
 				"ms-python.black-formatter",
-                "ms-toolsai.prompty@0.1.2024090502",
-                "humao.rest-client"
+                "ms-toolsai.prompty@0.1.2024090502"
             ]
         }
     },

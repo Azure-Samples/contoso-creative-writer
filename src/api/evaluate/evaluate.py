@@ -7,8 +7,8 @@ from .evaluators import ArticleEvaluator, ImageEvaluator
 from orchestrator import create
 from prompty.tracer import trace
 from azure.identity import DefaultAzureCredential
-from azure.ai.project import AIProjectClient
-from azure.ai.project.models import Evaluation, Dataset, EvaluatorConfiguration, ConnectionType
+from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import Evaluation, Dataset, EvaluatorConfiguration, ConnectionType
 from openai import AzureOpenAI
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 
@@ -186,7 +186,7 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
 
     return eval_results
 
-def evaluate_image(project_scope,  image_path):
+def evaluate_image(project_scope, image_path):
     image_evaluator = ImageEvaluator(project_scope)
 
     import pathlib 
@@ -195,6 +195,7 @@ def evaluate_image(project_scope,  image_path):
     import validators
 
     def local_image_resize(image_path):
+        print(image_path)
         # Check the size of the original image
         original_size_kb = os.path.getsize(image_path) / 1024 # Convert bytes to kilobytes
         if original_size_kb <= 1024:
@@ -231,7 +232,7 @@ def evaluate_image(project_scope,  image_path):
                 else:
                     print(f"The image size is {new_size_kb:.2f} KB, which is within the limit..")
             image_path = output_path
-            return image_path
+        return image_path
 
     def make_image_message(url_path):
         token_provider = get_bearer_token_provider(
@@ -240,7 +241,7 @@ def evaluate_image(project_scope,  image_path):
 
         client = AzureOpenAI(
             azure_endpoint = f"{os.getenv('AZURE_OPENAI_ENDPOINT')}", 
-            api_version="2023-07-01-preview",
+            api_version=f"{os.getenv('AZURE_OPENAI_API_VERSION')}",
             azure_ad_token_provider=token_provider
         )
 
@@ -249,7 +250,7 @@ def evaluate_image(project_scope,  image_path):
 
         print(f"\n===== Calling Open AI to describe image and retrieve response")
         completion = client.chat.completions.create(
-        model="gpt-4-evals",
+        model="gpt-4",
         messages= [
                         {
                             "role": "system", 
@@ -311,6 +312,8 @@ def evaluate_image(project_scope,  image_path):
                     url_path = f"data:image/{extension};base64,{encoded_image}"
                     resized_image_urls.append(url_path)
         else:
+            print('yes_else')
+            print(image_path)
             resized_image = local_image_resize(image_path)
 
             #get the file type
@@ -426,7 +429,7 @@ if __name__ == "__main__":
     
 
     model_config = {
-        "azure_deployment":os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],   
+        "azure_deployment":os.environ["AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME"],   
         "api_version":os.environ["AZURE_OPENAI_API_VERSION"],
         "azure_endpoint":f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/"
     }
@@ -442,15 +445,15 @@ if __name__ == "__main__":
     eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
     evaluate_remote(data_path=folder +"/eval_data.jsonl")
 
-    img_paths = []
-    # This is code to add an image from a file path
-    for image_num in range(1,4):
-        parent = pathlib.Path(__file__).parent.resolve()
-        path = os.path.join(parent, "data")
-        image_path = os.path.join(path, f"{image_num}.png")
-        img_paths.append(image_path)
+    # img_paths = []
+    # # This is code to add an image from a file path
+    # for image_num in range(1,4):
+    #     parent = pathlib.Path(__file__).parent.resolve()
+    #     path = os.path.join(parent, "data")
+    #     image_path = os.path.join(path, f"{image_num}.png")
+    #     img_paths.append(image_path)
 
-    eval_image_result = evaluate_image(project_scope, img_paths)
+    # eval_image_result = evaluate_image(project_scope, img_paths)
 
     end=time.time()
     print(f"Finished evaluate in {end - start}s")

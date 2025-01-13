@@ -10,7 +10,6 @@ resourceGroupName=$AZURE_RESOURCE_GROUP
 searchService=$AZURE_SEARCH_NAME
 openAiService=$AZURE_OPENAI_NAME
 subscriptionId=$AZURE_SUBSCRIPTION_ID
-runningonGH=$GITHUB_ACTIONS
 
 # Ensure all required environment variables are set
 if [ -z "$resourceGroupName" ] || [ -z "$searchService" ] || [ -z "$openAiService" ] || [ -z "$subscriptionId" ]; then
@@ -19,29 +18,11 @@ if [ -z "$resourceGroupName" ] || [ -z "$searchService" ] || [ -z "$openAiServic
     exit 1
 fi
 
-PRINCIPAL_ID=$(az ad signed-in-user show --query id -o tsv)
-
-#adding blob storage role 
-if [ "$runningonGH" ]; then
-    principleType='ServicePrincipal'
-else
-    principleType='User'
-fi
-
-az role assignment create \
-    --role "Storage Blob Data Contributor" \
-    --scope /subscriptions/"${AZURE_SUBSCRIPTION_ID}"/resourceGroups/"${AZURE_OPENAI_RESOURCE_GROUP}" \
-    --assignee-principal-type "$principleType" \
-    --assignee-object-id "${PRINCIPAL_ID}"
-
 # Set additional environment variables expected by app
 # TODO: Standardize these and remove need for setting here
-azd env set AZURE_OPENAI_API_VERSION 2023-03-15-preview
-azd env set AZURE_OPENAI_CHAT_DEPLOYMENT gpt-35-turbo
+azd env set AZURE_OPENAI_API_VERSION 2024-08-01-preview
 azd env set AZURE_SEARCH_ENDPOINT $AZURE_SEARCH_ENDPOINT
 azd env set REACT_APP_API_BASE_URL $WEB_SERVICE_ACA_URI
-azd env set LOCAL_TRACING_ENABLED false
-azd env set OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT true
 
 # Setup to run notebooks
 # Retrieve the internalId of the Cognitive Services account
@@ -57,8 +38,8 @@ echo "--- ✅ | 1. Post-provisioning - env configured ---"
 
 # Setup to run notebooks
 echo 'Installing dependencies from "requirements.txt"'
-python -m pip install -r src/api/requirements.txt > /dev/null
-python -m pip install ipython ipykernel > /dev/null      # Install ipython and ipykernel
+python3 -m pip install -r src/api/requirements.txt > /dev/null
+python3 -m pip install ipython ipykernel > /dev/null      # Install ipython and ipykernel
 ipython kernel install --name=python3 --user > /dev/null # Configure the IPython kernel
 jupyter kernelspec list > /dev/null                      # Verify kernelspec list isn't empty
 echo "--- ✅ | 2. Post-provisioning - ready execute notebooks ---"

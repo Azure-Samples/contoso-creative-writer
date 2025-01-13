@@ -1,21 +1,18 @@
 param name string
 param location string = resourceGroup().location
 param tags object = {}
-param subscriptionId string
-param azureAiProjectName string
+
 param identityName string
 param identityId string
 param containerAppsEnvironmentName string
 param containerRegistryName string
 param serviceName string = 'api'
-param openAi_35_turbo_DeploymentName string
 param openAi_4_DeploymentName string
 param openAi_4_eval_DeploymentName string
 param openAiEndpoint string
 param openAiName string
 param openAiApiVersion string
 param openAiEmbeddingDeploymentName string
-//param openAiDalleDeploymentName string
 param openAiType string
 param aiSearchEndpoint string
 param aiSearchIndexName string
@@ -45,22 +42,6 @@ module app '../core/host/container-app-upsert.bicep' = {
         value: identityId
       }
       {
-        name: 'AZURE_LOCATION'
-        value: location
-      }
-      {
-        name: 'AZURE_SUBSCRIPTION_ID'
-        value: subscriptionId
-      }
-      {
-        name: 'AZURE_RESOURCE_GROUP'
-        value: resourceGroup().name
-      }
-      {
-        name: 'AZURE_AI_PROJECT_NAME'
-        value: azureAiProjectName
-      }
-      {
         name: 'AZURE_SEARCH_ENDPOINT'
         value: aiSearchEndpoint
       }
@@ -85,10 +66,6 @@ module app '../core/host/container-app-upsert.bicep' = {
         value: openAiName
       }
       {
-        name: 'AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME'
-        value: openAi_35_turbo_DeploymentName
-      }
-      {
         name: 'AZURE_OPENAI_DEPLOYMENT_NAME'
         value: openAi_4_DeploymentName
       }
@@ -100,10 +77,6 @@ module app '../core/host/container-app-upsert.bicep' = {
         name: 'AZURE_EMBEDDING_NAME'
         value: openAiEmbeddingDeploymentName
       }
-      // {
-      //   name: 'AZURE_DALLE_NAME'
-      //   value: openAiDalleDeploymentName
-      // }
       {
         name: 'APPINSIGHTS_CONNECTIONSTRING'
         value: appinsights_Connectionstring
@@ -115,15 +88,6 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'BING_SEARCH_KEY'
         secretRef: 'bing-search-key'
-      }
-      {
-        name: 'LOCAL_TRACING_ENABLED'
-        value: 'false'
-      }
-      {
-        name: 'OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT'
-        value: 'true'
-
       }
 
     ]

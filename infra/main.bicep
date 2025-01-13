@@ -5,28 +5,15 @@ targetScope = 'subscription'
 @description('Name which is used to generate a short unique hash for each resource')
 param environmentName string
 
+@allowed(['eastus2','swedencentral','northcentralus','francecentral', 'eastus'])
 @minLength(1)
 @description('Primary location for all resources')
-param location string
-
-@minLength(1)
-@description('Location for the OpenAI resource')
-@allowed([
-  'canadaeast'
-  'eastus'
-  'eastus2'
-  'northcentralus'
-  'southcentralus'
-  'swedencentral'
-  'westus'
-  'westus3'
-])
 @metadata({
   azd: {
     type: 'location'
   }
 })
-param openAILocation string = 'swedencentral'
+param location string = 'eastus2'
 
 param containerRegistryName string = ''
 param aiHubName string = ''
@@ -61,7 +48,7 @@ param resourceGroupName string = ''
 param searchConnectionName string = ''
 
 @description('The API version of the OpenAI resource')
-param openAiApiVersion string = '2023-07-01-preview'
+param openAiApiVersion string = '2024-08-01-preview'
 
 @description('The type of the OpenAI resource')
 param openAiType string = 'azure'
@@ -75,19 +62,12 @@ param bingSearchName string = ''
 @description('The name of the AI search index')
 param aiSearchIndexName string = 'contoso-products'
 
-@description('The name of the 35 turbo OpenAI deployment')
-param openAi_35_turbo_DeploymentName string = 'gpt-35-turbo'
-
-
 @description('The name of the 4 OpenAI deployment')
 param openAi_4_DeploymentName string = 'gpt-4'
 
 
 @description('The name of the 4 eval OpenAI deployment')
 param openAi_4_eval_DeploymentName string = 'gpt-4-evals'
-
-//@description('The name of the OpenAI dalle deployment')
-//param openAiDalleDeploymentName string = 'dall-e-3'
 
 @description('The name of the OpenAI embedding deployment')
 param openAiEmbeddingDeploymentName string = 'text-embedding-ada-002'
@@ -126,7 +106,7 @@ module ai 'core/host/ai-environment.bicep' = {
   name: 'ai'
   scope: resourceGroup
   params: {
-    location: openAILocation
+    location: location
     tags: tags
     hubName: !empty(aiHubName) ? aiHubName : 'ai-hub-${resourceToken}'
     projectName: !empty(aiProjectName) ? aiProjectName : 'ai-project-${resourceToken}'
@@ -188,11 +168,9 @@ module apiContainerApp 'app/api.bicep' = {
     identityId: managedIdentity.outputs.managedIdentityClientId
     containerAppsEnvironmentName: containerApps.outputs.environmentName
     containerRegistryName: containerApps.outputs.registryName
-    openAi_35_turbo_DeploymentName: !empty(openAi_35_turbo_DeploymentName) ? openAi_35_turbo_DeploymentName : 'gpt-35-turbo'
     openAi_4_DeploymentName: !empty(openAi_4_DeploymentName) ? openAi_4_DeploymentName : 'gpt-4'
     openAi_4_eval_DeploymentName: !empty(openAi_4_eval_DeploymentName) ? openAi_4_eval_DeploymentName : 'gpt-4-evals'
     openAiEmbeddingDeploymentName: openAiEmbeddingDeploymentName
-    //openAiDalleDeploymentName: openAiDalleDeploymentName
     openAiEndpoint: ai.outputs.openAiEndpoint
     openAiName: ai.outputs.openAiName
     openAiType: openAiType
@@ -202,8 +180,6 @@ module apiContainerApp 'app/api.bicep' = {
     appinsights_Connectionstring: ai.outputs.applicationInsightsConnectionString
     bingApiEndpoint: bing.outputs.endpoint
     bingApiKey: bing.outputs.bingApiKey
-    subscriptionId: subscription().subscriptionId
-    azureAiProjectName: ai.outputs.projectName
   }
 }
 
@@ -296,7 +272,6 @@ module openaiRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
 output AZURE_LOCATION string = location
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
 
-output AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME string = openAi_35_turbo_DeploymentName
 output AZURE_OPENAI_DEPLOYMENT_NAME string = openAi_4_DeploymentName
 output AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME string = openAi_4_eval_DeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
@@ -322,12 +297,10 @@ output APPINSIGHTS_CONNECTIONSTRING string = ai.outputs.applicationInsightsConne
 
 output OPENAI_TYPE string = 'azure'
 output AZURE_EMBEDDING_NAME string = openAiEmbeddingDeploymentName
-//output AZURE_DALLE_NAME string = openAiDalleDeploymentName
 
 output AZURE_SEARCH_ENDPOINT string = ai.outputs.searchServiceEndpoint
 output AZURE_SEARCH_NAME string = ai.outputs.searchServiceName
 
 output BING_SEARCH_ENDPOINT string = bing.outputs.endpoint
 output BING_SEARCH_KEY string = bing.outputs.bingApiKey
-
 

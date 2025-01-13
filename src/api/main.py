@@ -83,7 +83,7 @@ async def upload_image(file: UploadFile = File(...)):
     }
 
     from evaluate.evaluate import evaluate_image
-
+    print(file_path)
     result = evaluate_image(project_scope, file_path)
 
     if len(result) > 0:
