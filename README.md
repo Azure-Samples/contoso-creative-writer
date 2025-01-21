@@ -146,7 +146,7 @@ A related option is VS Code Dev Containers, which will open the project in your 
 1. Create a new folder and switch to it in the terminal, then run this command to download the project code:
 
     ```shell
-    azd init -t agent-openai-python-prompty
+    azd init -t contoso-creative-writer
     ```
     Note that this command will initialize a git repository, so you do not need to clone this repository.
 
