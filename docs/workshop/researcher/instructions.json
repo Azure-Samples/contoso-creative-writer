@@ -1,10 +1,10 @@
 {
     "participant": { 
-        "firstName": "John",
-        "lastName": "Smith", 
-        "country": "United States"
+        "firstName": "Lisa",
+        "lastName": "Wolffhugel", 
+        "country": "Switzerland"
     },
 
-    "instructions": "Can you generate queries to find the latest camping trends and what folks are doing in the winter? Use 'en-US' as the market code. "
+    "instructions": "Can you generate queries to find the latest camping trends and what folks are doing in the winter? Use 'fr-FR' as the market code. "
 
 }

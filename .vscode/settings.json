@@ -1,5 +1,23 @@
 {
     "workbench.editorAssociations": {
         "*.md": "vscode.markdown.preview.editor"
-    }
+    },
+    "prompty.modelConfigurations": [
+
+        {
+            "name": "default",
+            "type": "azure_openai",
+            "api_version": "2023-12-01-preview",
+            "azure_endpoint": "${env:AZURE_OPENAI_ENDPOINT}",
+            "azure_deployment": "",
+            "api_key": "${env:AZURE_OPENAI_KEY}"
+        },
+        {
+            "name": "gpt-3.5-turbo",
+            "type": "openai",
+            "api_key": "${env:OPENAI_API_KEY}",
+            "organization": "${env:OPENAI_ORG_ID}",
+            "base_url": "${env:OPENAI_BASE_URL}"
+        }
+    ]
 }
