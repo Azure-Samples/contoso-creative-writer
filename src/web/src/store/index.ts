@@ -57,11 +57,12 @@ export const startWritingTask = (
 
   const url = `${
     endpoint.endsWith("/") ? endpoint : endpoint + "/"
-  }api/article`;
+  }`;
+  console.log(url);
 
   const callApi = async () => {
     try {
-      const response = await fetch(url, configuration);
+      const response = await fetch("/api/article", configuration);
       const reader = response.body?.getReader();
       if (!reader) return;
 
