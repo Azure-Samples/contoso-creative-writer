@@ -1,4 +1,4 @@
-import { endpoint } from "../constants";
+import { githubDevSubsPort } from "../utils/ghutils";
 export interface IMessage {
   type: "message" | "researcher" | "marketing" | "writer" | "editor" | "error" | "partial";
   message: string;
@@ -55,14 +55,24 @@ export const startWritingTask = (
     }),
   };
 
+  const hostname = window.location.hostname;
+  const apiPort = 8000;
+  
+  const endpoint =
+    (hostname === 'localhost' || hostname === '127.0.0.1')
+      ? `http://localhost:${apiPort}`
+      : hostname.endsWith('github.dev')
+      ? `${githubDevSubsPort(hostname, apiPort)}/`
+      : "";
+
+
   const url = `${
     endpoint.endsWith("/") ? endpoint : endpoint + "/"
-  }`;
-  console.log(url);
+  }api/article`;
 
   const callApi = async () => {
     try {
-      const response = await fetch("/api/article", configuration);
+      const response = await fetch(url, configuration);
       const reader = response.body?.getReader();
       if (!reader) return;
 
@@ -73,7 +83,7 @@ export const startWritingTask = (
         for (let part of parts) {
           part = part.trim();
           if (!part || part.length === 0) continue;
-          console.log(part);
+          // console.log(part);
           const message = JSON.parse(part) as IMessage;
           addMessage(message);
           if (message.type === "writer") {
