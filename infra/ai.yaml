@@ -24,4 +24,4 @@ deployments:
       version: "2024-07-18"
     sku:
       name: "Standard"
-      capacity: 8
+      capacity: 10

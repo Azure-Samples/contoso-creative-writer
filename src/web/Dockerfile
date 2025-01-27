@@ -20,9 +20,7 @@ WORKDIR /app
 COPY --from=ui /app/dist/* ./
 COPY --from=ui /app/dist/assets/* ./assets/
 
-COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
-COPY ./nginx/run_nginx.sh /bin/run_nginx.sh
-
 EXPOSE 80
-RUN ["chmod", "+x", "/bin/run_nginx.sh"]
-CMD ["/bin/run_nginx.sh"]
+
+COPY ./nginx/nginx.conf /nginx.conf.template
+CMD ["/bin/sh" , "-c" , "envsubst < /nginx.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"]
