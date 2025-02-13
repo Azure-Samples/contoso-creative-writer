@@ -40,7 +40,6 @@ def start_message(type: types):
         type="message", message=f"Starting {type} agent task..."
     ).to_json_line()
 
-
 def complete_message(type: types, result):
     return Message(
         type=type, message=f"Completed {type} task", data=result
@@ -61,10 +60,17 @@ def send_products(product_result):
 def send_writer(full_result):
     return json.dumps(("writer", full_result))
 
+def building_agents_message():
+    return Message(
+        type="message", message=f"Initializing Agent Service, please wait a few seconds..."
+    ).to_json_line()
+
 @trace
 def create(research_context, product_context, assignment_context, evaluate=False):
     
     feedback = "No Feedback"
+
+    yield building_agents_message()
 
     yield start_message("researcher")
     research_result = researcher.research(research_context, feedback)

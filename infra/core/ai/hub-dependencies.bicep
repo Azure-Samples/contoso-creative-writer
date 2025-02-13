@@ -17,6 +17,10 @@ param applicationInsightsName string = ''
 param containerRegistryName string = ''
 @description('Name of the Azure Cognitive Search service')
 param searchServiceName string = ''
+@description('Name of Bing service')
+param bingName string
+@description('Location of Bing service')
+param bingLocation string = 'global'
 
 module keyVault '../security/keyvault.bicep' = {
   name: 'keyvault'
@@ -139,11 +143,22 @@ module searchService '../search/search-services.bicep' = {
     name: 'search'
     params: {
       name: searchServiceName
-      location: 'eastus'
+      location: location
       semanticSearch: 'standard'
       disableLocalAuth: true
     }
   }
+
+  module bing '../bing/bing-search.bicep' = {
+    name: 'bing'
+    scope: resourceGroup()
+    params: {
+      location: bingLocation 
+      name: bingName
+    }
+  }
+
+
 output keyVaultId string = keyVault.outputs.id
 output keyVaultName string = keyVault.outputs.name
 output keyVaultEndpoint string = keyVault.outputs.endpoint
@@ -168,3 +183,7 @@ output openAiEndpoint string = cognitiveServices.outputs.endpoints['OpenAI Langu
 output searchServiceId string = !empty(searchServiceName) ? searchService.outputs.id : ''
 output searchServiceName string = !empty(searchServiceName) ? searchService.outputs.name : ''
 output searchServiceEndpoint string = !empty(searchServiceName) ? searchService.outputs.endpoint : ''
+
+output bingName string = bing.outputs.bingName
+output bingEndpoint string = bing.outputs.endpoint
+output bingApiKey string = bing.outputs.bingApiKey

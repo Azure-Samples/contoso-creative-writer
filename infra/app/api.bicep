@@ -11,6 +11,7 @@ param openAi_4_DeploymentName string
 param openAi_4_eval_DeploymentName string
 param openAiEndpoint string
 param openAiName string
+param bingName string
 param openAiApiVersion string
 param openAiEmbeddingDeploymentName string
 param openAiType string
@@ -89,7 +90,10 @@ module app '../core/host/container-app-upsert.bicep' = {
         name: 'BING_SEARCH_KEY'
         secretRef: 'bing-search-key'
       }
-
+      {
+        name: 'BING_SEARCH_NAME'
+        value: bingName
+      }
     ]
     targetPort: 80
   }

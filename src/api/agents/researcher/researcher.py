@@ -17,7 +17,6 @@ from azure.ai.inference.prompts import PromptTemplate
 
 load_dotenv()
 
-
 # Create an Azure AI Client from a connection string, copied from your Azure AI Foundry project.
 # At the moment, it should be in the format "<HostName>;<AzureSubscriptionId>;<ResourceGroup>;<HubName>"
 # Customer needs to login to Azure subscription via Azure CLI and set the environment variables
@@ -41,7 +40,7 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
     messages = prompt_template.create_messages(instructions=instructions, feedback=feedback)
 
     bing_connection = project_client.connections.get(
-        connection_name='agentbingsearch'
+        connection_name='bing-connection'
     )
     conn_id = bing_connection.id
 
@@ -59,11 +58,11 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
             tools=bing.definitions,
         )
 
-        print(f"Created agent, ID: {agent.id}")
+        # print(f"Created agent, ID: {agent.id}")
 
         # Create thread for communication
         thread = project_client.agents.create_thread()
-        print(f"Created thread, ID: {thread.id}")
+        # print(f"Created thread, ID: {thread.id}")
 
         # Create message to thread
         message = project_client.agents.create_message(
@@ -78,6 +77,7 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
 
         # Create and process agent run in thread with tools
         run = project_client.agents.create_and_process_run(thread_id=thread.id, assistant_id=agent.id)
+        
         print(f"Run finished with status: {run.status}")
 
         # Retrieve run step details to get Bing Search query link

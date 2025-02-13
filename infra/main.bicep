@@ -25,8 +25,6 @@ param applicationInsightsName string = ''
 param openAiName string = ''
 @description('The Open AI connection name. If ommited will use a default value')
 param openAiConnectionName string = ''
-@description('The Open AI content safety connection name. If ommited will use a default value')
-param openAiContentSafetyConnectionName string = ''
 param keyVaultName string = ''
 @description('The Azure Storage Account resource name. If ommited will be generated')
 param storageAccountName string = ''
@@ -56,8 +54,11 @@ param openAiType string = 'azure'
 @description('The name of the search service')
 param searchServiceName string = ''
 
+@description('The Bing resource name. If ommited will be generated')
+param bingName string = ''
+
 @description('The name of the bing search service')
-param bingSearchName string = ''
+param bingConnectionName string = ''
 
 @description('The name of the AI search index')
 param aiSearchIndexName string = 'contoso-products'
@@ -116,7 +117,6 @@ module ai 'core/host/ai-environment.bicep' = {
       : '${abbrs.storageStorageAccounts}${resourceToken}'
     openAiName: !empty(openAiName) ? openAiName : 'aoai-${resourceToken}'
     openAiConnectionName: !empty(openAiConnectionName) ? openAiConnectionName : 'aoai-connection'
-    openAiContentSafetyConnectionName: !empty(openAiContentSafetyConnectionName) ? openAiContentSafetyConnectionName : 'aoai-content-safety-connection'
     openAiModelDeployments: array(contains(aiConfig, 'deployments') ? aiConfig.deployments : [])
     logAnalyticsName: !useApplicationInsights
       ? ''
@@ -131,17 +131,19 @@ module ai 'core/host/ai-environment.bicep' = {
       : !empty(containerRegistryName) ? containerRegistryName : '${abbrs.containerRegistryRegistries}${resourceToken}'
     searchServiceName: !useSearch ? '' : !empty(searchServiceName) ? searchServiceName : '${abbrs.searchSearchServices}${resourceToken}'
     searchConnectionName: !useSearch ? '' : !empty(searchConnectionName) ? searchConnectionName : 'search-service-connection'
+    bingName: !empty(bingName) ? bingName : 'agent-bing-search'
+    bingConnectionName: !empty(bingConnectionName) ? bingConnectionName : 'bing-connection'
   }
 }
 
-module bing 'core/bing/bing-search.bicep' = {
-  name: 'bing'
-  scope: resourceGroup
-  params: {
-    name: 'agent-bing-search'
-    location: 'global'
-  }
-}
+// module bing 'core/bing/bing-search.bicep' = {
+//   name: 'bing'
+//   scope: resourceGroup
+//   params: {
+//     name: 'agent-bing-search'
+//     location: 'global'
+//   }
+// }
 
 // Container apps host (including container registry)
 module containerApps 'core/host/container-apps.bicep' = {
@@ -178,8 +180,9 @@ module apiContainerApp 'app/api.bicep' = {
     aiSearchEndpoint: ai.outputs.searchServiceEndpoint
     aiSearchIndexName: aiSearchIndexName
     appinsights_Connectionstring: ai.outputs.applicationInsightsConnectionString
-    bingApiEndpoint: bing.outputs.endpoint
-    bingApiKey: bing.outputs.bingApiKey
+    bingName: ai.outputs.bingName
+    bingApiEndpoint: ai.outputs.bingEndpoint
+    bingApiKey: ai.outputs.bingApiKey
   }
 }
 
@@ -301,6 +304,6 @@ output AZURE_EMBEDDING_NAME string = openAiEmbeddingDeploymentName
 output AZURE_SEARCH_ENDPOINT string = ai.outputs.searchServiceEndpoint
 output AZURE_SEARCH_NAME string = ai.outputs.searchServiceName
 
-output BING_SEARCH_ENDPOINT string = bing.outputs.endpoint
-output BING_SEARCH_KEY string = bing.outputs.bingApiKey
-
+output BING_SEARCH_ENDPOINT string = ai.outputs.bingEndpoint
+output BING_SEARCH_NAME string = ai.outputs.bingName
+output BING_SEARCH_KEY string = ai.outputs.bingApiKey
