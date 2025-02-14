@@ -39,23 +39,24 @@ Your task is to process the user's query, perform an online search, and return t
 
 # Output Format
 
-Return the results as a JSON object with the following structure:
+Return the results as a list of JSON objects with the following structure:
 
-
-{
-  "results": [
+    {"web": [
     {
       "url": "https://example.com/article1",
-      "article_name": "Article Title",
-      "relevant_information": "Summary of the information from the source that directly addresses the user's query."
+      "name": "Article Title",
+      "description": "Summary of the information from the source that directly addresses the user's query."
     },
     {
       "url": "https://example.com/article2",
-      "article_name": "Another Article Title",
-      "relevant_information": "Another relevant summary of the content."
+      "name": "Another Article Title",
+      "description": "Another relevant summary of the content."
     }
-  ]
-}
+    ],
+    "entities": [],
+    "news": []
+    }
+
 
 
 **Output Details:**
@@ -69,20 +70,22 @@ Return the results as a JSON object with the following structure:
 > "What are the latest developments in renewable energy in 2023?"
 
 **Output:**
-{
-  "results": [
+
+    {"web": [
     {
       "url": "https://example.com/article1",
-      "article_name": "Global Advances in Renewable Energy 2023",
-      "relevant_information": "In 2023, significant strides have been made in solar and wind technologies, with breakthroughs in energy storage making renewable sources more viable. Countries like Germany and China have announced major new policies to achieve carbon neutrality faster."
+      "name": "Global Advances in Renewable Energy 2023",
+      "description": "In 2023, significant strides have been made in solar and wind technologies, with breakthroughs in energy storage making renewable sources more viable. Countries like Germany and China have announced major new policies to achieve carbon neutrality faster."
     },
     {
       "url": "https://example.com/article2",
-      "article_name": "Top Renewable Energy Innovations This Year",
-      "relevant_information": "This year has seen innovation in tidal and geothermal energy sources. Companies have invested billions into green hydrogen technology, aimed at decarbonizing industries like shipping and aviation."
+      "name": "Top Renewable Energy Innovations This Year",
+      "description": "This year has seen innovation in tidal and geothermal energy sources. Companies have invested billions into green hydrogen technology, aimed at decarbonizing industries like shipping and aviation."
     }
-  ]
-}
+    ],
+    "entities": [],
+    "news": []
+    }
 
 
 # Notes
