@@ -1,145 +1,110 @@
 import os
 import sys
 import json
-from typing import List
-import requests
-import urllib.parse
-from pathlib import Path
 from dotenv import load_dotenv
 import prompty
 import prompty.azure
 from prompty.azure.processor import ToolCall
 from prompty.tracer import trace
-# from prompty.azure.processors import ToolCall
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+from azure.ai.projects.models import BingGroundingTool
+from azure.ai.inference.prompts import PromptTemplate
 
 load_dotenv()
 
-BING_SEARCH_ENDPOINT = os.getenv("BING_SEARCH_ENDPOINT")
-BING_SEARCH_KEY = os.getenv("BING_SEARCH_KEY")
-BING_HEADERS = {"Ocp-Apim-Subscription-Key": BING_SEARCH_KEY}
-
-
-def _make_endpoint(endpoint, path):
-    """Make an endpoint URL"""
-    return f"{endpoint}{'' if endpoint.endswith('/') else '/'}{path}"
-
-
-def _make_request(path, params=None):
-    """Make a request to the API"""
-    endpoint = _make_endpoint(BING_SEARCH_ENDPOINT, path)
-    response = requests.get(endpoint, headers=BING_HEADERS, params=params)
-    items = response.json()
-    return items
+# Create an Azure AI Client from a connection string, copied from your Azure AI Foundry project.
+# At the moment, it should be in the format "<HostName>;<AzureSubscriptionId>;<ResourceGroup>;<HubName>"
+# Customer needs to login to Azure subscription via Azure CLI and set the environment variables
 
 
 @trace
-def find_information(query, market="en-US"):
-    """Find information using the Bing Search API"""
-    params = {"q": query, "mkt": market, "count": 5}
-    items = _make_request("v7.0/search", params)
-    pages = [
-        {"url": a["url"], "name": a["name"], "description": a["snippet"]}
-        for a in items["webPages"]["value"]
-    ]
-    related = [a["text"] for a in items["relatedSearches"]["value"]]
-    return {"pages": pages, "related": related}
+def execute_research(instructions: str, feedback: str = "No feedback"):
 
+    ai_project_conn_str = os.getenv("AZURE_LOCATION")+".api.azureml.ms;"+os.getenv("AZURE_SUBSCRIPTION_ID")+";"+os.getenv("AZURE_RESOURCE_GROUP")+";"+os.getenv("AZURE_AI_PROJECT_NAME")
 
-@trace
-def find_entities(query, market="en-US"):
-    """Find entities using the Bing Entity Search API"""
-    params = "?mkt=" + market + "&q=" + urllib.parse.quote(query)
-    items = _make_request(f"v7.0/entities{params}")
-    entities = []
-    if "entities" in items:
-        entities = [
-            {"name": e["name"], "description": e["description"]}
-            for e in items["entities"]["value"]
-        ]
-    return entities
-
-
-@trace
-def find_news(query, market="en-US"):
-    """Find images using the Bing News Search API"""
-    params = {"q": query, "mkt": market, "count": 5}
-    items = _make_request("v7.0/news/search", params)
-    articles = [
-        {
-            "name": a["name"],
-            "url": a["url"],
-            "description": a["description"],
-            "provider": a["provider"][0]["name"],
-            "datePublished": a["datePublished"],
-        }
-        for a in items["value"]
-    ]
-    return articles
-
-
-@trace
-def execute(instructions: str, feedback: str = "No feedback"):
-    """Assign a research task to a researcher"""
-    functions = {
-        "find_information": find_information,
-        "find_entities": find_entities,
-        "find_news": find_news,
-    }
-
-    fns: List[ToolCall] = prompty.execute(
-        "researcher.prompty", inputs={"instructions": instructions, "feedback": feedback}
+    project_client = AIProjectClient.from_connection_string(
+        credential=DefaultAzureCredential(),
+        conn_str=ai_project_conn_str,
     )
 
-    research = []
-    for f in fns:
-        fn = functions[f.name]
-        args = json.loads(f.arguments)
-        r = fn(**args)
-        research.append(
-            {"id": f.id, "function": f.name, "arguments": args, "result": r}
+    prompt_template = PromptTemplate.from_prompty(file_path="researcher.prompty")
+
+
+    instructions = instructions
+    feedback= feedback
+    messages = prompt_template.create_messages(instructions=instructions, feedback=feedback)
+
+    bing_connection = project_client.connections.get(
+        connection_name='bing-connection'
+    )
+    conn_id = bing_connection.id
+
+    # Initialize agent bing tool and add the connection id
+    bing = BingGroundingTool(connection_id=conn_id)
+
+    prompt_template = PromptTemplate.from_prompty(file_path="researcher.prompty")
+
+    # Create agent with the bing tool and process assistant run
+    with project_client:
+        agent = project_client.agents.create_agent(
+            model="gpt-4",
+            name="my-assistant",
+            instructions=messages[0]['content'],
+            tools=bing.definitions,
         )
 
-    return research
+        # print(f"Created agent, ID: {agent.id}")
 
+        # Create thread for communication
+        thread = project_client.agents.create_thread()
+        # print(f"Created thread, ID: {thread.id}")
 
-@trace
-def process(research):
-    """Process the research results"""
-    # process web searches
-    web = filter(lambda r: r["function"] == "find_information", research)
-    web_items = [page for web_item in web for page in web_item["result"]["pages"]]
+        # Create message to thread
+        message = project_client.agents.create_message(
+            thread_id=thread.id,
+            role="user",
+            content=instructions,
+        )
+        print(f"Created message, ID: {message.id}")
 
-    # process entity searches
-    entities = filter(lambda r: r["function"] == "find_entities", research)
-    entity_items = [
-        {"url": "None Available", "name": it["name"], "description": it["description"]}
-        for e in entities
-        for it in e["result"]
-    ]
+        # # Create and process agent run in thread with tools
+        # run = project_client.agents.create_stream(thread_id=thread.id, assistant_id=agent.id)
 
-    # process news searches
-    news = filter(lambda r: r["function"] == "find_news", research)
-    news_items = [
-        {
-            "url": article["url"],
-            "name": article["name"],
-            "description": article["description"],
-        }
-        for news_item in news
-        for article in news_item["result"]
-    ]
-    return {
-        "web": web_items,
-        "entities": entity_items,
-        "news": news_items,
-    }
+        # Create and process agent run in thread with tools
+        run = project_client.agents.create_and_process_run(thread_id=thread.id, assistant_id=agent.id)
+        
+        print(f"Run finished with status: {run.status}")
 
+        # Retrieve run step details to get Bing Search query link
+        # To render the webpage, we recommend you replace the endpoint of Bing search query URLs with `www.bing.com` and your Bing search query URL would look like "https://www.bing.com/search?q={search query}"
+        run_steps = project_client.agents.list_run_steps(run_id=run.id, thread_id=thread.id)
+        run_steps_data = run_steps['data']
+        print(f"Agent created and now researching...")
+        print('')
+
+        if run.status == "failed":
+            print(f"Run failed: {run.last_error}")
+
+        # Delete the assistant when done
+        project_client.agents.delete_agent(agent.id)
+        print("Deleted agent")
+
+        # Fetch and log all messages
+        messages = project_client.agents.list_messages(thread_id=thread.id)
+        # print(f"Messages: {messages}")
+        r = messages.data[0]['content'][0]['text']['value']
+        json_r = json.loads(r)
+        research = json_r['results']
+        print('research succesfully completed')
+        return research
 
 @trace
 def research(instructions: str, feedback: str = "No feedback"):
-    r = execute(instructions=instructions)
-    p = process(r)
-    return p
+    r = execute_research(instructions=instructions)
+    p = json.dumps(r)
+    print(p)
+    return [p]
 
 
 if __name__ == "__main__":
@@ -149,6 +114,6 @@ if __name__ == "__main__":
     else:
         instructions = sys.argv[1]
 
-    r = execute(instructions=instructions)
-    processed = process(r)
-    print(json.dumps(processed, indent=2))
+    research = execute_research(instructions=instructions)
+    # processed = process(r)
+    print(json.dumps(research, indent=2))

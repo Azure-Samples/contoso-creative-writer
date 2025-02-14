@@ -8,14 +8,16 @@ import json
 from agents.researcher import researcher
 from agents.product import product
 from agents.writer import writer
+# from agents.designer import designer
 from agents.editor import editor
 from evaluate.evaluators import evaluate_article_in_background
+from prompty.tracer import trace, Tracer, console_tracer, PromptyTracer
 
-types = Literal["message", "researcher", "marketing", "writer", "editor", "error", "partial", ]
+types = Literal["message", "researcher", "marketing", "designer","writer", "editor", "error", "partial", ]
 
 class Message(BaseModel):
     type: types
-    message: str
+    message: str | dict | None
     data: List | dict = Field(default={})
 
     def to_json_line(self):
@@ -23,9 +25,9 @@ class Message(BaseModel):
 
 
 class Task(BaseModel):
-    research: str
-    products: str
-    assignment: str
+    research: str 
+    products: str 
+    assignment: str 
 
 DEFAULT_LOG_LEVEL = 25
 
@@ -38,8 +40,7 @@ def start_message(type: types):
         type="message", message=f"Starting {type} agent task..."
     ).to_json_line()
 
-
-def complete_message(type: types, result: Union[dict, list] = {}):
+def complete_message(type: types, result):
     return Message(
         type=type, message=f"Completed {type} task", data=result
     ).to_json_line()
@@ -59,10 +60,17 @@ def send_products(product_result):
 def send_writer(full_result):
     return json.dumps(("writer", full_result))
 
+def building_agents_message():
+    return Message(
+        type="message", message=f"Initializing Agent Service, please wait a few seconds..."
+    ).to_json_line()
+
 @trace
-def create(research_context, product_context, assignment_context, evaluate=True):
+def create(research_context, product_context, assignment_context, evaluate=False):
     
     feedback = "No Feedback"
+
+    yield building_agents_message()
 
     yield start_message("researcher")
     research_result = researcher.research(research_context, feedback)
@@ -89,6 +97,11 @@ def create(research_context, product_context, assignment_context, evaluate=True)
         yield complete_message("partial", {"text": item})
 
     processed_writer_result = writer.process(full_result)
+
+    # send article to the designer, to generate an image for the blog
+    # yield start_message("designer")
+    # designer_response = designer.design(processed_writer_result['article'])
+    # yield complete_message("designer", [f"Image stored in {designer_response}"])
 
     # Then send it to the editor, to decide if it's good or not
     yield start_message("editor")
@@ -163,11 +176,8 @@ def test_create_article(research_context, product_context, assignment_context):
                 print(f'Article: {article}')
     
 if __name__ == "__main__":
-
-    from tracing import init_tracing
-
-    tracer = init_tracing(local_tracing=True)
-
+    local_trace = PromptyTracer()
+    Tracer.add("PromptyTracer", local_trace.tracer)
     research_context = "Can you find the latest camping trends and what folks are doing in the winter?"
     product_context = "Can you use a selection of tents and sleeping bags as context?"
     assignment_context = '''Write a fun and engaging article that includes the research and product information. 
