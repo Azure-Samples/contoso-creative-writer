@@ -11,6 +11,7 @@ param endpointName = readEnvironmentVariable('AZUREAI_ENDPOINT_NAME', '')
 
 param openAiName = readEnvironmentVariable('AZURE_OPENAI_NAME', '')
 param searchServiceName = readEnvironmentVariable('AZURE_SEARCH_SERVICE_NAME', '')
+param bingName = readEnvironmentVariable('BING_SERVICE_NAME', '')
 
 param applicationInsightsName = readEnvironmentVariable('AZURE_APPLICATION_INSIGHTS_NAME', '')
 param keyVaultName = readEnvironmentVariable('AZURE_KEYVAULT_NAME', '')
