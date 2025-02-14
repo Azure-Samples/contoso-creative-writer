@@ -17,7 +17,7 @@ opentelemetry-instrumentation
 azure-identity==1.19.0
 gunicorn==21.2.0
 azure-keyvault-secrets
-aiohttp==3.9.5
+aiohttp==3.10.11
 azure-cognitiveservices-speech==1.37.0
 nbconvert
 azure-ai-evaluation[remote]
