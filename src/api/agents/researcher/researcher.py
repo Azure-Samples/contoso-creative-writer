@@ -54,11 +54,11 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
             tools=bing.definitions,
         )
 
-        # print(f"Created agent, ID: {agent.id}")
+        print(f"Created agent, ID: {agent.id}")
 
         # Create thread for communication
         thread = project_client.agents.create_thread()
-        # print(f"Created thread, ID: {thread.id}")
+        print(f"Created thread, ID: {thread.id}")
 
         # Create message to thread
         message = project_client.agents.create_message(
@@ -95,16 +95,20 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
         # print(f"Messages: {messages}")
         r = messages.data[0]['content'][0]['text']['value']
         json_r = json.loads(r)
-        research = json_r['results']
+        research = json_r['web']
         print('research succesfully completed')
         return research
 
 @trace
 def research(instructions: str, feedback: str = "No feedback"):
     r = execute_research(instructions=instructions)
-    p = json.dumps(r)
-    print(p)
-    return [p]
+    print(r)
+    research = {
+        "web": r,
+        "entities": [],
+        "news": [],
+    }
+    return research
 
 
 if __name__ == "__main__":
