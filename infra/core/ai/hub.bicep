@@ -18,8 +18,10 @@ param openAiConnectionName string
 param aiSearchName string = ''
 @description('The Azure Cognitive Search service connection name to use for the AI Studio Hub Resource')
 param aiSearchConnectionName string
-@description('The OpenAI Content Safety connection name to use for the AI Studio Hub Resource')
-param openAiContentSafetyConnectionName string
+@description('The Bing Services account name to use for the AI Studio Hub Resource')
+param bingName string
+@description('The Bing Services account connection name to use for the AI Studio Hub Resource')
+param bingConnectionName string
 
 @description('The SKU name to use for the AI Studio Hub Resource')
 param skuName string = 'Basic'
@@ -77,24 +79,6 @@ resource hub 'Microsoft.MachineLearningServices/workspaces@2024-01-01-preview' =
     }
   }
 
-  resource contentSafetyConnection 'connections' = {
-    name: openAiContentSafetyConnectionName
-    properties: {
-      category: 'AzureOpenAI'
-      authType: 'ApiKey'
-      isSharedToAll: true
-      target: openAi.properties.endpoints['Content Safety']
-      metadata: {
-        ApiVersion: '2024-08-01-preview'
-        ApiType: 'azure'
-        ResourceId: openAi.id
-      }
-      credentials: {
-        key: openAi.listKeys().key1
-      }
-    }
-  }
-
   resource searchConnection 'connections' =
     if (!empty(aiSearchName)) {
       name: aiSearchConnectionName
@@ -108,6 +92,22 @@ resource hub 'Microsoft.MachineLearningServices/workspaces@2024-01-01-preview' =
         }
       }
     }
+
+  resource bingConnection 'connections' = {
+    name: bingConnectionName
+    properties: {
+      category: 'ApiKey'
+      authType: 'ApiKey'
+      isSharedToAll: true
+      target: 'https://api.bing.microsoft.com/'
+      credentials: {
+        key: bing.listKeys().key1
+      }
+      metadata: {
+        location: 'global'
+      }
+    }
+}
 }
 
 resource openAi 'Microsoft.CognitiveServices/accounts@2023-05-01' existing = {
@@ -117,6 +117,10 @@ resource openAi 'Microsoft.CognitiveServices/accounts@2023-05-01' existing = {
 resource search 'Microsoft.Search/searchServices@2021-04-01-preview' existing =
   if (!empty(aiSearchName)) {
     name: aiSearchName
+  }
+
+resource bing 'Microsoft.Bing/accounts@2020-06-10' existing = {
+    name: bingName
   }
 
 output name string = hub.name

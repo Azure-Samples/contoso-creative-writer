@@ -143,8 +143,7 @@ def create_index_definition(name: str) -> SearchIndex:
     return index
 
 
-
-# In[7]:
+# In[5]:
 
 
 def gen_products(
@@ -183,7 +182,7 @@ def gen_products(
     return items
 
 
-# In[8]:
+# In[6]:
 
 
 aisearch_endpoint = os.environ["AZURE_SEARCH_ENDPOINT"]
@@ -200,7 +199,7 @@ search_index_client.create_or_update_index(index)
 print(f"index {index_name} created")
 
 
-# In[9]:
+# In[7]:
 
 
 print(f"indexing documents")
