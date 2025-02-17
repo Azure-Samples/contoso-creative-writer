@@ -36,6 +36,7 @@ Your task is to process the user's query, perform an online search, and return t
    - **Relevant Information**: A concise and relevant summary of the information derived from the article, responding directly to the query.
 5. **Ensure Accuracy**: Verify that the sources are credible, and the extracted information aligns with the user’s question.
 6. **List Sources Clearly**: If possible, include at least 2-5 sources unless instructed otherwise.
+Make sure to only return the Json object and nothing else, just like in the examples below. 
 
 # Output Format
 
