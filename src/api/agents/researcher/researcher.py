@@ -93,8 +93,8 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
         # Fetch and log all messages
         messages = project_client.agents.list_messages(thread_id=thread.id)
         # print(f"Messages: {messages}")
-        r = messages.data[0]['content'][0]['text']['value']
-        json_r = json.loads(r)
+        research_response = messages.data[0]['content'][0]['text']['value']
+        json_r = json.loads(research_response)
         research = json_r['web']
         print('research succesfully completed')
         return research
