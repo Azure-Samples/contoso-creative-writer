@@ -165,6 +165,7 @@ module apiContainerApp 'app/api.bicep' = {
   params: {
     name: 'agent-api'
     location: location
+    resourceGroupName: resourceGroup.name
     tags: tags
     identityName: managedIdentity.outputs.managedIdentityName
     identityId: managedIdentity.outputs.managedIdentityClientId
@@ -183,6 +184,8 @@ module apiContainerApp 'app/api.bicep' = {
     bingName: ai.outputs.bingName
     bingApiEndpoint: ai.outputs.bingEndpoint
     bingApiKey: ai.outputs.bingApiKey
+    aiProjectName: ai.outputs.projectName
+    subscriptionId: subscription().subscriptionId
   }
 }
 
