@@ -1,5 +1,6 @@
 param name string
 param location string = resourceGroup().location
+param resourceGroupName string
 param tags object = {}
 
 param identityName string
@@ -18,6 +19,8 @@ param openAiType string
 param aiSearchEndpoint string
 param aiSearchIndexName string
 param appinsights_Connectionstring string
+param aiProjectName string
+param subscriptionId string
 
 @secure()
 param bingApiKey string
@@ -38,6 +41,18 @@ module app '../core/host/container-app-upsert.bicep' = {
       'bing-search-key': bingApiKey
     }
     env: [
+      {
+        name: 'AZURE_LOCATION'
+        value: location
+      }
+      {
+        name: 'AZURE_RESOURCE_GROUP'
+        value: resourceGroupName
+      }
+      {
+        name: 'AZURE_SUBSCRIPTION_ID'
+        value: subscriptionId
+      }
       {
         name: 'AZURE_CLIENT_ID'
         value: identityId
@@ -73,6 +88,10 @@ module app '../core/host/container-app-upsert.bicep' = {
       {
         name: 'AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME'
         value: openAi_4_eval_DeploymentName
+      }
+      {
+        name: 'AZURE_AI_PROJECT_NAME'
+        value: aiProjectName
       }
       {
         name: 'AZURE_EMBEDDING_NAME'
