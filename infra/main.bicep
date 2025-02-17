@@ -224,6 +224,16 @@ module appinsightsAccountRole 'core/security/role.bicep' = {
   }
 }
 
+module MlDataScientistRole 'core/security/role.bicep' = {
+  scope: resourceGroup
+  name: 'ml-datascientist-role'
+  params: {
+    principalId: managedIdentity.outputs.managedIdentityPrincipalId
+    roleDefinitionId: 'f6c7c914-8db3-469d-8ca1-694a8f32e121' // Data Scientist Role 
+    principalType: 'ServicePrincipal'
+  }
+}
+
 module appinsightsAccountReaderRole 'core/security/role.bicep' = {
   scope: resourceGroup
   name: 'appinsights-account-reader-role'
