@@ -214,13 +214,22 @@ module aiSearchRole 'core/security/role.bicep' = {
   }
 }
 
-
 module appinsightsAccountRole 'core/security/role.bicep' = {
   scope: resourceGroup
   name: 'appinsights-account-role'
   params: {
     principalId: managedIdentity.outputs.managedIdentityPrincipalId
     roleDefinitionId: '3913510d-42f4-4e42-8a64-420c390055eb' // Monitoring Metrics Publisher
+    principalType: 'ServicePrincipal'
+  }
+}
+
+module appinsightsAccountReaderRole 'core/security/role.bicep' = {
+  scope: resourceGroup
+  name: 'appinsights-account-reader-role'
+  params: {
+    principalId: managedIdentity.outputs.managedIdentityPrincipalId
+    roleDefinitionId: '43d0d8ad-25c7-4714-9337-8ba259a9fe05' // Monitoring Reader
     principalType: 'ServicePrincipal'
   }
 }
