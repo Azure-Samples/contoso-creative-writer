@@ -201,8 +201,14 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
    (Y/n) Y
    ```
 
-   You should respond with `N`, as this is not a necessary step, and takes some time to set up. 
+   You should respond with `N`, as this is not a necessary step, and takes some time to set up.
 
+> [!NOTE]
+> if you use Dev Containers on Windows and encounter the error
+>
+> `error executing step command 'provision' : failed running post hooks: 'postprovision' hook failed with exit code: '127', Path 'infra/hooks/postprovision.sh'. : exit code 127`,
+>
+> change the end of line sequence of file `infra/hooks/postprovision.sh` from `CRLF` to `LF` using Visual Studio Code. This option is available in the status bar at the bottom. This should resolve the issue.
 
 ## Testing the sample
 
