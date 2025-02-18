@@ -153,6 +153,13 @@ A related option is VS Code Dev Containers, which will open the project in your 
 2. Install required packages:
 
     ```shell
+    #activate virtual env
+    
+    python -m venv .venv 
+    .\.venv\Scripts\activate #(use source ./venv/bin/activate for mac) 
+    ```
+
+    ```shell
     cd src/api
     pip install -r requirements.txt
     ```
