@@ -1,5 +1,5 @@
 # Use a specific version of Python image to ensure consistency across builds
-FROM mcr.microsoft.com/devcontainers/python:3.11-bullseye
+FROM mcr.microsoft.com/devcontainers/python:3.13-bullseye
 
 # Combine system updates, package installations and Python upgrades into a single RUN command to reduce layers
 # Also, clean up the apt cache to reduce image size
