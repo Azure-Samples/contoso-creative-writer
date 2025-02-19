@@ -124,11 +124,25 @@ A related option is VS Code Dev Containers, which will open the project in your 
 
 4. Install required packages:
 
+   ```shell
+    #activate virtual env
+    python -m venv .venv 
+    .\.venv\Scripts\activate #(use source ./venv/bin/activate for mac) 
+    ```
+
     ```shell
     cd src/api
     pip install -r requirements.txt
     ```
-   Once you've completed these steps jump to [deployment](#deployment). 
+
+5. Once you've completed these steps jump to [deployment](#deployment). 
+> [!NOTE]
+> if you use Dev Containers on Windows and encounter this error when deploying
+>
+> `error executing step command 'provision' : failed running post hooks: 'postprovision' hook failed with exit code: '127', Path 'infra/hooks/postprovision.sh'. : exit code 127`,
+>
+> change the end of line sequence of file `infra/hooks/postprovision.sh` from `CRLF` to `LF` using Visual Studio Code. This option is available in the status bar at the bottom. This should resolve the issue. 
+
 
 ### Local environment
 
@@ -154,7 +168,6 @@ A related option is VS Code Dev Containers, which will open the project in your 
 
     ```shell
     #activate virtual env
-    
     python -m venv .venv 
     .\.venv\Scripts\activate #(use source ./venv/bin/activate for mac) 
     ```
@@ -202,13 +215,6 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
    ```
 
    You should respond with `N`, as this is not a necessary step, and takes some time to set up.
-
-> [!NOTE]
-> if you use Dev Containers on Windows and encounter the error
->
-> `error executing step command 'provision' : failed running post hooks: 'postprovision' hook failed with exit code: '127', Path 'infra/hooks/postprovision.sh'. : exit code 127`,
->
-> change the end of line sequence of file `infra/hooks/postprovision.sh` from `CRLF` to `LF` using Visual Studio Code. This option is available in the status bar at the bottom. This should resolve the issue.
 
 ## Testing the sample
 
