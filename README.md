@@ -312,7 +312,21 @@ python -m evaluate.evaluate
 2. To understand what is being evaluated open the `src/api/evaluate/eval_inputs.jsonl` file.
    - Observe that 3 examples of research, product and assignment context are stored in this file. This data will be sent to the orchestrator so that each example will have:
    - each example will have the evaluations run and will incoperate all of the context, research, products, and final article when grading the response.
-        
+
+### Evaluating results continuously with online evaluation
+
+Azure AI [online evaluation](https://aka.ms/GenAIMonitoringDoc) is a service that runs evaluators continuously on a schedule. 
+
+To set up an online evaluation schedule, follow the set-up steps in the [online evaluation documentation](https://aka.ms/GenAIMonitoringDoc) and then create the schedule by running the provided script:
+
+```shell
+cd ./src/api/evaluate/
+python online-evaluation.py
+```
+
+After your online evaluation schedule has been successfully submitted, the results will be computed on that schedule and written back to each trace in the attached application insights resource. The evaluation results can also be viewed in the AI Studio tracing UX (preview) and the Azure Monitor AI Insights workbook. Please see the documentation to learn more about how to view these evaluation results over time.
+
+A sample notebook for setting up online evaluation can be found [here](https://aka.ms/GenAIMonitoringSamples). 
 
 ## Setting up CI/CD with GitHub actions
 
