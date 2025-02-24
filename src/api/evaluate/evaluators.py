@@ -8,7 +8,7 @@ from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, Fluen
 from azure.ai.evaluation import ViolenceEvaluator, HateUnfairnessEvaluator, SelfHarmEvaluator, SexualEvaluator
 from azure.ai.evaluation import evaluate
 from azure.ai.evaluation import ViolenceMultimodalEvaluator, SelfHarmMultimodalEvaluator, HateUnfairnessMultimodalEvaluator, SexualMultimodalEvaluator
-from azure.ai.evaluation import ContentSafetyMultimodalEvaluator, ProtectedMaterialMultimodalEvaluator
+from azure.ai.evaluation import ProtectedMaterialMultimodalEvaluator
 from azure.identity import DefaultAzureCredential
 
 
@@ -147,10 +147,6 @@ class ArticleEvaluator:
 class ImageEvaluator:
     def __init__(self, project_scope):
         self.evaluators = {
-            # "content_safety": ContentSafetyMultimodalEvaluator(
-            #     credential=DefaultAzureCredential(), 
-            #     azure_ai_project=project_scope,
-            # ),
             "violence":ViolenceMultimodalEvaluator(
                 credential=DefaultAzureCredential(), 
                 azure_ai_project=project_scope,

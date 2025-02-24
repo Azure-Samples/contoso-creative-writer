@@ -9,6 +9,8 @@ from prompty.tracer import trace
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import Evaluation, Dataset, EvaluatorConfiguration, ConnectionType
+from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator
+from azure.ai.evaluation import ViolenceEvaluator, HateUnfairnessEvaluator, SelfHarmEvaluator, SexualEvaluator
 from openai import AzureOpenAI
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 
@@ -48,49 +50,49 @@ def evaluate_remote(data_path):
         data=Dataset(id=data_id),
         evaluators={
             "relevance": EvaluatorConfiguration(
-                id="azureml://registries/azureml/models/Relevance-Evaluator/versions/4",
+                id=RelevanceEvaluator.id,
                 init_params={
                     "model_config": model_config
                 },
             ),
             "fluency": EvaluatorConfiguration(
-                id="azureml://registries/azureml/models/Fluency-Evaluator/versions/4",
+                id=FluencyEvaluator.id,
                 init_params={
                     "model_config": model_config
                 },
             ),
             "coherence": EvaluatorConfiguration(
-                id="azureml://registries/azureml/models/Coherence-Evaluator/versions/4",
+                id=CoherenceEvaluator.id,
                 init_params={
                     "model_config": model_config
                 },
             ),
             "groundedness": EvaluatorConfiguration(
-                id="azureml://registries/azureml/models/Groundedness-Evaluator/versions/4",
+                id=GroundednessEvaluator.id,
                 init_params={
                     "model_config": model_config
                 },
             ),
             "violence": EvaluatorConfiguration(
-                id="azureml://registries/azureml/models/Violent-Content-Evaluator/versions/3",
+                id=ViolenceEvaluator.id,
                 init_params={
                     "azure_ai_project": project_client.scope
                 },
-            ),
+            ), 
             "hate_unfairness": EvaluatorConfiguration(
-                id="azureml://registries/azureml/models/Hate-and-Unfairness-Evaluator/versions/4",
+                id=HateUnfairnessEvaluator.id,
                 init_params={
                     "azure_ai_project": project_client.scope
                 },
             ),
             "self_harm": EvaluatorConfiguration(
-                id="azureml://registries/azureml/models/Self-Harm-Related-Content-Evaluator/versions/3",
+                id=SelfHarmEvaluator.id,
                 init_params={
                     "azure_ai_project": project_client.scope
                 },
             ),
             "sexual": EvaluatorConfiguration(
-                id="azureml://registries/azureml/models/Sexual-Content-Evaluator/versions/3",
+                id=SexualEvaluator.id,
                 init_params={
                     "azure_ai_project": project_client.scope
                 },

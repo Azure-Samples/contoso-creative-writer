@@ -20,7 +20,7 @@ azure-keyvault-secrets
 aiohttp==3.9.5
 azure-cognitiveservices-speech==1.37.0
 nbconvert
-azure-ai-evaluation[remote]
+azure-ai-evaluation
 validators
 azureml-mlflow
 azure-monitor-opentelemetry
@@ -28,4 +28,5 @@ opentelemetry-instrumentation-openai
 azure-ai-inference[opentelemetry]
 azure-ai-projects==1.0.0b4
 azure-ai-contentsafety
+azure-ai-ml
 tenacity
