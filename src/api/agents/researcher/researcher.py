@@ -3,6 +3,7 @@ import sys
 import json
 from dotenv import load_dotenv
 import prompty
+import time
 import prompty.azure
 from prompty.azure.processor import ToolCall
 from prompty.tracer import trace
@@ -10,6 +11,7 @@ from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects.models import BingGroundingTool
 from azure.ai.inference.prompts import PromptTemplate
+from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_result
 
 load_dotenv()
 
@@ -70,25 +72,35 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
 
         # # Create and process agent run in thread with tools
         # run = project_client.agents.create_stream(thread_id=thread.id, assistant_id=agent.id)
+        def is_rate_limited(run):
+            # Check if the run failed due to rate limit
+            if run.status == "failed" and run.last_error and run.last_error.get('code') == 'rate_limit_exceeded':
+                print(f"Run failed: {run.last_error}")
+                return True  # Indicates Tenacity should retry
+            return False  # No retry needed
 
+        @retry(
+            retry=retry_if_result(is_rate_limited),
+            wait=wait_exponential(multiplier=1, min=4, max=60),
+            stop=stop_after_attempt(5)
+        )
+        def run_agent():
         # Create and process agent run in thread with tools
-        run = project_client.agents.create_and_process_run(thread_id=thread.id, assistant_id=agent.id)
+            run = project_client.agents.create_and_process_run(thread_id=thread.id, assistant_id=agent.id)
+            print(f"Run finished with status: {run.status}")
+            return run
         
-        print(f"Run finished with status: {run.status}")
-
+        run = run_agent()
         # Retrieve run step details to get Bing Search query link
         # To render the webpage, we recommend you replace the endpoint of Bing search query URLs with `www.bing.com` and your Bing search query URL would look like "https://www.bing.com/search?q={search query}"
         run_steps = project_client.agents.list_run_steps(run_id=run.id, thread_id=thread.id)
         run_steps_data = run_steps['data']
+
         print(f"Agent created and now researching...")
         print('')
 
-        if run.status == "failed":
-            print(f"Run failed: {run.last_error}")
-
         # Delete the assistant when done
         project_client.agents.delete_agent(agent.id)
-        print("Deleted agent")
 
         # Fetch and log all messages
         messages = project_client.agents.list_messages(thread_id=thread.id)
@@ -107,7 +119,6 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
 @trace
 def research(instructions: str, feedback: str = "No feedback"):
     r = execute_research(instructions=instructions)
-    print(r)
     research = {
         "web": r,
         "entities": [],

@@ -143,7 +143,7 @@ module searchService '../search/search-services.bicep' = {
     name: 'search'
     params: {
       name: searchServiceName
-      location: location
+      location: 'eastus'
       semanticSearch: 'standard'
       disableLocalAuth: true
     }

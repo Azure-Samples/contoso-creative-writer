@@ -8,6 +8,7 @@ import { IMessage, startWritingTask } from "../store";
 import { useAppDispatch } from "../store/hooks";
 import { addMessage } from "../store/messageSlice";
 import { addArticle, addToCurrentArticle } from "../store/articleSlice";
+import ImageUpload from "./image-upload";
 
 export const Task = () => {
   const [research, setResearch] = useState("");
@@ -129,6 +130,20 @@ export const Task = () => {
             onChange={(e) => setWriting(e.target.value)}
           />
         </div>
+
+      <div className="text-start mt-3">
+        <label
+          htmlFor="image-upload"
+          className="block text-sm font-medium leading-6 text-gray-900"
+        >
+          Image Upload
+        </label>
+        <p className="mt-1 text-sm leading-6 text-gray-400">
+          Add an image for your blog (optional)
+        </p>
+        <ImageUpload/>
+      </div>
+
       </div>
       <div className="flex justify-end gap-2 mt-10">
         <button
