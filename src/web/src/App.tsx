@@ -34,8 +34,11 @@ function App() {
             <h2 className="text-3xl text-gray-800 mb-4">Your Article</h2>
             <Article />
           </div>
+          <div>
+          </div>
         </section>
       </div>
+
 
       {/* Version Number */}
       <div className="fixed right-0 bottom-0 mr-6 mb-2 text-gray-400">
@@ -46,5 +49,4 @@ function App() {
 }
 
 export default App;
-
 

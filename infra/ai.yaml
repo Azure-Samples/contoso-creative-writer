@@ -16,12 +16,12 @@ deployments:
       version: "2024-05-13"
     sku:
       name: "GlobalStandard"
-      capacity: 80
+      capacity: 30
   - name: gpt-4-evals
     model:
       format: OpenAI
       name: gpt-4o-mini
       version: "2024-07-18"
     sku:
-      name: "Standard"
-      capacity: 50
+      name: "GlobalStandard"
+      capacity: 30

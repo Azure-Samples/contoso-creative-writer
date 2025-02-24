@@ -25,3 +25,8 @@ section {
   max-width: 800px;
   margin: 0 auto;
 }
+
+img {
+  border-radius: 10px 0 0 0;
+  box-shadow: 0px 0px 10px #888;
+}
