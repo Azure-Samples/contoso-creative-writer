@@ -115,6 +115,4 @@ a fun and informative article. The article should be between 800 and 1200 words.
 
 user:
 {{assignment}}
-Please format the article as markdown but do not include ```markdown``` in the document. If you recieved any feedback 
-return the article and the feedback you recieved seperated by this string '---'. Do not return the feedback if the feedback is No Feedback.
-This means you have not received feedback and you should not return that. 
+Please format the article as markdown but do not include ```markdown``` in the document.
