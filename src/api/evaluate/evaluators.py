@@ -7,10 +7,7 @@ from opentelemetry.trace import set_span_in_context
 from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator
 from azure.ai.evaluation import ViolenceEvaluator, HateUnfairnessEvaluator, SelfHarmEvaluator, SexualEvaluator
 from azure.ai.evaluation import evaluate
-from azure.ai.evaluation import ViolenceMultimodalEvaluator, SelfHarmMultimodalEvaluator, HateUnfairnessMultimodalEvaluator, SexualMultimodalEvaluator
-from azure.ai.evaluation import ProtectedMaterialMultimodalEvaluator
 from azure.identity import DefaultAzureCredential
-
 
 from azure.ai.contentsafety import ContentSafetyClient
 from azure.ai.contentsafety.models import AnalyzeImageOptions, ImageData, ImageCategory
@@ -143,33 +140,6 @@ class ArticleEvaluator:
         )
         output.update(result)
         return output
-    
-class ImageEvaluator:
-    def __init__(self, project_scope):
-        self.evaluators = {
-            "violence":ViolenceMultimodalEvaluator(
-                credential=DefaultAzureCredential(), 
-                azure_ai_project=project_scope,
-            ), 
-            "self_harm":SelfHarmMultimodalEvaluator(
-                credential=DefaultAzureCredential(), 
-                azure_ai_project=project_scope,
-            ), 
-            "hate_unfairness":HateUnfairnessMultimodalEvaluator(
-                credential=DefaultAzureCredential(), 
-                azure_ai_project=project_scope,
-            ), 
-            "sexual":SexualMultimodalEvaluator(
-                credential=DefaultAzureCredential(), 
-                azure_ai_project=project_scope,
-            ),
-            "protected_material": ProtectedMaterialMultimodalEvaluator(
-                credential=DefaultAzureCredential(),
-                azure_ai_project=project_scope,
-            )
-        }
-        self.project_scope = project_scope
-
 
     def __call__(self, *, messages, **kwargs): 
         import uuid
@@ -314,20 +284,6 @@ def evaluate_article_in_background(research_context, product_context, assignment
    
     evaluate_article(eval_data, trace_context)
 
-def evaluate_image(messages):
-    # tracer = trace.get_tracer(__name__)
-    # with tracer.start_as_current_span("run_image_evaluators", context=trace_context) as span:
-    #     span.set_attribute("inputs", json.dumps(conversation))
-    project_scope = {
-        "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],   
-        "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
-        "project_name": os.environ["AZURE_AI_PROJECT_NAME"],        
-    }
-    evaluator = ImageEvaluator(project_scope)
-    results = evaluator(messages)
-    resultsJson = json.dumps(results)
-
-    print("results: ", resultsJson)
 
 
    
