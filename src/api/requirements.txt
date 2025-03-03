@@ -30,3 +30,4 @@ azure-ai-projects==1.0.0b4
 azure-ai-contentsafety
 azure-ai-ml
 tenacity
+marshmallow==3.26.1
