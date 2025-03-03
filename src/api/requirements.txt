@@ -3,7 +3,6 @@ fastapi[standard]
 openai
 requests
 prompty[azure]==0.1.40
-promptflow
 azure-ai-evaluation
 pandas
 opentelemetry-instrumentation-fastapi
@@ -21,6 +20,7 @@ aiohttp==3.10.11
 azure-cognitiveservices-speech==1.37.0
 nbconvert
 azure-ai-evaluation
+azure-ai-evaluation[remote]
 validators
 azureml-mlflow
 azure-monitor-opentelemetry
@@ -30,3 +30,4 @@ azure-ai-projects==1.0.0b4
 azure-ai-contentsafety
 azure-ai-ml
 tenacity
+marshmallow==3.23.2

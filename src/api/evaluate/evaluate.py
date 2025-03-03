@@ -9,8 +9,6 @@ from prompty.tracer import trace
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import Evaluation, Dataset, EvaluatorConfiguration, ConnectionType
-from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, FluencyEvaluator, CoherenceEvaluator
-from azure.ai.evaluation import ViolenceEvaluator, HateUnfairnessEvaluator, SelfHarmEvaluator, SexualEvaluator
 from openai import AzureOpenAI
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 
@@ -50,49 +48,49 @@ def evaluate_remote(data_path):
         data=Dataset(id=data_id),
         evaluators={
             "relevance": EvaluatorConfiguration(
-                id=RelevanceEvaluator.id,
+                id="azureml://registries/azureml/models/Relevance-Evaluator/versions/4",
                 init_params={
                     "model_config": model_config
                 },
             ),
             "fluency": EvaluatorConfiguration(
-                id=FluencyEvaluator.id,
+                id="azureml://registries/azureml/models/Fluency-Evaluator/versions/4",
                 init_params={
                     "model_config": model_config
                 },
             ),
             "coherence": EvaluatorConfiguration(
-                id=CoherenceEvaluator.id,
+                id="azureml://registries/azureml/models/Coherence-Evaluator/versions/4",
                 init_params={
                     "model_config": model_config
                 },
             ),
             "groundedness": EvaluatorConfiguration(
-                id=GroundednessEvaluator.id,
+                id="azureml://registries/azureml/models/Groundedness-Evaluator/versions/4",
                 init_params={
                     "model_config": model_config
                 },
             ),
             "violence": EvaluatorConfiguration(
-                id=ViolenceEvaluator.id,
+                id="azureml://registries/azureml/models/Violent-Content-Evaluator/versions/3",
                 init_params={
                     "azure_ai_project": project_client.scope
                 },
-            ), 
+            ),
             "hate_unfairness": EvaluatorConfiguration(
-                id=HateUnfairnessEvaluator.id,
+                id="azureml://registries/azureml/models/Hate-and-Unfairness-Evaluator/versions/4",
                 init_params={
                     "azure_ai_project": project_client.scope
                 },
             ),
             "self_harm": EvaluatorConfiguration(
-                id=SelfHarmEvaluator.id,
+                id="azureml://registries/azureml/models/Self-Harm-Related-Content-Evaluator/versions/3",
                 init_params={
                     "azure_ai_project": project_client.scope
                 },
             ),
             "sexual": EvaluatorConfiguration(
-                id=SexualEvaluator.id,
+                id="azureml://registries/azureml/models/Sexual-Content-Evaluator/versions/3",
                 init_params={
                     "azure_ai_project": project_client.scope
                 },
@@ -445,7 +443,7 @@ if __name__ == "__main__":
     print(f"Starting evaluate...")
 
     eval_result = evaluate_orchestrator(model_config, project_scope, data_path=folder +"/eval_inputs.jsonl")
-    evaluate_remote(data_path=folder +"/eval_data.jsonl")
+    # evaluate_remote(data_path=folder +"/eval_data.jsonl")
 
     # img_paths = []
     # # This is code to add an image from a file path
