@@ -19,11 +19,11 @@ export const Task = () => {
 
   const setExample = () => {
     setResearch(
-      "Can you find the latest camping trends and what folks are doing in the winter?"
+      "최신 캠핑 트렌드와 사람들이 겨울에 무엇을 하고 있는지 알아볼 수 있나요?"
     );
-    setProducts("Can you use a selection of tents and sleeping bags as context?");
+    setProducts("텐트와 침낭을 컨텍스트로 사용할 수 있나요?");
     setWriting(
-      "Write a fun and engaging article that includes the research and product information. The article should be between 800 and 1000 words. Make sure to cite sources in the article as you mention the research not at the end."
+      "연구 및 제품 정보가 포함된 재미있고 매력적인 기사를 작성하세요. 글의 길이는 800~1000단어 사이여야 합니다. 마지막에 연구를 언급하지 말고 기사에서 출처를 반드시 인용하세요."
     );
   };
 
@@ -67,10 +67,10 @@ export const Task = () => {
           htmlFor="research"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
-          Research
+          리서치
         </label>
         <p className="mt-1 text-sm leading-6 text-gray-400">
-          What kinds of things should I find?
+          어떤 종류의 물건을 찾아야 하나요?
         </p>
         <div className="mt-2">
           <div className=" flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-600">
@@ -92,10 +92,10 @@ export const Task = () => {
           htmlFor="products"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
-          Products
+          제품
         </label>
         <p className="mt-1 text-sm leading-6 text-gray-400">
-          What products should I look at?
+          어떤 제품을 살펴봐야 하나요?
         </p>
         <div className="mt-2">
           <textarea
@@ -114,10 +114,10 @@ export const Task = () => {
           htmlFor="writing"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
-          Assignment
+          과제
         </label>
         <p className="mt-1 text-sm leading-6 text-gray-400">
-          What kind of writing should I do?
+          어떤 종류의 글을 써야 하나요?
         </p>
         <div className="mt-2">
           <textarea
@@ -136,10 +136,10 @@ export const Task = () => {
           htmlFor="image-upload"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
-          Image Upload
+          이미지 업로드
         </label>
         <p className="mt-1 text-sm leading-6 text-gray-400">
-          Add an image for your blog (optional)
+          블로그를 위한 이미지 추가(optional)
         </p>
         <ImageUpload/>
       </div>
@@ -152,7 +152,7 @@ export const Task = () => {
           onClick={reset}
         >
           <ArrowPathIcon className="w-6" />
-          <span>Reset</span>
+          <span>리셋</span>
         </button>
         <button
           type="button"
@@ -160,7 +160,7 @@ export const Task = () => {
           onClick={setExample}
         >
           <ClipboardDocumentIcon className="w-6" />
-          <span>Example</span>
+          <span>예시</span>
         </button>
         <button
           type="button"
@@ -168,7 +168,7 @@ export const Task = () => {
           onClick={startWork}
         >
           <PaperAirplaneIcon className="w-6" />
-          <span>Start Work</span>
+          <span>작업 시작</span>
         </button>
       </div>
     </div>

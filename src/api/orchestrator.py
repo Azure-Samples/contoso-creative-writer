@@ -62,7 +62,7 @@ def send_writer(full_result):
 
 def building_agents_message():
     return Message(
-        type="message", message=f"Initializing Agent Service, please wait a few seconds..."
+        type="message", message = f"에이전트 서비스를 초기화하는 중입니다. 잠시만 기다려주세요...."
     ).to_json_line()
 
 @trace

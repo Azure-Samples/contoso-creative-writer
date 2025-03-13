@@ -9,9 +9,9 @@ function App() {
     <main className="p-8 flex flex-col min-h-screen">
       {/* Header Section */}
       <header className="text-center my-6">
-        <h1 className="text-4xl font-bold text-gray-800">Contoso Creative Writer</h1>
+        <h1 className="text-4xl font-bold text-gray-800">콘텐츠 크리에이티브 작성 에이전트</h1>
         <p className="text-xl text-gray-600 mt-2">
-          This tool helps you write articles for the Contoso blog.
+          블로그를 위한 기사 작성을 도와주는 도구입니다.
           
         </p>
         <hr className="border-2 border-gray-300 my-6" />
