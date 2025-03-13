@@ -1,3 +1,5 @@
+**/package-lock.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -142,6 +144,6 @@ kustomize
 *.data
 .runs/
 **/node_modules/
-package-lock.json
+src/web/package-lock.json
 src/api/api/agents/writer/.promptflow/
 flow.flex.yaml
