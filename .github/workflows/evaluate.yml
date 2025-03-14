@@ -74,7 +74,7 @@ jobs:
             --federated-credential-provider "github" \
             --tenant-id ${{env.AZURE_TENANT_ID}}     
          
-      - name: evaluate
+      - name: Get source repo vars
         id: get-vars
         shell: bash      
         run: |
@@ -129,7 +129,9 @@ jobs:
             export $VAR=$VALUE            
           done
 
-          cd src/api
+      - name: evaluate orchestrator
+        working-directory: ./src/api
+        run: |
           python -m evaluate.evaluate
       
       - name: Upload eval results as build artifact
