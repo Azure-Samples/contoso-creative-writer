@@ -74,7 +74,7 @@ jobs:
             --federated-credential-provider "github" \
             --tenant-id ${{env.AZURE_TENANT_ID}}     
          
-      - name: Get source repo vars
+      - name: evaluate
         id: get-vars
         shell: bash      
         run: |
