@@ -70,9 +70,9 @@ jobs:
         shell: bash  
         run: |
           azd auth login \
-            --client-id "$Env:AZURE_CLIENT_ID" \
+            --client-id ${{env.AZURE_CLIENT_ID}} \
             --federated-credential-provider "github" \
-            --tenant-id "$Env:AZURE_TENANT_ID"      
+            --tenant-id ${{env.AZURE_TENANT_ID}}     
          
       - name: Get source repo vars
         id: get-vars
