@@ -78,18 +78,65 @@ jobs:
         id: get-vars
         shell: bash      
         run: |
-          echo "AZURE_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID"
-          echo "AZURE_LOCATION=$AZURE_LOCATION"
-          echo "azd init -e $AZURE_ENV_NAME -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID"
-          azd init -e $AZURE_ENV_NAME -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID
+          VARIABLES=(
+            "AZUREAI_HUB_NAME" 
+            "AZUREAI_PROJECT_NAME" 
+            "AZURE_APP_INSIGHTS_NAME" 
+            "AZURE_APP_SERVICE_NAME"
+            "AZURE_SUBSCRIPTION_ID" 
+            "AZURE_LOCATION" 
+            "AZUREAI_RESOURCE_GROUP"
+            "AZURE_APP_SERVICE_PLAN_NAME" 
+            "AZURE_CONTAINER_REGISTRY_NAME" 
+            "AZURE_CONTAINER_REPOSITORY_NAME"
+            "AZURE_KEY_VAULT_NAME" 
+            "AZURE_LOG_ANALYTICS_NAME" 
+            "AZURE_OPENAI_API_VERSION"
+            "AZURE_OPENAI_CHAT_DEPLOYMENT" 
+            "AZURE_OPENAI_EMBEDDING_DEPLOYMENT" 
+            "AZURE_OPENAI_EMBEDDING_API_VERSION" 
+            "AZURE_OPENAI_EMBEDDING_MODEL"
+            "AZURE_OPENAI_ENDPOINT" 
+            "AZURE_OPENAI_NAME" 
+            "AZURE_PRINCIPAL_ID" 
+            "AZURE_RESOURCE_GROUP"
+            "AZURE_SEARCH_ENDPOINT" 
+            "LOAD_AZURE_SEARCH_SAMPLE_DATA"
+            "AZURE_SEARCH_NAME" 
+            "AZURE_STORAGE_ACCOUNT_NAME" 
+            "PROMPTFLOW_SERVING_ENGINE" 
+            "PROMPTFLOW_WORKER_NUM"
+          )
 
-          # Run azd env refresh and capture last deployment outputs
-          echo "🔶 | Run azd env refresh and capture outputs"
-          azd env refresh -e "$AZURE_ENV_NAME"
+          # Run azd env refresh and capture outputs
+          export AZURE_SUBSCRIPTION_ID="${{ env.AZURE_SUBSCRIPTION_ID }}"
+          export AZURE_LOCATION="${{ env.AZURE_LOCATION }}"
 
-          echo "🔶 | Get $AZURE_ENV_NAME environment variables"
+          set +e
+          output=$(azd env refresh -e "${{ env.AZURE_ENV_NAME }}" --no-prompt 2>&1)
+          exit_code=$?
+          set -e
+        
+          # Set environment variables by getting them from the GitHub environment or the last deployment. 
+          # GitHub environment variables take precedence over those from the last deployment.
+          # Here's how it works for each variable:
+          # - The variable takes the value from the GitHub Environment if available; otherwise, it uses the latest deployment value.
+          # - If the new value differs from the latest deployment, the AZD variable is updated.
+          # - Finally, it adds the variable to the GitHub output for use by the calling job.
+
+          echo "${{ env.AZURE_ENV_NAME }} environment variables values." 
           
-          eval $(azd env get-values)
+          # Set environment variables and update AZD variables 
+          
+          for VAR in "${VARIABLES[@]}"; do
+            VALUE_OUTPUT=$(azd env get-values -e ${{ env.AZURE_ENV_NAME }} | grep $VAR | cut -d'=' -f2 | tr -d '"' || true)
+            VALUE_GHAENV=$(eval echo \${$VAR})
+            [ -n "$VALUE_GHAENV" ] && VALUE=$VALUE_GHAENV || VALUE=$VALUE_OUTPUT
+            [ -n "$VALUE" ] && [ "$VALUE" != "$VALUE_OUTPUT" ] && azd env set $VAR $VALUE
+            echo "$VAR=$VALUE" >> "$GITHUB_OUTPUT"
+            echo "$VAR=$VALUE"
+            export $VAR=$VALUE            
+          done
 
       - name: evaluate orchestrator
         working-directory: ./src/api
