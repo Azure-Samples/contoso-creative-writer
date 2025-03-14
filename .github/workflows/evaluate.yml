@@ -18,6 +18,7 @@ jobs:
   evaluate:
     runs-on: ubuntu-latest
     env:
+      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
@@ -63,6 +64,30 @@ jobs:
         with:
           inlineScript: |
             az account set --subscription ${{env.AZURE_SUBSCRIPTION_ID}}
+
+            - name: azd Login
+            shell: bash  
+            run: |              
+                azd auth login \
+                  --client-id "$Env:AZURE_CLIENT_ID" \
+                  --federated-credential-provider "github" \
+                  --tenant-id "$Env:AZURE_TENANT_ID"
+    
+      - name: Get source repo vars
+        id: get-vars
+        shell: bash      
+        run: |
+          echo "AZURE_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID"
+          echo "AZURE_LOCATION=$AZURE_LOCATION"
+          echo "azd init -e $AZURE_ENV_NAME -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID"
+          azd init -e $AZURE_ENV_NAME -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID
+
+          # Run azd env refresh and capture last deployment outputs
+          echo "🔶 | Run azd env refresh and capture outputs"
+          azd env refresh -e "$AZURE_ENV_NAME"
+
+          echo "🔶 | Get $AZURE_ENV_NAME environment variables"
+  
 
       - name: evaluate orchestrator
         working-directory: ./src/api
