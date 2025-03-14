@@ -88,7 +88,8 @@ jobs:
           azd env refresh -e "$AZURE_ENV_NAME"
 
           echo "🔶 | Get $AZURE_ENV_NAME environment variables"
-  
+          
+          eval $(azd env get-values)
 
       - name: evaluate orchestrator
         working-directory: ./src/api
