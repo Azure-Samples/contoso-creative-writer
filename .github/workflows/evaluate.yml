@@ -129,9 +129,7 @@ jobs:
             export $VAR=$VALUE            
           done
 
-      - name: evaluate orchestrator
-        working-directory: ./src/api
-        run: |
+          cd src/api
           python -m evaluate.evaluate
       
       - name: Upload eval results as build artifact
