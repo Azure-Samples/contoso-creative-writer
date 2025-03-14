@@ -124,7 +124,7 @@ jobs:
           for VAR in "${VARIABLES[@]}"; do
             VALUE_OUTPUT=$(azd env get-values -e ${{ env.AZURE_ENV_NAME }} | grep "^$VAR=" | cut -d'=' -f2 | tr -d '"' || true)
             VALUE=$VALUE_OUTPUT
-            echo "$VAR=$VALUE" >> "$GITHUB_OUTPUT"
+            echo "$VAR=$VALUE" >> $GITHUB_ENV
             echo "$VAR=$VALUE"
             export $VAR=$VALUE            
           done
