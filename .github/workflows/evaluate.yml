@@ -114,8 +114,20 @@ jobs:
           export AZURE_SUBSCRIPTION_ID="${{ env.AZURE_SUBSCRIPTION_ID }}"
           export AZURE_LOCATION="${{ env.AZURE_LOCATION }}"
           azd init -e ${{ env.AZURE_ENV_NAME }} -l ${{ env.AZURE_LOCATION }} -s ${{ env.AZURE_SUBSCRIPTION_ID }}
+          set +e
+          output=$(azd env refresh -e "${{ env.AZURE_ENV_NAME }}" --no-prompt 2>&1)
+          exit_code=$?
+          set -e
 
-          azd env get-values -e ${{ env.AZURE_ENV_NAME }} | grep '=' | while read line; do export "$line"; done
+          echo "${{ env.AZURE_ENV_NAME }} environment variables values." 
+          
+          for VAR in "${VARIABLES[@]}"; do
+            VALUE_OUTPUT=$(azd env get-values -e ${{ env.AZURE_ENV_NAME }} | grep $VAR | cut -d'=' -f2 | tr -d '"' || true)
+            VALUE=$VALUE_OUTPUT
+            echo "$VAR=$VALUE" >> "$GITHUB_OUTPUT"
+            echo "$VAR=$VALUE"
+            export $VAR=$VALUE            
+          done
 
       - name: evaluate orchestrator
         working-directory: ./src/api
