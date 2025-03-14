@@ -114,31 +114,8 @@ jobs:
           export AZURE_SUBSCRIPTION_ID="${{ env.AZURE_SUBSCRIPTION_ID }}"
           export AZURE_LOCATION="${{ env.AZURE_LOCATION }}"
           azd init -e ${{ env.AZURE_ENV_NAME }} -l ${{ env.AZURE_LOCATION }} -s ${{ env.AZURE_SUBSCRIPTION_ID }}
-          set +e
-          output=$(azd env refresh -e "${{ env.AZURE_ENV_NAME }}" --no-prompt 2>&1)
-          exit_code=$?
-          set -e
-        
-          # Set environment variables by getting them from the GitHub environment or the last deployment. 
-          # GitHub environment variables take precedence over those from the last deployment.
-          # Here's how it works for each variable:
-          # - The variable takes the value from the GitHub Environment if available; otherwise, it uses the latest deployment value.
-          # - If the new value differs from the latest deployment, the AZD variable is updated.
-          # - Finally, it adds the variable to the GitHub output for use by the calling job.
 
-          echo "${{ env.AZURE_ENV_NAME }} environment variables values." 
-          
-          # Set environment variables and update AZD variables 
-          
-          for VAR in "${VARIABLES[@]}"; do
-            VALUE_OUTPUT=$(azd env get-values -e ${{ env.AZURE_ENV_NAME }} | grep $VAR | cut -d'=' -f2 | tr -d '"' || true)
-            VALUE_GHAENV=$(eval echo \${$VAR})
-            [ -n "$VALUE_GHAENV" ] && VALUE=$VALUE_GHAENV || VALUE=$VALUE_OUTPUT
-            [ -n "$VALUE" ] && [ "$VALUE" != "$VALUE_OUTPUT" ] && azd env set $VAR $VALUE
-            echo "$VAR=$VALUE" >> "$GITHUB_OUTPUT"
-            echo "$VAR=$VALUE"
-            export $VAR=$VALUE            
-          done
+          azd env get-values -e ${{ env.AZURE_ENV_NAME }} | grep '=' | while read line; do export "$line"; done
 
       - name: evaluate orchestrator
         working-directory: ./src/api
