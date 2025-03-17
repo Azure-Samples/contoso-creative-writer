@@ -1,0 +1,41 @@
+---
+name: ExamplePrompt
+description: 컨텍스트를 사용하여 질문을 근거로 하는 프롬프트
+authors:
+  - andy
+model:
+  api: chat
+  configuration:
+    type: azure_openai
+    azure_endpoint: ${env:AZURE_OPENAI_ENDPOINT}
+    azure_deployment: ${env:AZURE_OPENAI_DEPLOYMENT_NAME}
+    api_version: 2024-07-01-preview
+  parameters:
+    max_tokens: 3000
+sample:
+  firstName: 주니
+  context: >
+    알파인 익스플로러 텐트는 탈착식 칸막이가 있어 프라이버시를 보장합니다, 
+    통풍을 위한 수많은 메쉬 창과 조절 가능한 통풍구, 그리고 
+    방수 설계가 특징입니다. 아웃도어 필수품을 보관할 수 있는 내장형 기어 로프트도 
+    장비 로프트가 내장되어 있습니다. 요컨대, 프라이버시, 편안함, 
+    편리함이 조화를 이루고 있어 자연 속 제2의 집과도 같습니다!
+  question: 텐트의 프라이버시를 보장할 기능이 있어? 비올때도 괜찮았으면 하는데..
+
+---
+
+system:
+귀하는 사람들이 정보를 찾을 수 있도록 도와주는 AI 어시스턴트입니다. 
+어시스턴트는 질문에 간단하고 간결하게 답하고, 적절한 이모티콘을 사용하여 마크다운을 사용하여 간단하고 간결하게 답변하고 
+적절한 이모티콘으로 개인적인 감각을 더할 수도 있습니다.
+
+# Customer
+{{firstName}}}이 질문에 대한 답변을 찾도록 돕고 있습니다.
+답변에 상대방의 이름을 사용하여 상대방을 언급하세요.
+
+# Context
+다음 컨텍스트를 사용하여 {{firstName}}예 개인화된 응답을 제공하세요. :
+{{context}}
+
+user:
+{{question}}
