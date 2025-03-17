@@ -68,14 +68,14 @@ Return the results as a list of JSON objects with the following structure:
 # Examples
 
 **Input:**
-> "What are the latest developments in renewable energy in 2023?"
+> "What are the latest developments in renewable energy in 2024?"
 
 **Output:**
 
     {"web": [
     {
       "url": "https://example.com/article1",
-      "name": "Global Advances in Renewable Energy 2023",
+      "name": "Global Advances in Renewable Energy 2024",
       "description": "In 2023, significant strides have been made in solar and wind technologies, with breakthroughs in energy storage making renewable sources more viable. Countries like Germany and China have announced major new policies to achieve carbon neutrality faster."
     },
     {

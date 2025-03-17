@@ -242,11 +242,11 @@ def evaluate_article(data, trace_context):
         print("results: ", resultsJson)
 
 def evaluate_image(image_path):
-    # endpoint = os.environ.get('CONTENT_SAFETY_ENDPOINT')
-    # key = os.environ.get('CONTENT_SAFETY_KEY')
-    endpoint = "https://safety-ig.cognitiveservices.azure.com/"
+    endpoint = os.environ.get('CONTENT_SAFETY_ENDPOINT')
+    key = os.environ.get('CONTENT_SAFETY_KEY')
+
     image_path = image_path
-    key="D4VBpl18BMX6FxSpm8TLVzISU2L58k3E8WBLDW6HcLOslLYLKSt3JQQJ99AKACfhMk5XJ3w3AAAHACOGGDob"
+
 
     # Create an Azure AI Content Safety client
     client = ContentSafetyClient(endpoint, AzureKeyCredential(key))
