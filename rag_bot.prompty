@@ -1,6 +1,6 @@
 ---
 name: ExamplePrompt
-description: 컨텍스트를 사용하여 질문을 근거로 하는 프롬프트
+description: 질문에 대하여 컨텍스트를 근거로 하는 프롬프트
 authors:
   - andy
 model:
