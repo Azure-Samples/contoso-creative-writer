@@ -145,3 +145,5 @@ kustomize
 package-lock.json
 src/api/api/agents/writer/.promptflow/
 flow.flex.yaml
+
+.history
