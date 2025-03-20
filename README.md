@@ -24,23 +24,24 @@ description: Using Azure OpenAI agent with Python, integrating Bing Grounding in
 
 ## Table of Contents
 
-- [Features](#features)
-- [Azure account requirements](#azure-account-requirements)
-- [Getting Started](#getting-started)
+- [Creative Writing Assistant: Working with Agents using Prompty (Python Implementation)](#creative-writing-assistant-working-with-agents-using-prompty-python-implementation)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Azure account requirements](#azure-account-requirements)
+  - [Getting Started](#getting-started)
     - [GitHub Codespaces](#github-codespaces)
     - [VS Code Dev Containers](#vs-code-dev-containers)
-    - [Local environment](#local-environment)
-      - [Prerequisites](#prerequisites)
-      - [Initializing the project](#initializing-the-project)
-- [Deployment](#deployment)
-- [Testing the sample](#testing-the-sample)
-    - [Evaluating results](#evaluating-results)
-- [Guidance](#guidance)
+  - [Testing the sample](#testing-the-sample)
+  - [Tracing](#tracing)
+  - [Evaluating results](#evaluating-results)
+  - [Setting up CI/CD with GitHub actions](#setting-up-cicd-with-github-actions)
+  - [Guidance](#guidance)
     - [Region Availability](#region-availability)
     - [Costs](#costs)
-    - [Security Guidelines](#security)
-- [Resources](#resources)
-- [Code of Conduct](#code-of-conduct)
+    - [Security](#security)
+  - [Resources](#resources)
+  - [Code of Conduct](#code-of-conduct)
+  - [Responsible AI Guidelines](#responsible-ai-guidelines)
 
 
 ![App preview](images/app_preview.png)
@@ -281,7 +282,7 @@ To test the sample:
 To activate the Prompty tracing server:
 
 ```
-export LOCAL_TRACING=true
+export LOCAL_TRACING_ENABLED=true
 ```
 
 Then start the orchestrator:

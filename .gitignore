@@ -1,6 +1,7 @@
 credential.json
 **/package-lock.json
 src/api/evaluate/eval_results.jsonl
+src/api/evaluate/eval_data.jsonl
 src/api/evaluate/eval_results.md
 
 # Byte-compiled / optimized / DLL files

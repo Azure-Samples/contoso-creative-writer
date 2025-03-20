@@ -58,7 +58,10 @@ def setup_telemetry(app: FastAPI):
 
             # This enbles instrumention for opentelemetry-instrumentation-openai-v2
             project_client.telemetry.enable(destination=None)
-            configure_azure_monitor(connection_string=application_insights_connection_string)            
+            configure_azure_monitor(
+                connection_string=application_insights_connection_string, 
+                enable_live_metrics=True
+                )            
             Tracer.add("OpenTelemetry", trace_span)
 
             # Set the EventLoggerProvider as opentelemetry-instrumentation-openai-v2 use log events to log tokens

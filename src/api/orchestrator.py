@@ -162,6 +162,7 @@ def create(research_context, product_context, assignment_context, evaluate=False
 @trace  
 def test_create_article(research_context, product_context, assignment_context):
     for result in create(research_context, product_context, assignment_context):
+        
         parsed_result = json.loads(result)
         if type(parsed_result) is dict:
             if parsed_result['type'] == 'researcher':

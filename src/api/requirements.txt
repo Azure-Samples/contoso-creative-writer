@@ -2,7 +2,7 @@ fastapi
 fastapi[standard]
 openai
 requests
-prompty[azure]==0.1.40
+prompty[azure]==0.1.49
 azure-ai-evaluation
 pandas
 opentelemetry-instrumentation-fastapi
