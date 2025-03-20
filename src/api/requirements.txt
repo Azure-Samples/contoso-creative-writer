@@ -1,6 +1,6 @@
 fastapi
 fastapi[standard]
-openai
+openai==1.67.0
 requests
 prompty[azure]==0.1.49
 azure-ai-evaluation
