@@ -235,7 +235,10 @@ def evaluate_article(data, trace_context):
             "project_name": os.environ["AZURE_AI_PROJECT_NAME"],        
         }
         evaluator = ArticleEvaluator(configuration, project_scope)
-        results = evaluator(data)
+
+        data_path = os.path.join(os.getcwd(), "evaluate/eval_data.jsonl")
+   
+        results = evaluator(data_path=data_path, data=data)
         resultsJson = json.dumps(results)
         span.set_attribute("output", resultsJson)
 
