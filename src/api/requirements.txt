@@ -9,12 +9,12 @@ opentelemetry-instrumentation-fastapi
 jsonlines
 python-dotenv==1.0.1
 azure-search-documents==11.4.0
-gunicorn==21.2.0
+gunicorn==23.0.0
 jupyter
 opentelemetry-sdk
 opentelemetry-instrumentation
 azure-identity==1.19.0
-gunicorn==21.2.0
+gunicorn==23.0.0
 azure-keyvault-secrets
 aiohttp==3.10.11
 azure-cognitiveservices-speech==1.37.0
