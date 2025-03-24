@@ -136,55 +136,6 @@ def run_orchestrator(research_context, product_context, assignment_context):
     }
 
 @trace
-# def evaluate_orchestrator(model_config, project_scope,  data_path):
-#     writer_evaluator = ArticleEvaluator(model_config, project_scope)
-
-#     data = []    
-#     eval_data = []
-#     print(f"\n===== Creating articles to evaluate using data provided in {data_path}")
-#     print("")
-#     with open(data_path) as f:
-#         for num, line in enumerate(f):
-#             row = json.loads(line)
-#             data.append(row)
-#             print(f"generating article {num +1}")
-#             eval_data.append(run_orchestrator(row["research_context"], row["product_context"], row["assignment_context"]))
-
-#     # write out eval data to a file so we can re-run evaluation on it
-#     with jsonlines.open(folder + '/eval_data.jsonl', 'w') as writer:
-#         for row in eval_data:
-#             writer.write(row)
-
-#     eval_data_path = folder + '/eval_data.jsonl'
-
-#     print(f"\n===== Evaluating the generated articles")
-#     eval_results = writer_evaluator(data_path=eval_data_path)
-#     import pandas as pd
-
-#     print("Evaluation summary:\n")
-#     print("View in Azure AI Studio at: " + str(eval_results['studio_url']))
-#     metrics = {key: [value] for key, value in eval_results['metrics'].items()}
-#     results_df = pd.DataFrame.from_dict(metrics)
-#     results_df_gpt_evals = results_df[['relevance.gpt_relevance', 'fluency.gpt_fluency', 'coherence.gpt_coherence','groundedness.gpt_groundedness']]
-#     results_df_content_safety = results_df[['violence.violence_defect_rate', 'self_harm.self_harm_defect_rate', 'hate_unfairness.hate_unfairness_defect_rate','sexual.sexual_defect_rate']]
-
-#     mean_df = results_df_gpt_evals.mean()
-#     print("\nAverage scores:")
-#     print(mean_df)
-
-#     content_safety_mean_df = results_df_content_safety.mean()
-#     print("\nContent safety average defect rate:")
-#     print(content_safety_mean_df)
-
-#     results_df.to_markdown(folder + '/eval_results.md')
-#     with open(folder + '/eval_results.md', 'a') as file:
-#         file.write("\n\nAverages scores:\n\n")
-#     mean_df.to_markdown(folder + '/eval_results.md', 'a')
-
-#     with jsonlines.open(folder + '/eval_results.jsonl', 'w') as writer:
-#         writer.write(eval_results)
-
-#     return eval_results
 def evaluate_orchestrator(model_config, project_scope, data_path):
     writer_evaluator = ArticleEvaluator(model_config, project_scope)
     data = []    
