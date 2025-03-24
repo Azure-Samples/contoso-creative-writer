@@ -136,8 +136,6 @@ def run_orchestrator(research_context, product_context, assignment_context):
     }
 
 @trace
-<<<<<<< HEAD
-=======
 # def evaluate_orchestrator(model_config, project_scope,  data_path):
 #     writer_evaluator = ArticleEvaluator(model_config, project_scope)
 
@@ -187,7 +185,6 @@ def run_orchestrator(research_context, product_context, assignment_context):
 #         writer.write(eval_results)
 
 #     return eval_results
->>>>>>> 5b0ce0f063a97885f5b7aa13f5e24bbb3ab655a5
 def evaluate_orchestrator(model_config, project_scope, data_path):
     writer_evaluator = ArticleEvaluator(model_config, project_scope)
     data = []    
