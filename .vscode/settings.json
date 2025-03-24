@@ -1,5 +1,6 @@
 {
     "workbench.editorAssociations": {
         "*.md": "vscode.markdown.preview.editor"
-    }
+    },
+    "python.terminal.activateEnvironment": true
 }
