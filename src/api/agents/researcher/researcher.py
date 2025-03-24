@@ -136,4 +136,4 @@ if __name__ == "__main__":
 
     research = execute_research(instructions=instructions)
     # processed = process(r)
-    print(json.dumps(research, indent=2))
+    print(json.dumps(research, indent=2) ,ensure_ascii=False)

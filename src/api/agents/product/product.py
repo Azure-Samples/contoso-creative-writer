@@ -98,4 +98,4 @@ def find_products(context: str) -> Dict[str, any]:
 if __name__ == "__main__":
     context = "Can you use a selection of tents and backpacks as context?"
     answer = find_products(context)
-    print(json.dumps(answer, indent=2))
+    print(json.dumps(answer, indent=2),ensure_ascii=False)

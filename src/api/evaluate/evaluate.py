@@ -130,9 +130,9 @@ def run_orchestrator(research_context, product_context, assignment_context):
                 response = parsed_result[1]
     
     return {
-        "query": json.dumps(query), 
-        "context": json.dumps(context), 
-        "response": json.dumps(response),
+        "query": json.dumps(query ,ensure_ascii=False), 
+        "context": json.dumps(context ,ensure_ascii=False), 
+        "response": json.dumps(response ,ensure_ascii=False),
     }
 
 @trace
