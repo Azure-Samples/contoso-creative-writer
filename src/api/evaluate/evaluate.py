@@ -136,9 +136,8 @@ def run_orchestrator(research_context, product_context, assignment_context):
     }
 
 @trace
-def evaluate_orchestrator(model_config, project_scope,  data_path):
+def evaluate_orchestrator(model_config, project_scope, data_path):
     writer_evaluator = ArticleEvaluator(model_config, project_scope)
-
     data = []    
     eval_data = []
     print(f"\n===== Creating articles to evaluate using data provided in {data_path}")
@@ -150,17 +149,33 @@ def evaluate_orchestrator(model_config, project_scope,  data_path):
             print(f"generating article {num +1}")
             eval_data.append(run_orchestrator(row["research_context"], row["product_context"], row["assignment_context"]))
 
-    # write out eval data to a file so we can re-run evaluation on it
+    # Write out eval data to a file so we can re-run evaluation on it
     with jsonlines.open(folder + '/eval_data.jsonl', 'w') as writer:
         for row in eval_data:
             writer.write(row)
 
     eval_data_path = folder + '/eval_data.jsonl'
-
     print(f"\n===== Evaluating the generated articles")
-    eval_results = writer_evaluator(data_path=eval_data_path)
-    import pandas as pd
 
+    retries = 0
+    max_retries = 5
+    while retries < max_retries:
+        try:
+            eval_results = writer_evaluator(data_path=eval_data_path)
+            break
+        except Exception as e:
+            if 'rate_limit_exceeded' in str(e):
+                wait_time = (2 ** retries) + random.uniform(0, 1)
+                print(f"Rate limit exceeded. Retrying in {wait_time} seconds...")
+                time.sleep(wait_time)
+                retries += 1
+            else:
+                raise e
+
+    if retries == max_retries:
+        raise Exception("Max retries reached. Exiting...")
+
+    import pandas as pd
     print("Evaluation summary:\n")
     print("View in Azure AI Studio at: " + str(eval_results['studio_url']))
     metrics = {key: [value] for key, value in eval_results['metrics'].items()}

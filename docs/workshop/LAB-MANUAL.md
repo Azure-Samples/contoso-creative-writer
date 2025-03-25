@@ -29,7 +29,20 @@ To participate in this workshop, you will need:
 
 4. Once your Codespace is ready, **run the following command**:
 
-++./docs/workshop/lab_setup.py --username '@lab.CloudPortalCredential(User1).Username' --password '@lab.CloudPortalCredential(User1).Password' --azure-env-name 'AITOUR@lab.LabInstance.Id' --subscription '@lab.CloudSubscription.Id'++
+```bash
+# 1. Install the required dependencies
+pip install -r requirements.txt
+
+# 2.a. Run the following script if you haven't already provsionned the environment with "azd up"
+./docs/workshop/lab_setup.py --username '@lab.CloudPortalCredential(User1).Username' --password '@lab.CloudPortalCredential(User1).Password' --azure-env-name '<your-env-name>' --subscription '@lab.CloudSubscription.Id'
+
+# 2.b. Else run the following command if you have already run "azd up":
+azd env get-values > .env 
+
+# 3. In all cases, you need to run the following commands:
+sed 's/^/export /' .env >> ~/.bashrc # export variables to your shell
+source ~/.bashrc # refresh your shell
+```
 
 
 > [!IMPORTANT]

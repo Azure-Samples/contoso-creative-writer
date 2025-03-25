@@ -21,7 +21,7 @@ load_dotenv()
 
 
 @trace
-def execute_research(instructions: str, feedback: str = "No feedback"):
+def execute_research(instructions: str, prompty_file_path='researcher.prompty', return_raw=False, feedback: str = "No feedback"):
 
     ai_project_conn_str = os.getenv("AZURE_LOCATION")+".api.azureml.ms;"+os.getenv("AZURE_SUBSCRIPTION_ID")+";"+os.getenv("AZURE_RESOURCE_GROUP")+";"+os.getenv("AZURE_AI_PROJECT_NAME")
 
@@ -30,8 +30,7 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
         conn_str=ai_project_conn_str,
     )
 
-    prompt_template = PromptTemplate.from_prompty(file_path="researcher.prompty")
-
+    prompt_template = PromptTemplate.from_prompty(file_path=prompty_file_path)
 
     instructions = instructions
     feedback= feedback
@@ -45,7 +44,7 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
     # Initialize agent bing tool and add the connection id
     bing = BingGroundingTool(connection_id=conn_id)
 
-    prompt_template = PromptTemplate.from_prompty(file_path="researcher.prompty")
+    #prompt_template = PromptTemplate.from_prompty(file_path="researcher.prompty")
 
     # Create agent with the bing tool and process assistant run
     with project_client:
@@ -106,6 +105,8 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
         messages = project_client.agents.list_messages(thread_id=thread.id)
         # print(f"Messages: {messages}")
         research_response = messages.data[0]['content'][0]['text']['value']
+        if return_raw:
+            return research_response
         try: 
             json_r = json.loads(research_response)
         except:
