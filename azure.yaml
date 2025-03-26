@@ -45,5 +45,6 @@ pipeline:
     - WEB_SERVICE_ACA_NAME
     - AZURE_SEARCH_NAME
     - WEB_SERVICE_ACA_URI
+    - AZURE_AI_PROJECT_NAME
   secrets:
     - BING_SEARCH_KEY
