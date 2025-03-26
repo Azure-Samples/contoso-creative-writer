@@ -17,17 +17,30 @@
 
 In this open-ended exercise, you test using AI-Assisted Evaluation on your application prototype by working with prebuilt evaluators, creating your own custom evaluator, and using built-in tracing to demo observability. Reference existing code in this repository to add to the solution. 
 
-### Task 1: Add a Prebuilt Evaluator
+### Task 1: Review the Prebuilt Evaluators
 
 1. Navigate to the `src/api/evaluate` directory and review the pre-built evaluators being used in `evaluate.py`.   Try running `evaluate.py` and review results. Output contains a link to in AI Foundry where you can track details of all your evaluations.
 2. Comparing `evaluate.py` to the list of prebuilt evaluators available in the [API documentation](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/develop/evaluate-sdk), select one prebuilt evaluator that's not already included and add it to `evaluate.py`
-3. Test your work and try running evaluate.py to see it passes articles to the evaluator and retrieves your new evaluator metrics. Output contains a link to in AI Foundry where you can see details of previous evaluations. 
+
 
 ### Task 2: Review a sample custom evaluator
 
-1. Navigate to the `src/api/evaluators/friendliness` directory.
+1. Navigate to the `src/api/evaluators/` directory.
 2. Open the `friendliness.prompty` file and review its structure. This is an example of a custom evaluator. 
-3. Open the `friendliness.py` file and review the `evaluate()` function implementation.
+3. Review the definition of the ArticleEvaluator class in the evaluator.py file and see how the friendliness evaluator is being called.
+
+### Task 3: Evaluating Results
+1. Contoso Creative Writer uses evaluators to assess application response quality. A custom evaluate.py script has been written to run all evaulations for you. To run the script run the following commands: 
+```shell
+cd ./src/api
+python -m evaluate.evaluate
+```
+2. Check: You see scores for Coherence, Fluency, Relevance and Groundedness.
+Check: The scores are between 1 and 5
+To understand what is being evaluated open the src/api/evaluate/eval_inputs.jsonl file.
+Observe that 3 examples of research, product and assignment context are stored in this file. This data will be sent to the orchestrator so that each example will have:
+each example will have the evaluations run and will incoperate all of the context, research, products, and final article when grading the response.
+3. The Friendliness results will be available in the local log files.
 
 ### Task 3: Create your own custom evaluator
 
@@ -35,7 +48,7 @@ In this open-ended exercise, you test using AI-Assisted Evaluation on your appli
 2. Create a new .prompty file in `src/api/evaluate` and name it after the type of behavior you would like to test, similar to the existing `friendliness.prompty`. 
 3. Design a system prompt and examples to evaluate your of AI-generated content. Use the `friendliness.prompty` file as a guide. 
 4. Create a `.py` file for your new evaluator in the same directory similar to `friendliness.py`.
-5. Test your new custom evaluator and observe its results.
+5. Test your new custom evaluator and observe its results. The Friendliness and new custom evaluator results will be available in the local log files.
 
 ### Bonus Challenges
 
