@@ -19,7 +19,7 @@ In this open-ended exercise, you test using AI-Assisted Evaluation on your appli
 
 ### Task 1: Review the Prebuilt Evaluators
 
-1. Navigate to the `src/api/evaluate` directory and review the pre-built evaluators being used in `evaluate.py`.   Try running `evaluate.py` and review results. Output contains a link to in AI Foundry where you can track details of all your evaluations.
+1. Navigate to the `src/api/evaluate` directory and review the pre-built evaluators being used in `evaluate.py`.  
 2. Comparing `evaluate.py` to the list of prebuilt evaluators available in the [API documentation](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/develop/evaluate-sdk), select one prebuilt evaluator that's not already included and add it to `evaluate.py`
 
 
@@ -35,6 +35,7 @@ In this open-ended exercise, you test using AI-Assisted Evaluation on your appli
 cd ./src/api
 python -m evaluate.evaluate
 ```
+ Output contains a link to in AI Foundry where you can track details of all your evaluations.
 2. Check: You see scores for Coherence, Fluency, Relevance and Groundedness.
 Check: The scores are between 1 and 5
 To understand what is being evaluated open the src/api/evaluate/eval_inputs.jsonl file.
