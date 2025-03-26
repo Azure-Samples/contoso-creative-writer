@@ -98,11 +98,6 @@ Return the results as a list of JSON objects with the following structure:
 - It's important that you only return the json object, nothing else!! Do not return any additional text. 
 - Make sure to return at least 4 articles, but no more than 5.  
 
-# Feedback
-Use this feedback to help you refine your queries and responses - if there is any feedback:
-
-{{feedback}}
-
 # Market Codes
 The following are the market codes for the countries and regions that are supported by 
 the Microsoft Bing API and should be used when formulating your queries. Use the language 
@@ -126,6 +121,12 @@ Spanish,	es-ES
 Swedish,	sv-SE
 Turkish,	tr-TR
 English,	en-US
+
+assistant:
+# Feedback
+Use this feedback to help you refine your queries and responses - if there is any feedback:
+
+{{feedback}}
 
 user:
 {{instructions}}

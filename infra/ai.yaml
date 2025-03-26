@@ -14,11 +14,11 @@ deployments:
       name: gpt-4o
     sku:
       name: "GlobalStandard"
-      capacity: 80
+      capacity: 150
   - name: gpt-4-evals
     model:
       format: OpenAI
       name: gpt-4o-mini
     sku:
       name: "GlobalStandard"
-      capacity: 80
+      capacity: 150

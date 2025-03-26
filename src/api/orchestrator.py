@@ -8,7 +8,6 @@ import json
 from agents.researcher import researcher
 from agents.product import product
 from agents.writer import writer
-# from agents.designer import designer
 from agents.editor import editor
 from evaluate.evaluators import evaluate_article_in_background
 from prompty.tracer import trace, Tracer, console_tracer, PromptyTracer
@@ -68,12 +67,10 @@ def building_agents_message():
 @trace
 def create(research_context, product_context, assignment_context, evaluate=False):
     
-    feedback = "No Feedback"
-
     yield building_agents_message()
 
     yield start_message("researcher")
-    research_result = researcher.research(research_context, feedback)
+    research_result = researcher.research(research_context)
     yield complete_message("researcher", research_result)
 
     yield start_message("marketing")
@@ -88,7 +85,7 @@ def create(research_context, product_context, assignment_context, evaluate=False
         product_context,
         product_result,
         assignment_context,
-        feedback,
+        feedback = "No Feedback",
     )
 
     full_result = " "
@@ -97,11 +94,6 @@ def create(research_context, product_context, assignment_context, evaluate=False
         yield complete_message("partial", {"text": item})
 
     processed_writer_result = writer.process(full_result)
-
-    # send article to the designer, to generate an image for the blog
-    # yield start_message("designer")
-    # designer_response = designer.design(processed_writer_result['article'])
-    # yield complete_message("designer", [f"Image stored in {designer_response}"])
 
     # Then send it to the editor, to decide if it's good or not
     yield start_message("editor")
