@@ -76,73 +76,70 @@ def execute_research(instructions: str, feedback: str = None):
     if not feedback:
         feedback = "No feedback"
 
-    # Create agent with the bing tool and process assistant run
-    with project_client:
+    # Create thread for communication
+    thread = project_client.agents.create_thread()
+    print(f"Created thread, ID: {thread.id}")
 
-        # Create thread for communication
-        thread = project_client.agents.create_thread()
-        print(f"Created thread, ID: {thread.id}")
+    # Create assistant and user messages from Prompty template
+    messages = prompt_template.create_messages(instructions=instructions, feedback=feedback)
+    thread_messages = [m for m in messages if m['role'] in ['assistant', 'user']]
+    for message in thread_messages:
+        content = message['content']
+        role = message['role']
 
-        # Create assistant and user messages from Prompty template
-        messages = prompt_template.create_messages(instructions=instructions, feedback=feedback)
-        thread_messages = [m for m in messages if m['role'] in ['assistant', 'user']]
-        for message in thread_messages:
-            content = message['content']
-            role = message['role']
-
-            # Create message to thread
-            message = project_client.agents.create_message(
-                thread_id=thread.id,
-                role=role,
-                content=content,
-            )
-            print(f"Created {role} message, ID: {message.id}")
-
-        # Create and process agent run in thread with tools
-        # run = project_client.agents.create_stream(thread_id=thread.id, assistant_id=agent.id)
-        def is_rate_limited(run):
-            # Check if the run failed due to rate limit
-            if run.status == "failed" and run.last_error and run.last_error.get('code') == 'rate_limit_exceeded':
-                print(f"Run failed: {run.last_error}")
-                return True  # Indicates Tenacity should retry
-            return False  # No retry needed
-
-        @retry(
-            retry=retry_if_result(is_rate_limited),
-            wait=wait_exponential(multiplier=1, min=4, max=60),
-            stop=stop_after_attempt(6)
+        # Create message to thread
+        message = project_client.agents.create_message(
+            thread_id=thread.id,
+            role=role,
+            content=content,
         )
-        def run_agent():
-        # Create and process agent run in thread with tools
-            run = project_client.agents.create_and_process_run(thread_id=thread.id, assistant_id=agent.id)
-            print(f"Run finished with status: {run.status}")
-            return run
-        
-        run = run_agent()
-        # Retrieve run step details to get Bing Search query link
-        # To render the webpage, we recommend you replace the endpoint of Bing search query URLs with `www.bing.com` and your Bing search query URL would look like "https://www.bing.com/search?q={search query}"
-        run_steps = project_client.agents.list_run_steps(run_id=run.id, thread_id=thread.id)
-        run_steps_data = run_steps['data']
+        print(f"Created {role} message, ID: {message.id}")
 
-        print(f"Agent created and now researching...")
-        print('')
+    # Create and process agent run in thread with tools
+    # run = project_client.agents.create_stream(thread_id=thread.id, assistant_id=agent.id)
+    def is_rate_limited(run):
+        # Check if the run failed due to rate limit
+        if run.status == "failed" and run.last_error and run.last_error.get('code') == 'rate_limit_exceeded':
+            print(f"Run failed: {run.last_error}")
+            return True  # Indicates Tenacity should retry
+        return False  # No retry needed
 
-        # Delete the assistant when done
-        #project_client.agents.delete_agent(agent.id)
+    @retry(
+        retry=retry_if_result(is_rate_limited),
+        wait=wait_exponential(multiplier=1, min=4, max=60),
+        stop=stop_after_attempt(6)
+    )
+    def run_agent():
+    # Create and process agent run in thread with tools
+        run = project_client.agents.create_and_process_run(thread_id=thread.id, assistant_id=agent.id)
+        print(f"Run finished with status: {run.status}")
+        return run
+    
+    run = run_agent()
+    # Retrieve run step details to get Bing Search query link
+    # To render the webpage, we recommend you replace the endpoint of Bing search query URLs with `www.bing.com` and your Bing search query URL would look like "https://www.bing.com/search?q={search query}"
+    run_steps = project_client.agents.list_run_steps(run_id=run.id, thread_id=thread.id)
+    run_steps_data = run_steps['data']
 
-        # Fetch and log all messages
-        messages = project_client.agents.list_messages(thread_id=thread.id)
-        # print(f"Messages: {messages}")
+    print(f"Agent created and now researching...")
+    print('')
+
+    # Delete the assistant when done
+    #project_client.agents.delete_agent(agent.id)
+
+    # Fetch and log all messages
+    messages = project_client.agents.list_messages(thread_id=thread.id)
+    # print(f"Messages: {messages}")
+    research_response = messages.data[0]['content'][0]['text']['value']
+    try: 
+        json_r = json.loads(research_response)
+    except:
+        print('retrying')
         research_response = messages.data[0]['content'][0]['text']['value']
-        try: 
-            json_r = json.loads(research_response)
-        except:
-            print('retrying')
-            research_response = messages.data[0]['content'][0]['text']['value']
-            json_r = json.loads(research_response)
-        research = json_r['web']
-        print('research succesfully completed')
-        return research
+        json_r = json.loads(research_response)
+    research = json_r['web']
+    print('research succesfully completed')
+    return research
 
 @trace
 def research(instructions: str, feedback: str = None):
