@@ -39,7 +39,7 @@ python -m evaluate.evaluate
 Check: The scores are between 1 and 5
 To understand what is being evaluated open the src/api/evaluate/eval_inputs.jsonl file.
 Observe that 3 examples of research, product and assignment context are stored in this file. This data will be sent to the orchestrator so that each example will have:
-each example will have the evaluations run and will incoperate all of the context, research, products, and final article when grading the response.
+each example will have the evaluations run and will incorperate all of the context, research, products, and final article when grading the response.
 3. The Friendliness results will be available in the local log files.
 
 ### Task 3: Create your own custom evaluator
