@@ -19,56 +19,86 @@ load_dotenv()
 # At the moment, it should be in the format "<HostName>;<AzureSubscriptionId>;<ResourceGroup>;<HubName>"
 # Customer needs to login to Azure subscription via Azure CLI and set the environment variables
 
+ai_project_conn_str = os.getenv("AZURE_LOCATION")+".api.azureml.ms;"+os.getenv("AZURE_SUBSCRIPTION_ID")+";"+os.getenv("AZURE_RESOURCE_GROUP")+";"+os.getenv("AZURE_AI_PROJECT_NAME")
+print(f"Connection string: {ai_project_conn_str}")
+
+project_client = AIProjectClient.from_connection_string(
+    credential=DefaultAzureCredential(),
+    conn_str=ai_project_conn_str,
+)
+print(f"Project client created: {project_client}")
+
+prompt_template = PromptTemplate.from_prompty(file_path="researcher.prompty")
+
+bing_connection = project_client.connections.get(
+    connection_name='bing-connection'
+)
+conn_id = bing_connection.id
+
+# Initialize agent bing tool and add the connection id
+bing = BingGroundingTool(connection_id=conn_id)
+
+# Extract instructions from system message in Prompty template
+messages = prompt_template.create_messages(instructions='', feedback='')
+system_messages = [m for m in messages if m['role'] == 'system']
+agent_system_instructions = system_messages[0]['content']
+
+AGENT_NAME = "contoso-creative-writer"
+found_agent = None
+all_agents_list = project_client.agents.list_agents().data
+for a in all_agents_list:
+    if a.name == AGENT_NAME:
+        found_agent = a
+        break
+
+model_name = "gpt-4"
+if found_agent:
+    # Update the existing agent to use new tools
+    agent = project_client.agents.update_agent(
+        assistant_id=found_agent.id,
+        model=model_name,
+        instructions=agent_system_instructions,
+        tools=bing.definitions,
+    )
+    print(f"reusing agent > {agent.name} (id: {agent.id})")
+else:
+    agent = project_client.agents.create_agent(
+        model=model_name,
+        name=AGENT_NAME,
+        instructions=agent_system_instructions,
+        tools=bing.definitions,
+    )
+    print(f"creating agent > {agent.name} (id: {agent.id})")
 
 @trace
-def execute_research(instructions: str, feedback: str = "No feedback"):
+def execute_research(instructions: str, feedback: str = None):
 
-    ai_project_conn_str = os.getenv("AZURE_LOCATION")+".api.azureml.ms;"+os.getenv("AZURE_SUBSCRIPTION_ID")+";"+os.getenv("AZURE_RESOURCE_GROUP")+";"+os.getenv("AZURE_AI_PROJECT_NAME")
-
-    project_client = AIProjectClient.from_connection_string(
-        credential=DefaultAzureCredential(),
-        conn_str=ai_project_conn_str,
-    )
-
-    prompt_template = PromptTemplate.from_prompty(file_path="researcher.prompty")
-
-
-    instructions = instructions
-    feedback= feedback
-    messages = prompt_template.create_messages(instructions=instructions, feedback=feedback)
-
-    bing_connection = project_client.connections.get(
-        connection_name='bing-connection'
-    )
-    conn_id = bing_connection.id
-
-    # Initialize agent bing tool and add the connection id
-    bing = BingGroundingTool(connection_id=conn_id)
+    if not feedback:
+        feedback = "No feedback"
 
     # Create agent with the bing tool and process assistant run
     with project_client:
-        agent = project_client.agents.create_agent(
-            model="gpt-4",
-            name="my-assistant",
-            instructions=messages[0]['content'],
-            tools=bing.definitions,
-        )
-
-        print(f"Created agent, ID: {agent.id}")
 
         # Create thread for communication
         thread = project_client.agents.create_thread()
         print(f"Created thread, ID: {thread.id}")
 
-        # Create message to thread
-        message = project_client.agents.create_message(
-            thread_id=thread.id,
-            role="user",
-            content=instructions,
-        )
-        print(f"Created message, ID: {message.id}")
+        # Create assistant and user messages from Prompty template
+        messages = prompt_template.create_messages(instructions=instructions, feedback=feedback)
+        thread_messages = [m for m in messages if m['role'] in ['assistant', 'user']]
+        for message in thread_messages:
+            content = message['content']
+            role = message['role']
 
-        # # Create and process agent run in thread with tools
+            # Create message to thread
+            message = project_client.agents.create_message(
+                thread_id=thread.id,
+                role=role,
+                content=content,
+            )
+            print(f"Created {role} message, ID: {message.id}")
+
+        # Create and process agent run in thread with tools
         # run = project_client.agents.create_stream(thread_id=thread.id, assistant_id=agent.id)
         def is_rate_limited(run):
             # Check if the run failed due to rate limit
@@ -98,7 +128,7 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
         print('')
 
         # Delete the assistant when done
-        project_client.agents.delete_agent(agent.id)
+        #project_client.agents.delete_agent(agent.id)
 
         # Fetch and log all messages
         messages = project_client.agents.list_messages(thread_id=thread.id)
@@ -115,8 +145,8 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
         return research
 
 @trace
-def research(instructions: str, feedback: str = "No feedback"):
-    r = execute_research(instructions=instructions)
+def research(instructions: str, feedback: str = None):
+    r = execute_research(instructions=instructions, feedback=feedback)
     research = {
         "web": r,
         "entities": [],

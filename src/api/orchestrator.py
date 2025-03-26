@@ -68,12 +68,10 @@ def building_agents_message():
 @trace
 def create(research_context, product_context, assignment_context, evaluate=False):
     
-    feedback = "No Feedback"
-
     yield building_agents_message()
 
     yield start_message("researcher")
-    research_result = researcher.research(research_context, feedback)
+    research_result = researcher.research(research_context)
     yield complete_message("researcher", research_result)
 
     yield start_message("marketing")
@@ -88,7 +86,7 @@ def create(research_context, product_context, assignment_context, evaluate=False
         product_context,
         product_result,
         assignment_context,
-        feedback,
+        feedback = "No Feedback",
     )
 
     full_result = " "
