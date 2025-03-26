@@ -66,7 +66,7 @@ def building_agents_message():
     ).to_json_line()
 
 @trace
-def create(research_context, product_context, assignment_context, evaluate=False):
+def create(research_context, product_context, assignment_context, evaluate=True):
     
     feedback = "No Feedback"
 
