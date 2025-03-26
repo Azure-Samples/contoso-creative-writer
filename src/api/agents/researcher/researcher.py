@@ -45,8 +45,6 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
     # Initialize agent bing tool and add the connection id
     bing = BingGroundingTool(connection_id=conn_id)
 
-    prompt_template = PromptTemplate.from_prompty(file_path="researcher.prompty")
-
     # Create agent with the bing tool and process assistant run
     with project_client:
         agent = project_client.agents.create_agent(
