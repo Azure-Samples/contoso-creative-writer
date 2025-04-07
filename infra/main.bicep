@@ -5,7 +5,7 @@ targetScope = 'subscription'
 @description('Name which is used to generate a short unique hash for each resource')
 param environmentName string
 
-@allowed(['eastus2','swedencentral','northcentralus','francecentral', 'eastus'])
+@allowed(['eastus', 'eastus2', 'francecentral', 'swedencentral'])
 @minLength(1)
 @description('Primary location for all resources')
 @metadata({
@@ -35,11 +35,7 @@ param logAnalyticsWorkspaceName string = ''
 param useApplicationInsights bool = true
 param useContainerRegistry bool = true
 param useSearch bool = true
-var aiConfig = loadYamlContent('./ai.yaml')
-@description('The name of the machine learning online endpoint. If ommited will be generated')
-param endpointName string = ''
-@description('The name of the azd service to use for the machine learning endpoint')
-param endpointServiceName string = 'chat'
+
 param resourceGroupName string = ''
 
 @description('The Azure Search connection name. If ommited will use a default value')
@@ -63,15 +59,39 @@ param bingConnectionName string = ''
 @description('The name of the AI search index')
 param aiSearchIndexName string = 'contoso-products'
 
-@description('The name of the 4 OpenAI deployment')
-param openAi_4_DeploymentName string = 'gpt-4'
+// All defaults are set in main.parameters.json
+@description('The name of the GPT-4 OpenAI deployment')
+param openAi_4_DeploymentName string
+@description('The name of the GPT-4 OpenAI model')
+param openAi_4_ModelName string
+@description('The version of the GPT-4 OpenAI model')
+param openAi_4_ModelVersion string
+@description('The name of the GPT-4 OpenAI deployment sku')
+param openAi_4_Sku string
+@description('The capacity of the GPT-4 OpenAI deployment')
+param openAi_4_Capacity int
 
-
-@description('The name of the 4 eval OpenAI deployment')
-param openAi_4_eval_DeploymentName string = 'gpt-4-evals'
+@description('The name of the GPT-4 eval OpenAI deployment')
+param openAi_4_eval_DeploymentName string
+@description('The name of the GPT-4 eval OpenAI model')
+param openAi_4_eval_ModelName string
+@description('The version of the GPT-4 eval OpenAI model')
+param openAi_4_eval_ModelVersion string
+@description('The name of the GPT-4 eval OpenAI deployment sku')
+param openAi_4_eval_Sku string
+@description('The capacity of the GPT-4 eval OpenAI deployment')
+param openAi_4_eval_Capacity int
 
 @description('The name of the OpenAI embedding deployment')
-param openAiEmbeddingDeploymentName string = 'text-embedding-ada-002'
+param openAiEmbeddingDeploymentName string
+@description('The name of the OpenAI embedding model')
+param openAiEmbeddingModelName string
+@description('The version of the OpenAI embedding model')
+param openAiEmbeddingModelVersion string
+@description('The name of the OpenAI embedding deployment sku')
+param openAiEmbeddingSku string
+@description('The capacity of the OpenAI embedding deployment')
+param openAiEmbeddingCapacity int
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
@@ -103,6 +123,45 @@ module managedIdentity 'core/security/managed-identity.bicep' = {
   }
 }
 
+var deployments = [
+  {
+    name: openAiEmbeddingDeploymentName
+    model: {
+      format: 'OpenAI'
+      name: openAiEmbeddingModelName
+      version: openAiEmbeddingModelVersion
+    }
+    sku: {
+      name: openAiEmbeddingSku
+      capacity: openAiEmbeddingCapacity
+    }
+  }
+  {
+    name: openAi_4_DeploymentName
+    model: {
+      format: 'OpenAI'
+      name: openAi_4_ModelName
+      version: openAi_4_ModelVersion
+    }
+    sku: {
+      name: openAi_4_Sku
+      capacity: openAi_4_Capacity
+    }
+  }
+  {
+    name: openAi_4_eval_DeploymentName
+    model: {
+      format: 'OpenAI'
+      name: openAi_4_eval_ModelName
+      version: openAi_4_eval_ModelVersion
+    }
+    sku: {
+      name: openAi_4_eval_Sku
+      capacity: openAi_4_eval_Capacity
+    }
+  }
+]
+
 module ai 'core/host/ai-environment.bicep' = {
   name: 'ai'
   scope: resourceGroup
@@ -117,7 +176,7 @@ module ai 'core/host/ai-environment.bicep' = {
       : '${abbrs.storageStorageAccounts}${resourceToken}'
     openAiName: !empty(openAiName) ? openAiName : 'aoai-${resourceToken}'
     openAiConnectionName: !empty(openAiConnectionName) ? openAiConnectionName : 'aoai-connection'
-    openAiModelDeployments: array(contains(aiConfig, 'deployments') ? aiConfig.deployments : [])
+    openAiModelDeployments: deployments
     logAnalyticsName: !useApplicationInsights
       ? ''
       : !empty(logAnalyticsWorkspaceName)
@@ -136,14 +195,6 @@ module ai 'core/host/ai-environment.bicep' = {
   }
 }
 
-// module bing 'core/bing/bing-search.bicep' = {
-//   name: 'bing'
-//   scope: resourceGroup
-//   params: {
-//     name: 'agent-bing-search'
-//     location: 'global'
-//   }
-// }
 
 // Container apps host (including container registry)
 module containerApps 'core/host/container-apps.bicep' = {
@@ -296,6 +347,7 @@ module openaiRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
 
 output AZURE_LOCATION string = location
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
+output AZURE_TENANT_ID string = tenant().tenantId
 
 output AZURE_OPENAI_DEPLOYMENT_NAME string = openAi_4_DeploymentName
 output AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME string = openAi_4_eval_DeploymentName

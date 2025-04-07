@@ -1,5 +1,4 @@
 import os
-import logging
 from azure.core.settings import settings
 from fastapi import FastAPI
 from opentelemetry._events import set_event_logger_provider
@@ -7,7 +6,6 @@ from opentelemetry.sdk._events import EventLoggerProvider
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from prompty.tracer import Tracer, PromptyTracer,console_tracer
 from azure.ai.projects import AIProjectClient
-from azure.identity import DefaultAzureCredential    
 from azure.monitor.opentelemetry import configure_azure_monitor
 import contextlib
 import json
@@ -25,7 +23,7 @@ def trace_span(name: str):
 
 
 
-def setup_telemetry(app: FastAPI):
+def setup_telemetry(app: FastAPI, credential):
     settings.tracing_implementation = "OpenTelemetry"
     local_tracing_enabled=os.getenv("LOCAL_TRACING_ENABLED")
     otel_exporter_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
@@ -36,7 +34,7 @@ def setup_telemetry(app: FastAPI):
     
     # Configure OpenTelemetry using Azure AI Project 
     with AIProjectClient.from_connection_string(
-    credential=DefaultAzureCredential(),
+    credential=credential,
     conn_str=ai_project_conn_str,
     ) as project_client:
         

@@ -162,15 +162,26 @@ A related option is VS Code Dev Containers, which will open the project in your 
     ```shell
     azd init -t contoso-creative-writer
     ```
+
     Note that this command will initialize a git repository, so you do not need to clone this repository.
 
-2. Install required packages:
+2. Create a Python virtual environment:
+
+    Windows:
 
     ```shell
-    #activate virtual env
     python -m venv .venv 
-    .\.venv\Scripts\activate #(use source ./venv/bin/activate for mac) 
+    .\.venv\Scripts\activate
     ```
+
+    Mac/Linux:
+
+    ```shell
+    python -m venv .venv 
+    source .venv/bin/activate
+    ```
+
+3. Install the required packages:
 
     ```shell
     cd src/api
@@ -183,21 +194,21 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 
 1. Sign in to your Azure account. You'll need to login to both the Azure Developer CLI and Azure CLI:
 
-    i. First with Azure Developer CLI 
+    i. First with Azure Developer CLI:
 
     ```shell
     azd auth login
     ```
 
-    ii. Then sign in with Azure CLI 
-    
-    ```shell
-    az login --use-device-code
-    ```
-
     If you have any issues with that command, you may also want to try `azd auth login --use-device-code`.
 
     This will create a folder under `.azure/` in your project to store the configuration for this deployment. You may have multiple azd environments if desired.
+
+    ii. Then sign in with Azure CLI:
+
+    ```shell
+    az login --use-device-code
+    ```
 
 2. Provision the resources and deploy the code:
 
@@ -209,7 +220,7 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 
    After running azd up, you may be asked the following question during `Github Setup`:
 
-   ```shell 
+   ```shell
    Do you want to configure a GitHub action to automatically deploy this repo to Azure when you push code changes?
    (Y/n) Y
    ```
@@ -218,45 +229,50 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 
 ## Testing the sample
 
-This sample repository contains an agents folder that includes subfolders for each agent. Each agent folder contains a prompty file where the agent's prompty is defined and a python file with the code used to run it. Exploring these files will help you understand what each agent is doing. The agent's folder also contains an `orchestrator.py` file that can be used to run the entire flow and to create an article. When you ran `azd up` a catalogue of products was uploaded to the Azure AI Search vector store and index name `contoso-products` was created. 
+This sample repository contains an agents folder that includes subfolders for each agent. Each agent folder contains a prompty file where the agent's prompty is defined and a python file with the code used to run it. Exploring these files will help you understand what each agent is doing. The agent's folder also contains an `orchestrator.py` file that can be used to run the entire flow and to create an article. When you ran `azd up` a catalogue of products was uploaded to the Azure AI Search service in a new index named `contoso-products`.
 
-To test the sample: 
+To test the sample:
 
-1. Run the example web app locally using a FastAPI server. 
+1. Run the example web app locally using a FastAPI server.
 
-    First navigate to the src/api folder 
+    First navigate to the src/api folder:
+
     ```shell
     cd ./src/api
     ```
 
-    Run the FastAPI webserver
+    Run the FastAPI webserver:
+
     ```shell
-    fastapi dev main.py
+    python -m fastapi dev main.py
     ```
-    
+
     **Important Note**: If you are running in Codespaces, you will need to change the visibility of the API's 8000 and 5173 ports to `public` in your VS Code terminal's `PORTS` tab. The ports tab should look like this:
 
     ![Screenshot showing setting port-visibility](images/ports-resized.png)
 
-
     If you open the server link in a browser, you will see a URL not found error, this is because we haven't created a home url route in FastAPI. We have instead created a `/get_article` route which is used to pass context and instructions directly to the get_article.py file which runs the agent workflow.
 
    (Optional) We have created a web interface which we will run next, but you can test the API is working as expected by running this in the browser:
+
     ```
     http://127.0.0.1:8080/get_article?context=Write an article about camping in alaska&instructions=find specifics about what type of gear they would need and explain in detail
     ```
 
 3. Once the FastAPI server is running you can now run the web app. To do this open a new terminal window and navigate to the web folder using this command:
+
     ```shell
     cd ./src/web
     ```
-    
+
     First install node packages:
+
     ```shell
     npm install
     ```
 
     Then run the web app with a local dev web server:
+
     ```shell
     npm run dev
     ```

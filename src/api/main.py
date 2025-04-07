@@ -3,13 +3,16 @@ from pathlib import Path
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from prompty.tracer import trace
-from prompty.core import PromptyStream, AsyncPromptyStream
+from prompty.core import PromptyStream
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from fastapi import FastAPI, File, UploadFile
-from evaluate.evaluators import evaluate_image
-
+from fastapi import File, UploadFile
+from azure.identity import (
+    AzureDeveloperCliCredential,
+    ChainedTokenCredential,
+    ManagedIdentityCredential
+)
 from orchestrator import Task, create
 from telemetry import setup_telemetry
 
@@ -42,7 +45,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-setup_telemetry(app)
+user_assigned_managed_identity_credential = ManagedIdentityCredential(client_id=os.getenv("AZURE_CLIENT_ID"))
+azure_dev_cli_credential = AzureDeveloperCliCredential(tenant_id=os.getenv("AZURE_TENANT_ID"), process_timeout=60)
+azure_credential = ChainedTokenCredential(user_assigned_managed_identity_credential, azure_dev_cli_credential)
+
+setup_telemetry(app, azure_credential)
 
 @app.get("/")
 async def root():
@@ -54,7 +61,7 @@ async def root():
 async def create_article(task: Task):
     return StreamingResponse(
         PromptyStream(
-            "create_article", create(task.research, task.products, task.assignment)
+            "create_article", create(task.research, task.products, task.assignment, credential=azure_credential)
         ),
         media_type="text/event-stream",
     )
