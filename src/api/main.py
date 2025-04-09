@@ -18,7 +18,7 @@ from telemetry import setup_telemetry
 
 base = Path(__file__).resolve().parent
 
-load_dotenv()
+load_dotenv(override=True)
 app = FastAPI()
 
 code_space = os.getenv("CODESPACE_NAME")

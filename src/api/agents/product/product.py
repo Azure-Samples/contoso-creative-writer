@@ -88,7 +88,7 @@ def find_products(context: str, credential) -> Dict[str, any]:
     # Generate embeddings
     items = generate_embeddings(qs, credential)
     # Retrieve products
-    products = retrieve_products(items, "contoso-products")
+    products = retrieve_products(items, "contoso-products", credential)
     return products
 
 
