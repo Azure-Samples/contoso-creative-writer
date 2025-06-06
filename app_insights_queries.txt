@@ -30,7 +30,9 @@ dependencies
 TITLE: Average Model Duration
 dependencies
 | where name == "AzureOpenAIExecutor"
-| extend inputs = tostring(customDimensions["result.model"])
-| project inputs, duration_sec=duration/1000
-| summarize avg(duration_sec) by tostring(inputs)
+| extend result = parse_json(tostring(customDimensions["result"]))
+| extend model = result.model
+| project model, duration_sec=duration/1000
+| where isnotempty( model)
+| summarize avg(duration_sec) by tostring(model)
 | render columnchart
