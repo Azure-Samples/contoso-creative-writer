@@ -8,12 +8,16 @@ dependencies
 
 TITLE: Tokens Used Over Time
 dependencies
+| extend inputs = parse_json(tostring(customDimensions["inputs"]))
 | extend
-    total_tokens = toint(customDimensions["inputs.data.usage.total_tokens"]),
-    prompt_tokens = toint(customDimensions["inputs.data.usage.prompt_tokens"]),
-    completion_tokens = toint(customDimensions["inputs.data.usage.completion_tokens"])
+    usage = inputs.data.usage,
+    total_tokens = toint(inputs.data.usage.total_tokens),
+    prompt_tokens = toint(inputs.data.usage.prompt_tokens),
+    completion_tokens = toint(inputs.data.usage.completion_tokens)
+| where isnotempty(usage)
 | summarize sum(total_tokens), sum(prompt_tokens), sum(completion_tokens) by bin(timestamp, 5m) 
 | render timechart
+
 
 TITLE: Tokens Used by Model
 dependencies
