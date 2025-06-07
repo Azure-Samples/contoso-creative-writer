@@ -18,11 +18,12 @@ dependencies
 TITLE: Tokens Used by Model
 dependencies
 | where name == "AzureOpenAIExecutor"
-| extend inputs = tostring(customDimensions["result.model"])
+| extend result = parse_json(tostring(customDimensions["result"]))
+| extend inputs = result.model
 | extend
-    total_tokens = toint(customDimensions["result.usage.total_tokens"]),
-    prompt_tokens = toint(customDimensions["result.usage.prompt_tokens"]),
-    completion_tokens = toint(customDimensions["result.usage.completion_tokens"]),
+    total_tokens = toint(result.usage.total_tokens),
+    prompt_tokens = toint(result.usage.prompt_tokens),
+    completion_tokens = toint(result.usage.completion_tokens),
     model = tostring(inputs)
 | summarize prompt = sum(prompt_tokens), completion = sum(completion_tokens), total = sum(total_tokens) by model
 | render columnchart 
