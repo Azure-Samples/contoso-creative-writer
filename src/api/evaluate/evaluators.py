@@ -235,7 +235,7 @@ def evaluate_article(data, trace_context):
             "project_name": os.environ["AZURE_AI_PROJECT_NAME"],        
         }
         evaluator = ArticleEvaluator(configuration, project_scope)
-        results = evaluator(data)
+        results = evaluator(data_path = data)
         resultsJson = json.dumps(results)
         span.set_attribute("output", resultsJson)
 
@@ -246,7 +246,7 @@ def evaluate_image(image_path):
     # key = os.environ.get('CONTENT_SAFETY_KEY')
     endpoint = "https://safety-ig.cognitiveservices.azure.com/"
     image_path = image_path
-    key="D4VBpl18BMX6FxSpm8TLVzISU2L58k3E8WBLDW6HcLOslLYLKSt3JQQJ99AKACfhMk5XJ3w3AAAHACOGGDob"
+    key=os.get_env('CONTENT_SAFETY_KEY')
 
     # Create an Azure AI Content Safety client
     client = ContentSafetyClient(endpoint, AzureKeyCredential(key))
@@ -313,8 +313,16 @@ def evaluate_article_in_background(research_context, product_context, assignment
     # propagate trace context to the new thread
     span = trace.get_current_span()
     trace_context = set_span_in_context(span)
+
+    import tempfile
+
+    # Create temporary JSONL file for evaluation
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.jsonl', delete=False) as temp_file:
+        json.dump(eval_data, temp_file)
+        temp_file.write('\n')
+        temp_file_path = temp_file.name
    
-    evaluate_article(eval_data, trace_context)
+    evaluate_article(temp_file_path, trace_context)
 
 def evaluate_image(messages):
     # tracer = trace.get_tracer(__name__)
