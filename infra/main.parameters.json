@@ -26,6 +26,12 @@
     "openAi_4_ModelVersion": {
       "value": "${AZURE_OPENAI_MODEL_VERSION=2024-05-13}"
     },
+    "openAi_4_Sku": {
+      "value": "${AZURE_OPENAI_SKU=GlobalStandard}"
+    },
+    "openAi_4_Capacity": {
+      "value": "${AZURE_OPENAI_CAPACITY=100}"
+    },
     "openAi_4_eval_DeploymentName": {
       "value": "${AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME=gpt-4-evals}"
     },
@@ -35,8 +41,26 @@
     "openAi_4_eval_ModelVersion": {
       "value": "${AZURE_OPENAI_4_EVAL_MODEL_VERSION=2024-07-18}"
     },
+    "openAi_4_eval_Sku": {
+      "value": "${AZURE_OPENAI_EVAL_SKU=GlobalStandard}"
+    },
+    "openAi_4_eval_Capacity": {
+      "value": "${AZURE_OPENAI_4_EVAL_CAPACITY=100}"
+    },
     "openAiEmbeddingDeploymentName": {
       "value": "${AZURE_EMBEDDING_NAME=text-embedding-ada-002}"
+    },
+    "openAiEmbeddingModelName": {
+      "value": "${AZURE_EMBEDDING_MODEL_NAME=text-embedding-ada-002}"
+    },
+    "openAiEmbeddingModelVersion": {
+      "value": "${AZURE_EMBEDDING_MODEL_VERSION=2}"
+    },
+    "openAiEmbeddingSku": {
+      "value": "${AZURE_OPENAI_SKU=Standard}"
+    },
+    "openAiEmbeddingCapacity": {
+      "value": "${AZURE_EMBEDDING_CAPACITY=20}"
     },
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"

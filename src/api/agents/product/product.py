@@ -1,13 +1,12 @@
 import os
 import json
 from typing import Dict, List
-from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+from azure.identity import get_bearer_token_provider
 from prompty.tracer import trace
 import prompty
 import prompty.azure
 from openai import AzureOpenAI
 from dotenv import load_dotenv
-from pathlib import Path
 from azure.search.documents import SearchClient
 from azure.search.documents.models import (
     VectorizedQuery,
@@ -26,10 +25,8 @@ AZURE_AI_SEARCH_INDEX = "contoso-products"
 
 
 @trace
-def generate_embeddings(queries: List[str]) -> str:
-    token_provider = get_bearer_token_provider(
-        DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
-    )
+def generate_embeddings(queries: List[str], credential) -> str:
+    token_provider = get_bearer_token_provider(credential, "https://cognitiveservices.azure.com/.default")
 
     client = AzureOpenAI(
         azure_endpoint = f"https://{os.getenv('AZURE_OPENAI_NAME')}.cognitiveservices.azure.com/", 
@@ -45,11 +42,11 @@ def generate_embeddings(queries: List[str]) -> str:
 
 
 @trace
-def retrieve_products(items: List[Dict[str, any]], index_name: str) -> str:
+def retrieve_products(items: List[Dict[str, any]], index_name: str, credential) -> str:
     search_client = SearchClient(
         endpoint=os.environ["AZURE_SEARCH_ENDPOINT"],
         index_name=index_name,
-        credential=DefaultAzureCredential(),
+        credential=credential,
     )
 
     products = []
@@ -84,14 +81,14 @@ def retrieve_products(items: List[Dict[str, any]], index_name: str) -> str:
 
 
 @trace
-def find_products(context: str) -> Dict[str, any]:
+def find_products(context: str, credential) -> Dict[str, any]:
     # Get product queries
     queries = prompty.execute("product.prompty", inputs={"context":context})
     qs = json.loads(queries)
     # Generate embeddings
-    items = generate_embeddings(qs)
+    items = generate_embeddings(qs, credential)
     # Retrieve products
-    products = retrieve_products(items, "contoso-products")
+    products = retrieve_products(items, "contoso-products", credential)
     return products
 
 

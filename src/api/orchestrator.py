@@ -1,4 +1,4 @@
-from typing import List, Literal, Union
+from typing import List, Literal
 from prompty.tracer import trace
 from pydantic import BaseModel, Field
 import logging
@@ -11,7 +11,7 @@ from agents.writer import writer
 # from agents.designer import designer
 from agents.editor import editor
 from evaluate.evaluators import evaluate_article_in_background
-from prompty.tracer import trace, Tracer, console_tracer, PromptyTracer
+from prompty.tracer import Tracer, PromptyTracer
 
 types = Literal["message", "researcher", "marketing", "designer","writer", "editor", "error", "partial", ]
 
@@ -62,22 +62,22 @@ def send_writer(full_result):
 
 def building_agents_message():
     return Message(
-        type="message", message=f"Initializing Agent Service, please wait a few seconds..."
+        type="message", message="Initializing Agent Service, please wait a few seconds..."
     ).to_json_line()
 
 @trace
-def create(research_context, product_context, assignment_context, evaluate=False):
+def create(research_context, product_context, assignment_context, credential, evaluate=False):
     
     feedback = "No Feedback"
 
     yield building_agents_message()
 
     yield start_message("researcher")
-    research_result = researcher.research(research_context, feedback)
+    research_result = researcher.research(research_context, credential, feedback)
     yield complete_message("researcher", research_result)
 
     yield start_message("marketing")
-    product_result = product.find_products(product_context)
+    product_result = product.find_products(product_context, credential)
     yield complete_message("marketing", product_result)
 
     yield start_message("writer")

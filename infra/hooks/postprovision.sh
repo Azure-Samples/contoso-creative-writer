@@ -6,10 +6,10 @@ set -e
 azd env get-values > .env
 
 # Retrieve service names, resource group name, and other values from environment variables
-resourceGroupName=$AZURE_RESOURCE_GROUP
-searchService=$AZURE_SEARCH_NAME
-openAiService=$AZURE_OPENAI_NAME
-subscriptionId=$AZURE_SUBSCRIPTION_ID
+resourceGroupName=$(azd env get-value AZURE_RESOURCE_GROUP)
+searchService=$(azd env get-value AZURE_SEARCH_NAME)
+openAiService=$(azd env get-value AZURE_OPENAI_NAME)
+subscriptionId=$(azd env get-value AZURE_SUBSCRIPTION_ID)
 
 # Ensure all required environment variables are set
 if [ -z "$resourceGroupName" ] || [ -z "$searchService" ] || [ -z "$openAiService" ] || [ -z "$subscriptionId" ]; then
@@ -18,21 +18,7 @@ if [ -z "$resourceGroupName" ] || [ -z "$searchService" ] || [ -z "$openAiServic
     exit 1
 fi
 
-# Set additional environment variables expected by app
-# TODO: Standardize these and remove need for setting here
-azd env set AZURE_OPENAI_API_VERSION 2024-08-01-preview
-azd env set AZURE_SEARCH_ENDPOINT $AZURE_SEARCH_ENDPOINT
-azd env set REACT_APP_API_BASE_URL $WEB_SERVICE_ACA_URI
-
 # Setup to run notebooks
-# Retrieve the internalId of the Cognitive Services account
-INTERNAL_ID=$(az cognitiveservices account show \
-    --name ${AZURE_OPENAI_NAME} \
-    -g ${AZURE_RESOURCE_GROUP} \
---query "properties.internalId" -o tsv)
-
-# Construct the URL
-COGNITIVE_SERVICE_URL="https://oai.azure.com/portal/${INTERNAL_ID}?tenantid=${AZURE_TENANT_ID}"
 
 echo "--- ✅ | 1. Post-provisioning - env configured ---"
 
@@ -48,5 +34,3 @@ echo "Populating data ...."
 jupyter nbconvert --execute --to python --ExecutePreprocessor.timeout=-1 data/create-azure-search.ipynb > /dev/null
 
 echo "--- ✅ | 3. Post-provisioning - populated data ---"
-
-echo "--- 🎉 | 4. Access your ACA deployed web app here: ${WEB_SERVICE_ACA_URI}"

@@ -20,7 +20,7 @@ get_ipython().system(' pip install pandas, azure-identity, azure-search-document
 
 import os
 import pandas as pd
-from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+from azure.identity import AzureDeveloperCliCredential, get_bearer_token_provider
 from azure.search.documents import SearchClient
 from azure.search.documents.indexes import SearchIndexClient
 from azure.search.documents.indexes.models import (
@@ -152,8 +152,8 @@ def gen_products(
     openai_service_endoint = os.environ["AZURE_OPENAI_ENDPOINT"]
     openai_deployment = "text-embedding-ada-002"
     # openai.Embedding.create() -> client.embeddings.create()
-    azure_credential = DefaultAzureCredential()
-    token_provider = get_bearer_token_provider(azure_credential,"https://cognitiveservices.azure.com/.default")
+    azure_credential = get_credential()
+    token_provider = get_bearer_token_provider(azure_credential, "https://cognitiveservices.azure.com/.default")
     client = AzureOpenAI(
         api_version="2024-08-01-preview",
         azure_endpoint=openai_service_endoint,
@@ -185,12 +185,25 @@ def gen_products(
 # In[6]:
 
 
+def get_credential() -> AzureDeveloperCliCredential:
+    """
+    Returns an Azure credential object for authentication.
+    """
+    if tenant_id := os.environ.get("AZURE_TENANT_ID"):
+        print(f"Using azd credential with tenant ID: {tenant_id}")
+        return AzureDeveloperCliCredential(tenant_id=tenant_id)
+    else:
+        print("Using azd credential with default tenant.")
+        return AzureDeveloperCliCredential()
+
+
+# In[7]:
+
+
 aisearch_endpoint = os.environ["AZURE_SEARCH_ENDPOINT"]
 index_name = "contoso-products"
 
-search_index_client = SearchIndexClient(
-    aisearch_endpoint, DefaultAzureCredential()
-)
+search_index_client = SearchIndexClient(aisearch_endpoint, get_credential())
 
 delete_index(search_index_client, index_name)
 index = create_index_definition(index_name)
@@ -199,16 +212,16 @@ search_index_client.create_or_update_index(index)
 print(f"index {index_name} created")
 
 
-# In[7]:
+# In[8]:
 
 
-print(f"indexing documents")
+print("indexing documents")
 docs = gen_products("products.csv")
 # Upload our data to the index.
 search_client = SearchClient(
     endpoint=aisearch_endpoint,
     index_name=index_name,
-    credential=DefaultAzureCredential(),
+    credential=get_credential(),
 )
 print(f"uploading {len(docs)} documents to index {index_name}")
 ds = search_client.upload_documents(docs)

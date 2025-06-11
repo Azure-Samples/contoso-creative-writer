@@ -7,10 +7,10 @@ Write-Output "Outputting environment variables to .env file..."
 azd env get-values > .env
 
 # Retrieve service names, resource group name, and other values from environment variables
-$resourceGroupName = $env:AZURE_RESOURCE_GROUP
-$searchService = $env:AZURE_SEARCH_NAME
-$openAiService = $env:AZURE_OPENAI_NAME
-$subscriptionId = $env:AZURE_SUBSCRIPTION_ID
+$resourceGroupName = (azd env get-value AZURE_RESOURCE_GROUP)
+$searchService = (azd env get-value AZURE_SEARCH_NAME)
+$openAiService = (azd env get-value AZURE_OPENAI_NAME)
+$subscriptionId = (azd env get-value AZURE_SUBSCRIPTION_ID)
 
 # Ensure all required environment variables are set
 if ([string]::IsNullOrEmpty($resourceGroupName) -or [string]::IsNullOrEmpty($searchService) -or [string]::IsNullOrEmpty($openAiService) -or [string]::IsNullOrEmpty($subscriptionId)) {
@@ -19,21 +19,7 @@ if ([string]::IsNullOrEmpty($resourceGroupName) -or [string]::IsNullOrEmpty($sea
     exit 1
 }
 
-# Set additional environment variables expected by app
-# TODO: Standardize these and remove need for setting here
-azd env set AZURE_OPENAI_API_VERSION 2024-08-01-preview
-azd env set AZURE_SEARCH_ENDPOINT $env:AZURE_SEARCH_ENDPOINT
-azd env set REACT_APP_API_BASE_URL $env:WEB_SERVICE_ACA_URI
-
 # Setup to run notebooks
-# Retrieve the internalId of the Cognitive Services account
-$INTERNAL_ID = az cognitiveservices account show `
-    --name $env:AZURE_OPENAI_NAME `
-    --resource-group $env:AZURE_RESOURCE_GROUP `
-    --query "properties.internalId" -o tsv
-
-# Construct the URL
-$COGNITIVE_SERVICE_URL = "https://oai.azure.com/portal/$INTERNAL_ID?tenantid=$env:AZURE_TENANT_ID"
 
 Write-Host "--- ✅ | 1. Post-provisioning - env configured ---"
 

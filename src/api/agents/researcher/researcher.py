@@ -2,13 +2,8 @@ import os
 import sys
 import json
 from dotenv import load_dotenv
-import prompty
-import time
-import prompty.azure
-from prompty.azure.processor import ToolCall
 from prompty.tracer import trace
 from azure.ai.projects import AIProjectClient
-from azure.identity import DefaultAzureCredential
 from azure.ai.projects.models import BingGroundingTool
 from azure.ai.inference.prompts import PromptTemplate
 from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_result
@@ -21,7 +16,7 @@ load_dotenv()
 
 
 @trace
-def execute_research(instructions: str, feedback: str = "No feedback"):
+def execute_research(instructions: str, credential, feedback: str = "No feedback"):
 
     location = os.getenv("AZURE_LOCATION")
     sub = os.getenv("AZURE_SUBSCRIPTION_ID")
@@ -36,7 +31,7 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
     print(f"Connection String: {ai_project_conn_str}")
 
     project_client = AIProjectClient.from_connection_string(
-        credential=DefaultAzureCredential(),
+        credential=credential,
         conn_str=ai_project_conn_str,
     )
 
@@ -81,7 +76,6 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
         print(f"Created message, ID: {message.id}")
 
         # # Create and process agent run in thread with tools
-        # run = project_client.agents.create_stream(thread_id=thread.id, assistant_id=agent.id)
         def is_rate_limited(run):
             # Check if the run failed due to rate limit
             if run.status == "failed" and run.last_error and run.last_error.get('code') == 'rate_limit_exceeded':
@@ -95,7 +89,7 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
             stop=stop_after_attempt(10)
         )
         def run_agent():
-        # Create and process agent run in thread with tools
+            # Create and process agent run in thread with tools
             run = project_client.agents.create_and_process_run(thread_id=thread.id, assistant_id=agent.id)
             print(f"Run finished with status: {run.status}")
             return run
@@ -106,7 +100,7 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
         run_steps = project_client.agents.list_run_steps(run_id=run.id, thread_id=thread.id)
         run_steps_data = run_steps['data']
 
-        print(f"Agent created and now researching...")
+        print("Agent created and now researching...")
         print('')
 
         # Delete the assistant when done
@@ -127,8 +121,8 @@ def execute_research(instructions: str, feedback: str = "No feedback"):
         return research
 
 @trace
-def research(instructions: str, feedback: str = "No feedback"):
-    r = execute_research(instructions=instructions)
+def research(instructions: str, credential, feedback: str = "No feedback"):
+    r = execute_research(instructions=instructions, credential=credential)
     research = {
         "web": r,
         "entities": [],
