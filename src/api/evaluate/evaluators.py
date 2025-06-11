@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+import pathlib
 import prompty
 from opentelemetry import trace
 from opentelemetry.trace import set_span_in_context
@@ -8,7 +9,6 @@ from azure.ai.evaluation import RelevanceEvaluator, GroundednessEvaluator, Fluen
 from azure.ai.evaluation import ViolenceEvaluator, HateUnfairnessEvaluator, SelfHarmEvaluator, SexualEvaluator, ContentSafetyEvaluator
 from azure.ai.evaluation import evaluate
 from azure.identity import DefaultAzureCredential
-
 
 from azure.ai.contentsafety import ContentSafetyClient
 from azure.ai.contentsafety.models import AnalyzeImageOptions, ImageData, ImageCategory
@@ -235,7 +235,7 @@ def evaluate_article(data, trace_context):
             "project_name": os.environ["AZURE_AI_PROJECT_NAME"],        
         }
         evaluator = ArticleEvaluator(configuration, project_scope)
-        results = evaluator(data)
+        results = evaluator(data_path=data)
         resultsJson = json.dumps(results)
         span.set_attribute("output", resultsJson)
 
@@ -297,7 +297,7 @@ def evaluate_image(image_path):
 
 
 def evaluate_article_in_background(research_context, product_context, assignment_context, research, products, article):
-    eval_data = {
+    eval_data_raw = {
         "query": json.dumps({
             "research_context": research_context,
             "product_context": product_context,
@@ -309,11 +309,27 @@ def evaluate_article_in_background(research_context, product_context, assignment
         }),
         "response": json.dumps(article)
     }
+    print(eval_data_raw)
+
+    # Write eval_data to a JSONL file so that orchestrator can use evaluation
+    from pathlib import Path
+    import uuid
+    file_name = f"evaluation_data_{uuid.uuid4()}.jsonl"
+    parent = pathlib.Path(__file__).parent.resolve()
+    data_path = os.path.join(parent, "eval_data")
+    os.makedirs(data_path, exist_ok=True)  # Ensure the directory exists
+
+    eval_data = os.path.join(data_path, file_name)
+
+    with open(eval_data, "w") as outfile:
+        json_line = json.dumps(eval_data_raw)
+        outfile.write(json_line + "\n")
 
     # propagate trace context to the new thread
     span = trace.get_current_span()
     trace_context = set_span_in_context(span)
    
+    # evaluate_article(eval_data, trace_context)
     evaluate_article(eval_data, trace_context)
 
 def evaluate_image(messages):
