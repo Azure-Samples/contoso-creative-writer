@@ -8,21 +8,26 @@ dependencies
 
 TITLE: Tokens Used Over Time
 dependencies
+| extend inputs = parse_json(tostring(customDimensions["inputs"]))
 | extend
-    total_tokens = toint(customDimensions["inputs.data.usage.total_tokens"]),
-    prompt_tokens = toint(customDimensions["inputs.data.usage.prompt_tokens"]),
-    completion_tokens = toint(customDimensions["inputs.data.usage.completion_tokens"])
+    usage = inputs.data.usage,
+    total_tokens = toint(inputs.data.usage.total_tokens),
+    prompt_tokens = toint(inputs.data.usage.prompt_tokens),
+    completion_tokens = toint(inputs.data.usage.completion_tokens)
+| where isnotempty(usage)
 | summarize sum(total_tokens), sum(prompt_tokens), sum(completion_tokens) by bin(timestamp, 5m) 
 | render timechart
+
 
 TITLE: Tokens Used by Model
 dependencies
 | where name == "AzureOpenAIExecutor"
-| extend inputs = tostring(customDimensions["result.model"])
+| extend result = parse_json(tostring(customDimensions["result"]))
+| extend inputs = result.model
 | extend
-    total_tokens = toint(customDimensions["result.usage.total_tokens"]),
-    prompt_tokens = toint(customDimensions["result.usage.prompt_tokens"]),
-    completion_tokens = toint(customDimensions["result.usage.completion_tokens"]),
+    total_tokens = toint(result.usage.total_tokens),
+    prompt_tokens = toint(result.usage.prompt_tokens),
+    completion_tokens = toint(result.usage.completion_tokens),
     model = tostring(inputs)
 | summarize prompt = sum(prompt_tokens), completion = sum(completion_tokens), total = sum(total_tokens) by model
 | render columnchart 
@@ -30,7 +35,9 @@ dependencies
 TITLE: Average Model Duration
 dependencies
 | where name == "AzureOpenAIExecutor"
-| extend inputs = tostring(customDimensions["result.model"])
-| project inputs, duration_sec=duration/1000
-| summarize avg(duration_sec) by tostring(inputs)
+| extend result = parse_json(tostring(customDimensions["result"]))
+| extend model = result.model
+| project model, duration_sec=duration/1000
+| where isnotempty( model)
+| summarize avg(duration_sec) by tostring(model)
 | render columnchart
