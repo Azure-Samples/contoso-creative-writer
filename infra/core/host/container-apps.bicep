@@ -5,7 +5,6 @@ param tags object = {}
 
 param containerAppsEnvironmentName string
 param containerRegistryName string
-param containerRegistryResourceGroupName string = ''
 param containerRegistryAdminUserEnabled bool = false
 param logAnalyticsWorkspaceName string
 param applicationInsightsName string = ''
@@ -21,9 +20,10 @@ module containerAppsEnvironment 'container-apps-environment.bicep' = {
   }
 }
 
+// Just use the current resource group for simplicity
 module containerRegistry 'container-registry.bicep' = {
   name: '${name}-container-registry'
-  scope: !empty(containerRegistryResourceGroupName) ? resourceGroup(containerRegistryResourceGroupName) : resourceGroup()
+  // Use the current resource group
   params: {
     name: containerRegistryName
     location: location
